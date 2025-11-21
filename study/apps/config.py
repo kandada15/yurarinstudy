@@ -9,8 +9,9 @@ class BaseConfig:
 
 # BaseConfigクラスを継承してLocalConfigクラスを作成する
 class LocalConfig(BaseConfig):
-    SQLALCHEMY_DATABASE_URI = f"sqlite:///{basedir / 'local.sqlite'}" # SQLiteデータベースのURIを指定
-    SQLALCHEMY_TRACK_MODIFICATIONS = False # SQLAlchemyの変更追跡を無効にする
+    SQLALCHEMY_DATABASE_URI = f"sqlite:///{basedir / 'local.sqlite'}" 
+    # SQLAlchemyの変更追跡を無効にする
+    SQLALCHEMY_TRACK_MODIFICATIONS = False 
     SQLALCHEMY_ECHO = True # SQLAlchemyのSQL文を表示する
 
 # BaseConfigクラスを継承してTestingConfigクラスを作成する
