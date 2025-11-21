@@ -1,0 +1,32 @@
+{% extends "base.html" %}  {% block title %}
+    {{ data.page_title }}
+{% endblock %}
+
+{% block content %}
+
+    <header>
+        <h1>{{ data.page_title }}</h1> 
+    </header>
+    
+    <main>
+        <div class="selection-area">
+            <p class="select-message-label">{{ data.select_message }}</p>
+            
+            {% if data.categories %}
+                <ul class="category-list">
+                    {% for category in data.categories %}
+                        <li>
+                            <a href="{{ url_for('writing.category_detail', category_id=category.category_id) }}">
+                                {{ category.category_name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="no-category">現在、利用可能な学習カテゴリはありません。</p>
+            {% endif %}
+
+        </div>
+    </main>
+
+{% endblock %}
