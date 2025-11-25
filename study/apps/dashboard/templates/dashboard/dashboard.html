@@ -1,0 +1,78 @@
+<!--件数系はすべてデータベースから持ってきて処理する-->
+<!--SUMとかでできるはず-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href=".css">
+  <title></title>
+</head>
+<body>
+<h1>ダッシュボード</h1>
+<!--プロフィール-->
+<div>
+<p>管理者ID：＊＊＊＊</p>
+<p>氏　　名：＊＊＊＊</p>
+<p>所　　属：＊＊＊＊</p>
+</div>
+
+<!--グループ-->
+<div>
+  <h3>グループ</h3>
+  <table>
+    <tr>
+      <th>グループ名</th>
+      <th>１９人</th>
+    </tr>
+    <tr>
+      <th>グループ名</th>
+      <th>２０人</th>
+    </tr>
+    <tr>
+      <th>グループ名</th>
+      <th>９人</th>
+    </tr>
+  </table>
+</div>
+
+<!--課題管理-->
+<div>
+  <h3>課題管理</h3>
+  <!--受講者一覧へ飛ぶボタン-->
+  <button type="button" class="btn-menmber" onclick="">受講者一覧</button>
+  <!--添削状況-->
+  <div>
+    <label>累計課題配信件数</label>
+    <p>８件</p>
+  </div>
+  <div>
+    <label>未添削課題件数</label>
+    <p>４件</p>
+  </div>
+  <!--課題提出状況-->
+  <div>
+    <label>課題提出管理</label>
+    <label>提出済み件数</label>
+    <p>４０件</p>
+    <label>未提出課題件数</label>
+    <p>８件</p>
+    <p>今週１件締切</p>
+  </div>
+</div>
+
+<!--学習状況進捗-->
+<!--表示するもの変更してもあり-->
+<div>
+  <h3>学習進捗</h3>
+  <!--受講者一覧へ飛ぶボタン-->
+  <button type="button" class="btn-menmber" onclick="">受講者一覧</button>
+  <label>全体進捗率</label>
+  <p>５０％</p>
+
+</div>  
+
+<!--Javascriptの読み込み（必ずこの位置）-->
+<script src=".js"></script> 
+</body>
+</html>
