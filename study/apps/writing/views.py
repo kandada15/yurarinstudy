@@ -12,9 +12,9 @@ writing = Blueprint(
 @writing.route('/')
 def index():
   # templates/crud/index.htmlとなる
-  return render_template('wiring/index.html')
+  return render_template('writing/index.html')
 
 @writing.route('/')
 def writing_top():
   # templates/crud/index.htmlとなる
-  return render_template('wiring/writing_top.html')
+  return render_template('writing/writing_top.html')
