@@ -6,13 +6,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 class Admin(db.Model, UserMixin):
     __tablename__ = 'admins'
-    admin_id = db.Column(db.String(10), primary_key=True)
-    admin_name = db.Column(db.String(20), nullable=False)
+    admin_id = db.Column(db.Integer(10), primary_key=True, nullable=False)
+    admin_name = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(12), nullable=False,)
-    admin_class = db.Column(db.String(20), nullable=False)
     birthday = db.Column(db.Date, nullable=False)
     entry_date = db.Column(db.DateTime, default=datetime.now)
-    group_id = db.Column(db.String(10), db.ForeignKey('group.group_id'))
+    group_id = db.Column(db.Integer(10), db.ForeignKey('group.group_id'))
 
     # passwordという直接アクセスできない属性を定義
     @property
@@ -35,14 +34,14 @@ class Admin(db.Model, UserMixin):
 
 class Student(db.Model, UserMixin):
     __tablename__ = 'students'
-    student_id = db.Column(db.String(10), primary_key=True, nullable=False)
-    student_name = db.Column(db.String(20), nullable=False)
+    student_id = db.Column(db.Integer(10), primary_key=True, nullable=False)
+    student_name = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(12), nullable=False)
-    entry_year = db.Column(db.Integer, nullable=False)
+    entry_year = db.Column(db.Date, nullable=False)
     birthday = db.Column(db.Date, nullable=False)
     entry_date = db.Column(db.DateTime, default=datetime.now, nullable=False)
     is_alert = db.Column(db.Boolean, default=False)
-    group_id = db.Column(db.String(10), db.ForeignKey('group.group_id'))
+    group_id = db.Column(db.Integer(10), db.ForeignKey('group.group_id'))
 
     # passwordという直接アクセスできない属性を定義
     @property
@@ -64,9 +63,9 @@ class Student(db.Model, UserMixin):
 
 class Group(db.Model):
     __tablename__ = 'group'
-    group_id = db.Column(db.String(10), primary_key=True, nullable=False)
-    group_name = db.Column(db.String(20), nullable=False)
-    admin_name = db.Column(db.String(255), nullable=False)
+    group_id = db.Column(db.Integer(10), primary_key=True, nullable=False)
+    group_name = db.Column(db.String(50), nullable=False)
+    admin_id = db.Column(db.Integer(10), nullable=False)
 
 
 

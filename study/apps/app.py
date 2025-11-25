@@ -36,6 +36,6 @@ def create_app(config_key):
   # -- 以下アプリとの連携 --
   from apps.crud import views as crud_views
   # crud_viewsのcrudとURL "/crud"を関連付ける
-  app.register_blueprint(crud_views.crud, url_prefix='/')
-  
+  app.register_blueprint(crud_views.crud, url_prefix='/crud')
+
   return app
