@@ -38,4 +38,8 @@ def create_app(config_key):
   # crud_viewsのcrudとURL "/crud"を関連付ける
   app.register_blueprint(crud_views.crud, url_prefix='/crud')
 
+  # ダッシュボードアプリ
+  from apps.dashboard.views import dash_bp 
+  app.register_blueprint(dash_bp, url_prefix='/dashboard')
+
   return app
