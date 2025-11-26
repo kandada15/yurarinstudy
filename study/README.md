@@ -29,11 +29,12 @@ flask run
 ### 必要パッケージのインストール
 ```bash
 pip install Flask
-pip install Flask-SQLAlchemy
+pip install Flask-SQLAlchemy #Textを持ってくる際に利用
 pip install Flask-Migrate
 pip install Flask-Login
 pip install Flask-WTF
-pip install pymysql
+pip install pymysql #いらなくなりました。
+pip install  mysql-connector-python
 ```
 
 ### マイグレーション
@@ -43,7 +44,7 @@ flask db migrate -m "initial migration"
 flask db upgrade
 ```
 
-### DBについて
+### DBについて  ←  使わなくなった。
 ```bash
 # apps/config.py 内
 SQLALCHEMY_DATABASE_URI = "sqlite:///local.sqlite"   # ローカル開発用

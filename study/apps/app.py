@@ -20,12 +20,9 @@ csrf = CSRFProtect()
 # login_manager.login_view = 'crud/index.html'
 
 
-def create_app(config_key):
+def create_app():
   # アプリケーション作成の準備
   app = Flask(__name__)
-
-  # config.pyから設定を読み込む
-  app.config.from_object(config[config_key]) 
 
   # 上から、db, DBを使う準備、csrf対策、認証機能を適用
   db.init_app(app)
