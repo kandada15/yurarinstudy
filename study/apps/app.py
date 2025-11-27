@@ -11,8 +11,9 @@ app = Flask(__name__)
 csrf.init_app(app)
 
 # -- 以下アプリとの連携 --
-from apps.crud.views import crud_bp
-app.register_blueprint(crud_bp, url_prefix='/crud')
+from apps.crud import views as crud_views
+# crud_viewsのcrudとURL "/crud"を関連付ける
+app.register_blueprint(crud_views.crud, url_prefix='/crud')
 
 from apps.task.views import task_bp
 app.register_blueprint(task_bp, url_prefix='/task')
