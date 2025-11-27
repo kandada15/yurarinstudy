@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template
 
 # アプリの作成
-crud = Blueprint(
+crud_bp = Blueprint(
   'crud',
   __name__,
   # 使用するフォルダ
@@ -9,7 +9,7 @@ crud = Blueprint(
   static_folder='static'
 )
 
-@crud.route('/')
+@crud_bp.route('/')
 def index():
   # templates/crud/index.htmlとなる
   return render_template('crud/index.html')
