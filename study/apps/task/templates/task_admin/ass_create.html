@@ -1,0 +1,80 @@
+<!--新規課題作成-->
+<!--登録画面の一覧に戻るボタンを追加-->
+<!--CSSは改良予定-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('task.static', filename='css/t_create.css') }}">
+  <title>新規課題作成</title>
+</head>
+<body>
+
+<div class="container">
+    <!-- 入力画面 -->
+    <div id="inputScreen">
+      <h2>新規課題作成</h2>
+
+      <!-- 課題作成入力フォーム -->
+      <div id="formtask" class="form hidden">
+        <!--課題タイトル-->
+        <div>
+          <label for="task_name">課題タイトル<span style="color: red;">*</span></label>
+          <input type="text" name="task_name" id="task_name" maxlength="10" placeholder="課題タイトルを入力...">
+          <div id="task_name_error" class="error-message"></div>
+        </div>
+        <!--問題文-->
+        <div>
+          <label for="task_text">問題文<span style="color: red;">*</span></label>
+          <input type="text" name="task_text" id="task_text" maxlength="20" placeholder="問題文を入力...">
+          <div id="task_text_error" class="error-message"></div>
+        </div>
+        
+        <div>
+            <!--課題提出期限-->
+            <div>
+              <label for="task_streamed_limit">課題提出期限</label>
+              <input type="data" name="task_streamed_limit" id="task_streamed_limit" placeholder="課題提出期限を入力...">
+              <div id="task_streamed_limit_error" class="error-message"></div>
+            </div>
+            <!--配信先グループ選択-->
+            <div>
+              <label for="group_id">配信先グループ選択</label>
+              <input type="text" name="group_id" id="group_id">
+              <div id="group_id_error" class="error-message"></div>
+            </div>
+          </div>
+        <!--確認画面へ飛ぶ-->
+        <div class="button-group">
+          <button type="button" class="btn-primary" onclick="showConfirmScreen('text')">確認画面へ</button>
+        </div>
+      </div>
+
+     
+    <!-- 確認画面 -->
+    <div id="confirmScreen" class="hidden">
+      <h2>登録内容の確認</h2>
+      <div id="confirmContent"></div>
+      <div class="button-group">
+        <button type="button" class="btn-back" onclick="backToInput()">戻る</button>
+        <button type="button" class="btn-primary" onclick="submitForm()">登録する</button>
+      </div>
+    </div>
+
+    <!-- 完了画面 -->
+    <div id="completeScreen" class="hidden">
+      <h2>✓ 登録完了</h2>
+      <p style="text-align: center; margin: 30px 0; font-size: 18px; color: #4CAF50;">
+        ユーザー登録が完了しました。
+      </p>
+      <div class="button-group">
+        <a href="dashboad.html" class="return_button">ダッシュボードに戻る</a>
+      </div>
+    </div>
+  </div>
+  
+<!--Javascriptの読み込み（必ずこの位置）-->
+<script src="{{ url_for('task.static', filename='js/t_create.js') }}"></script>
+</body>
+</html>
