@@ -2,8 +2,8 @@
 
 import mysql.connector
 from mysql.connector import MySQLConnection
-from models.model_returned import Returned
-from config.db_config import DB_CONFIG
+from apps.task.models.model_returned import Returned
+from apps.config.db_config import DB_CONFIG
 
 class ReturnedDao:
   """ Returned テーブルにアクセスするためのDAOクラス """

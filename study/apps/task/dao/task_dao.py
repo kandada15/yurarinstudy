@@ -59,6 +59,73 @@ class TaskDao:
       # 例外処理なしで、カーソルと接続を閉じる
       cursor.close()
       conn.close()
-          
-        
-        
+  
+  def find_by_id(self, task_id) -> Task | None:
+    """ taskテーブル内のタスクIDを取得 """
+
+    sql = """
+          SELECT
+              task_id,
+              task_name,
+              task_text
+          FROM task
+          WHERE task_id = %s
+          LIMIT 1
+    """
+
+    conn = self._get_connection()
+    try:
+      # cursor(dictionary=True) にし、SELECT文の結果を辞書型で受け取る
+      # row[""],row[""]でアクセス可能
+      cursor = conn.cursor(dictionary=True)
+
+      # sqlの実行
+      cursor.execute(sql, (task_id,))
+
+      # 1行を取得
+      row = cursor.fetchone()
+
+      if row is None:
+       return None
+
+      
+      return Task(
+        task_id=row["task_id"],
+        task_name=row["task_name"],
+        task_text=row["task_text"]
+      )
+    
+    finally:
+      # 例外処理なしで、カーソルと接続を閉じる
+      cursor.close()
+      conn.close()
+
+  def insert(self, task_name, task_text) -> int:
+    """
+      insert文にて新しいデータを追加する役割
+      VALUESにて値を設定 
+    """
+
+    sql = """
+        INSERT INTO task
+          (task_name, task_text)
+        VALUES
+          (%s, %s)
+    """
+
+    conn = self._get_connection()
+    try:
+      # cursor() にする。辞書型にする必要はないため。
+      cursor = conn.cursor()
+
+      # sqlの実行
+      cursor.execute(sql, (task_name, task_text))
+
+      # DBへコミットする、task_idが自動採番された場合のコード
+      conn.commit()
+      return cursor.lastrowid
+    
+    finally:
+      # 例外処理なしで閉じる
+      cursor.close()
+      conn.close()

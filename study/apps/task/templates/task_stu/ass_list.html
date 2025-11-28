@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href=".css">
+  <link rel="stylesheet" href="{{ url_for('task.static', filename='css/ass_inq.css') }}">
   <title>課題一覧</title>
 </head>
 <body>
@@ -61,6 +61,6 @@
   
 
 <!--Javascriptの読み込み（必ずこの位置）-->
-<script src=".js"></script> 
+<script src="{{ url_for('task.static', filename='js/ass_inq.js') }}"></script> 
 </body>
 </html>
