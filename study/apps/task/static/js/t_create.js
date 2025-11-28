@@ -14,7 +14,7 @@ function validateForm(task) {
   // 各入力値を取得
   const task_name = document.getElementById(`${task}_name`).value.trim();
   const task_text = document.getElementById(`${task}_text`).value;
-  const task_send_limit = document.getElementById(`${task}_send_limit`).value;
+  const task_streamed_limit = document.getElementById(`${task}_streamed_limit`).value;
   const group_id = document.getElementById(`${task}admin_id`).value;
 
   // ID必須チェック
@@ -28,7 +28,7 @@ function validateForm(task) {
     showError(`${userType}_password_error`, 'パスワードは必須です');
     isValid = false;
   } else if (password.length < 8 || password.length > 10) {
-    showError(`${userType}_password_error`, 'パスワードは8～10文字で入力してください');
+    showError(`${userType}_password_error`, 'パスワードは8～12文字で入力してください');
     isValid = false;
   } else if (!/^[A-Za-z0-9]+$/.test(password)) {
     showError(`${userType}_password_error`, 'パスワードは半角英数字のみで入力してください');
