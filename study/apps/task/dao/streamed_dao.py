@@ -71,6 +71,7 @@ class StreamedDao:
       cursor.close()
       conn.close()
 
+  """ 関数より持ってきたい情報を明確にしてください """
   def find_by_group(self, group_id: int) -> list:
     """
     group_idを探すための関数を設定
@@ -81,12 +82,13 @@ class StreamedDao:
         st.task_id,
         st.group_id,
         st.streamed_limit,
+        t.task_id,
         t.task_name,
         t.task_text
 
         FROM streamed AS st
         INNER JOIN task AS t ON st.task_id = t.task_id
-        WHERE ts.group_id = %s
+        WHERE st.group_id = %s
         ORDER BY st.streamed_limit ASC
     """
 
