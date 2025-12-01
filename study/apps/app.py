@@ -38,4 +38,8 @@ def create_app(config_key):
   # crud_viewsのcrudとURL "/crud"を関連付ける
   app.register_blueprint(crud_views.crud, url_prefix='/')
   
+  from apps.writing import views as writing_views
+  # writing_viewsのcrudとURL "/writing"を関連付ける
+  app.register_blueprint(writing_views.writing, url_prefix='/')
+
   return app
