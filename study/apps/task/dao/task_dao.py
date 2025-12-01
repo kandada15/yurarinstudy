@@ -3,6 +3,7 @@
 import mysql.connector
 from mysql.connector import MySQLConnection
 from apps.task.models.model_task import Task
+from typing import Optional
 from apps.config.db_config import DB_CONFIG
 
 class TaskDao:
@@ -28,7 +29,7 @@ class TaskDao:
             task_id,
             task_name,
             task_text
-            
+        
         FROM task
         ORDER BY task_id ASC
     """
@@ -60,8 +61,12 @@ class TaskDao:
       cursor.close()
       conn.close()
   
-  def find_by_id(self, task_id) -> Task | None:
-    """ taskテーブル内のタスクIDを取得 """
+  # Optionalより、指定型またはNone
+  def find_by_id(self, task_id) -> Optional[dict]:
+    """ 
+    task_idで task テーブルから1件取得。見つからなければNoneを返す。
+    戻り値: {"task_id":..., "task_name":..., "task_text":...}
+    """
 
     sql = """
           SELECT
@@ -76,7 +81,6 @@ class TaskDao:
     conn = self._get_connection()
     try:
       # cursor(dictionary=True) にし、SELECT文の結果を辞書型で受け取る
-      # row[""],row[""]でアクセス可能
       cursor = conn.cursor(dictionary=True)
 
       # sqlの実行
@@ -84,17 +88,7 @@ class TaskDao:
 
       # 1行を取得
       row = cursor.fetchone()
-
-      if row is None:
-       return None
-
-      
-      return Task(
-        task_id=row["task_id"],
-        task_name=row["task_name"],
-        task_text=row["task_text"]
-      )
-    
+      return row
     finally:
       # 例外処理なしで、カーソルと接続を閉じる
       cursor.close()
@@ -102,8 +96,8 @@ class TaskDao:
 
   def insert(self, task_name, task_text) -> int:
     """
-      insert文にて新しいデータを追加する役割
-      VALUESにて値を設定 
+      insert文にて課題を追加
+      新しいtask_idを返す
     """
 
     sql = """
