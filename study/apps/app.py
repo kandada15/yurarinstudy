@@ -18,3 +18,6 @@ app.register_blueprint(crud_bp, url_prefix='/crud')
 from apps.task.views import task_bp
 app.register_blueprint(task_bp, url_prefix='/task')
 
+from apps.dashboard.views import dashboard_bp
+app.register_blueprint(dashboard_bp, url_prefix='/dashboard') 
+
