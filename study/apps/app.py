@@ -1,45 +1,20 @@
 from flask import Flask
-# from flask_login import LoginManager
-from apps.config import config
 from flask_wtf.csrf import CSRFProtect
-from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
 
-## 他アプリで利用できるように
-
-# DBを他のアプリよりアクセス可能に
-db = SQLAlchemy()
 # CSRF対策
 csrf = CSRFProtect()
 
+# アプリケーション作成の準備
+app = Flask(__name__)
 
-### 以下コードは、ユーザー取得時に開放
-## Loginmanager、create_app内のlogin_manager=init_app(app)も開放
-# login_manager = LoginManager()
-# 未ログイン時、実行したい関数を記入。
-# login_manager.login_view = 'crud/index.html'
+# csrf対策を適応
+csrf.init_app(app)
 
+# -- 以下アプリとの連携 --
+from apps.crud.views import crud_bp 
+# crud_viewsのcrudとURL "/crud"を関連付ける
+app.register_blueprint(crud_bp, url_prefix='/crud')
 
-def create_app(config_key):
-  # アプリケーション作成の準備
-  app = Flask(__name__)
+from apps.task.views import task_bp
+app.register_blueprint(task_bp, url_prefix='/task')
 
-  # config.pyから設定を読み込む
-  app.config.from_object(config[config_key]) 
-
-  # 上から、db, DBを使う準備、csrf対策、認証機能を適用
-  db.init_app(app)
-  Migrate(app, db)
-  csrf.init_app(app)
-  # login_manager.init_app(app)
-
-  # -- 以下アプリとの連携 --
-  from apps.crud import views as crud_views
-  # crud_viewsのcrudとURL "/crud"を関連付ける
-  app.register_blueprint(crud_views.crud, url_prefix='/')
-  
-  from apps.writing import views as writing_views
-  # writing_viewsのcrudとURL "/writing"を関連付ける
-  app.register_blueprint(writing_views.writing, url_prefix='/')
-
-  return app
