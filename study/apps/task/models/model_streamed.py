@@ -1,16 +1,12 @@
-# DBの「streamed」テーブル
-from datetime import datetime
+from apps.extensions import db
 
-class Streamed:
-  def __init__(self, streamed_id: int, streamed_limit: datetime, task_id: int, group_id: int):
-      # 配信済み課題ID(主キー)
-      self.streamed_id = streamed_id
-      # 課題提出期限 
-      self.streamed_limit = streamed_limit
-      # 課題ID(外部キー)
-      self.task_id = task_id
-      # グループID(外部キー)
-      self.group_id = group_id
-
-  def __repr__(self) -> str:
-     return f"Task_Streamed(task_streamed_id={self.streamed_id}, task_streamed_limit={self.streamed_limit!r}, task_id={self.task_id!r}, group_id={self.group_id!r})"
+class Streamed(db.Model):
+    __tablename__ = "streamed"
+    # 配信済み課題ID(主キー)
+    streamed_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    # 課題提出期限
+    streamed_limit = db.Column(db.DateTime)
+    # 課題ID(外部キー)
+    task_id = db.Column(db.Integer, db.ForeignKey('task.task_id'))
+    # グループID(外部キー)
+    group_id = db.Column(db.Integer, db.ForeignKey('group.group_id'))
