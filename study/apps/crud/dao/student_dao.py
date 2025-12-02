@@ -1,0 +1,155 @@
+import mysql.connector
+from mysql.connector import MySQLConnection
+from typing import Optional
+from apps.crud.models.model_student import Student
+from apps.config.db_config import DB_CONFIG
+
+class StudentDao:
+    """ studentテーブルにアクセスするためのDAOクラス """
+
+    def __init__(self, config: dict | None = None) -> None:
+        self.config = config or DB_CONFIG
+
+    def _get_connection(self) -> MySQLConnection:
+        return mysql.connector.connect(**self.config)
+
+    def find_all(self) -> list[Student]:
+        """ 
+        studentテーブルの全レコードを取得
+        Studentオブジェクトのリストとして返す。
+        """
+        sql = """
+            SELECT
+                student_id,
+                student_name,
+                password,
+                entry_year,
+                birthday,
+                entry_date,
+                is_alert,
+                group_id
+            FROM student
+            ORDER BY student_id ASC
+        """
+
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+
+            students: list[Student] = []
+            for row in rows:
+                student = Student(
+                    student_id=row["student_id"],
+                    student_name=row["student_name"],
+                    password=row["password"],
+                    entry_year=row["entry_year"],
+                    birthday=row["birthday"],
+                    entry_date=row["entry_date"],
+                    is_alert=bool(row["is_alert"]),
+                    group_id=row["group_id"]
+                )
+                students.append(student)
+
+            return students
+        finally:
+            cursor.close()
+            conn.close()
+
+    def find_by_id(self, student_id: int) -> Optional[dict]:
+        """ 
+        student_idで student テーブルから1件取得。見つからなければNoneを返す。
+        戻り値: 辞書型
+        """
+        sql = """
+            SELECT
+                student_id,
+                student_name,
+                password,
+                entry_year,
+                birthday,
+                entry_date,
+                is_alert,
+                group_id
+            FROM student
+            WHERE student_id = %s
+            LIMIT 1
+        """
+
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute(sql, (student_id,))
+            row = cursor.fetchone()
+            return row
+        finally:
+            cursor.close()
+            conn.close()
+
+    def insert(self, student_id: int, student_name: str, password: str, entry_year, birthday, is_alert: bool, group_id: int) -> int:
+        """
+        insert文にて学生を追加
+        Student IDは手動設定（または別ロジック算出）を想定して引数で受け取る
+        """
+        sql = """
+            INSERT INTO student
+                (student_id, student_name, password, entry_year, birthday, entry_date, is_alert, group_id)
+            VALUES
+                (%s, %s, %s, %s, %s, NOW(), %s, %s)
+        """
+        
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql, (student_id, student_name, password, entry_year, birthday, is_alert, group_id))
+            conn.commit()
+            
+            return student_id
+        
+        finally:
+            cursor.close()
+            conn.close()
+
+    def find_by_group_id(self, group_id: int) -> list[Student]:
+        """
+        指定されたgroup_idに所属する生徒リストを取得
+        """
+        sql = """
+            SELECT
+                student_id,
+                student_name,
+                password,
+                entry_year,
+                birthday,
+                entry_date,
+                is_alert,
+                group_id
+            FROM student
+            WHERE group_id = %s
+            ORDER BY student_id ASC
+        """
+        
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute(sql, (group_id,))
+            rows = cursor.fetchall()
+            
+            students: list[Student] = []
+            for row in rows:
+                student = Student(
+                    student_id=row["student_id"],
+                    student_name=row["student_name"],
+                    password=row["password"],
+                    entry_year=row["entry_year"],
+                    birthday=row["birthday"],
+                    entry_date=row["entry_date"],
+                    is_alert=bool(row["is_alert"]),
+                    group_id=row["group_id"]
+                )
+                students.append(student)
+            return students
+        finally:
+            cursor.close()
+            conn.close()
