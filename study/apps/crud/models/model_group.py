@@ -1,15 +1,15 @@
-# DB内の「group」
+from apps.extensions import db
 
-class Group:
-    def __init__(self, group_id: int, group_name: str, admin_id: str):
-        """
-        :param group_id: グループID (PK, int(10)) - AUTO_INCREMENT
-        :param group_name: グループ名 (nvarchar(50)) - クラス、学部、部署など
-        :param admin_id: 管理者ID (FK, varchar(10)) - グループ管理者
-        """
-        self.group_id = group_id
-        self.group_name = group_name
-        self.admin_id = admin_id
+class Group(db.Model):
+    __tablename__ = "group"
 
-    def __repr__(self) -> str:
-        return f"Group(group_id={self.group_id}, group_name={self.group_name!r}, admin_id={self.admin_id!r})"
+    # db.Column を使って定義します
+    group_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    group_name = db.Column(db.String(50))
+    
+    # 外部キー（Adminとの紐付け）
+    created_by_admin_id = db.Column(db.String(255), db.ForeignKey('admin.admin_id'))
+
+    # リレーション（紐付いているStudentにアクセスしやすくする設定）
+    # これがあると group.students でそのグループの生徒一覧が取れるようになります
+    students = db.relationship('Student', backref='group_orders', lazy='dynamic')

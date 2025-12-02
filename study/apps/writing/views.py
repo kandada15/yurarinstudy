@@ -23,3 +23,4 @@ def step_list():
 def step_learning():
   """ステージ一覧ページ"""
   return render_template('step_learning.html')
+
