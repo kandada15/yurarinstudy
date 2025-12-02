@@ -2,15 +2,17 @@ from flask import Blueprint, render_template
 
 # アプリの作成
 writing_bp = Blueprint(
+
   'writing',
   __name__,
-  # 使用するフォルダ
   template_folder='templates',
   static_folder='static',
   url_prefix="/writing"
 )
 
+
 @writing_bp.route('/')
+
 def index():
   """ライティングトップ / カテゴリ一覧ページ"""
   return render_template('index.html')
@@ -24,3 +26,4 @@ def step_list():
 def step_learning():
   """ステージ一覧ページ"""
   return render_template('step_learning.html')
+

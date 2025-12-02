@@ -1,20 +1,19 @@
-<!--課題入力-->
-<!--登録画面の一覧に戻るボタンを追加-->
-<!--CSSは改良予定-->
+<!--添削書き込み-->
+<!--とりあえずのあとで大幅に機能調整-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{{ url_for('task.static', filename='css/ass_inq.css') }}">
-  <title>解答入力</title>
+  <link rel="stylesheet" href=".css">
+  <title>課題添削</title>
 </head>
 <body>
 
 <div class="container">
     <!-- 入力画面 -->
     <div id="inputScreen">
-      <h2>回答入力</h2>
+      <h2>課題添削</h2>
 
       <!-- 課題入力フォーム -->
       <div id="formtask" class="form hidden">
@@ -28,8 +27,8 @@
         <pre id="question"></pre>
          <!--回答-->
         <!-- preタグで改行を保持 -->
-        <label for="answer_text">回答<span style="color: red;">*</span></label>
-        <textarea id="answer_text" name="answer_text" rows="15" cols="50" placeholder="回答を入力..."></textarea>
+        <label for="answer_text">添削<span style="color: red;">*</span></label>
+        <textarea id="answer_text" name="answer_text" rows="15" cols="50" placeholder="添削を入力..."></textarea>
          <div id="task_text_error" class="error-message"></div>
         <!--確認画面へ飛ぶ-->
         <div class="button-group">
@@ -40,11 +39,11 @@
      
     <!-- 確認画面 -->
     <div id="confirmScreen" class="hidden">
-      <h2>登録内容の確認</h2>
+      <h2>添削内容の確認</h2>
       <div id="confirmContent"></div>
       <div class="button-group">
         <button type="button" class="btn-back" onclick="backToInput()">戻る</button>
-        <button type="button" class="btn-primary" onclick="submitForm()">提出</button>
+        <button type="button" class="btn-primary" onclick="submitForm()">添削完了</button>
       </div>
     </div>
 
@@ -52,13 +51,13 @@
     <!--ボタンを押さなくても戻る-->
     <!--というか通知にする-->
     <div id="completeScreen" class="hidden">
-      <h2>✓ 登録完了</h2>
+      <h2>課題添削完了</h2>
       <p style="text-align: center; margin: 30px 0; font-size: 18px; color: #4CAF50;">
-        課題を提出しました。
+        課題の添削が完了しました。
       </p>
     </div>
   </div>
 <!--Javascriptの読み込み（必ずこの位置）-->
-<script src="{{ url_for('task.static', filename='js/ass_inq.js') }}"></script> 
+<script src=".js"></script> 
 </body>
 </html>
