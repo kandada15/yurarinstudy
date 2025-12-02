@@ -26,12 +26,7 @@ streamed_dao = StreamedDao()
 submission_dao = SubmissionDao()
 # group_dao = GroupDao()
 
-""" 
-課題一覧画面→(task_list)一応でおいているだけなので編集必須
-task_indexについて：学生用機能として起用、配信日、タイトル、配信者、提出期限
-受講者用トップ画面より、「課題一覧」を押下することで関数が動く
-streamedDBによりデータを取得後、画面へ表示
-"""
+
 # @task_bp.route("/")
 # def task_index():
 #   task_list = task_dao.find_all()
@@ -46,7 +41,7 @@ streamedDBによりデータを取得後、画面へ表示
 def task_create_form():
   # 配信先選択用にグループ一覧を取得
   groups = group_dao.find_all()
-  return render_template("task_admin/ass_create.html", groups=groups)
+  return render_template("task_admin/task_create.html", groups=groups)
 
 """ 課題作成画面(POST) """
 # 課題作成フォーム(GET)より入力した値を受け取って、確認画面より表示する。
@@ -64,14 +59,15 @@ def task_create():
     return redirect(url_for("task.task_create_form"))
   
   # sessionaに一時保存して確認画面へ渡す。
-  session['task_data'] = {
+  task_data = {
     "task_name": task_name, 
     "task_text": task_text,
     "group_id": group_id,
     "streamed_limit": streamed_limit
   }
+  session["task_data"] = task_data
 
-  # グループ名を取得
+  # グループ名を取得,render_templateがなくなったため、取得方法を変える。
   group = next((g for g in group_dao.find_all() if str(g.group_id) == group_id), None)
   
   # Taskを登録
@@ -81,7 +77,7 @@ def task_create():
   streamed_dao.insert(task_id=task_id, group_id= group_id, streamed_limit=streamed_limit)
 
   # 確認画面へ
-  return render_template("task_admin/ass_create_confirm.html", task_name=task_name, task_text=task_text, streamed_limit=streamed_limit, group_name=group.group_name)
+  return render_template("task_admin/task_create.html", task_data=task_data, task_name=task_name, task_text=task_text, streamed_limit=streamed_limit, group_name=group.group_name)
 
 """
 課題配信の完了。
@@ -90,7 +86,7 @@ DBに課題・配信情報を登録する
 """
 @task_bp.route("/create/done", methods=["POST"])
 # @login_required
-def task_create_done():
+def task_create_complete():
   task_data = session.get('task_data')
   if not task_data:
     flash("課題データが存在しません。再入力してください。", "error")
@@ -114,7 +110,7 @@ def task_create_done():
   session.pop('task_data', None)
 
   return render_template(
-    "task_admin/ass_create_done.html", task_name=task_data["task_name"], streamed_limit=task_data["streamed_limit"], group_id=task_data["group_id"]
+    "task_admin/task_create.html", task_name=task_data["task_name"], streamed_limit=task_data["streamed_limit"], group_id=task_data["group_id"]
   )
 
 
