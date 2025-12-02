@@ -2,6 +2,9 @@
 
 import mysql.connector
 from mysql.connector import MySQLConnection
+from typing import List
+from datetime import datetime
+
 from apps.task.models.model_streamed import Streamed
 from apps.task.models.model_task import Task
 from apps.config.db_config import DB_CONFIG
@@ -71,62 +74,81 @@ class StreamedDao:
       cursor.close()
       conn.close()
 
-  def find_by_group(self, group_id: int) -> list:
+  """ 関数より持ってきたい情報を明確にしてください """
+  def find_by_group(self, group_id) -> List[dict]:
     """
-    group_idを探すための関数を設定
+    指定 group_id に配信されている streamed (配信済み課題)を取得する。
+    戻り値: list of dict, 各 dict に以下を含む:
+          streamed_id, streamed_limit, streamed_date, task_id, task_name, task_text, creator_name (可能なら)
+        NOTE: 現在 task テーブルに creator (作成者) カラムが無い場合は creator_name='-' として返す。
     """
 
     sql = """
         SELECT
-        st.task_id,
-        st.group_id,
+        st.streamed_id,
         st.streamed_limit,
+        st.streamed_date,
+        t.task_id,
         t.task_name,
         t.task_text
 
         FROM streamed AS st
-        INNER JOIN task AS t ON st.task_id = t.task_id
-        WHERE ts.group_id = %s
+        JOIN task AS t ON st.task_id = t.task_id
+        WHERE st.group_id = %s
         ORDER BY st.streamed_limit ASC
     """
 
     conn = self._get_connection()
     try:
       # cursor(dictionary=True) にし、SELECT文の結果を辞書型で受け取る
-      # row[""],row[""]でアクセス可能
       cursor = conn.cursor(dictionary=True)
 
       # sqlの実行
-      cursor.execute(sql, (group_id))
-
-      # 全行を取得
+      cursor.execute(sql, (group_id,))
       rows = cursor.fetchall()
 
-      # 新たにtasksリストを生成、提出状況を追加
-      tasks = []
-      for row in rows:
-        task = Task(
-          task_id=row["task_id"],
-          task_name=row["task_name"],
-          task_text=row["task_text"],
-          submit_limit=row["submit_limit"]
-        )
-        tasks.append(task)
-
-      return tasks
+      # 各行に配信者のプレースホルダを含む
+      results = []
+      for r in rows:
+        row = dict(r)
+        row.setdefault("creator_name", "-")
+        results.append(row)
+      return results
     finally:
-      # 例外処理なしで、カーソルと接続を閉じる
       cursor.close()
       conn.close()
 
+    #   # 新たにtasksリストを生成、提出状況を追加
+    #   tasks = []
+    #   for row in rows:
+    #     task = Task(
+    #       task_id=row["task_id"],
+    #       task_name=row["task_name"],
+    #       task_text=row["task_text"],
+    #       submit_limit=row["submit_limit"]
+    #     )
+    #     tasks.append(task)
+
+    #   return tasks
+    # finally:
+    #   # 例外処理なしで、カーソルと接続を閉じる
+    #   cursor.close()
+    #   conn.close()
 
 
-  def insert(self, streamed_limit, task_id, group_id):
+
+  def insert(self, streamed_limit: str, task_id: int, group_id: int, streamed_date: datetime):
+    """ 
+    streamed テーブルに配信情報を追加 
+    streamed_limit は文字列でも DATE 型に変換可能
+    streamed_date は datetime.now() で取得
+    """
+    
     sql = """
         INSERT INTO streamed 
-          (streamed_limit, task_id, group_id)
+          (streamed_limit, task_id, group_id, streamed_date)
         VALUES 
-          (NOW(), %s, %s)
+          (%s, %s, %s, %s)
     """
 
     conn = self._get_connection()
@@ -135,7 +157,7 @@ class StreamedDao:
       cursor = conn.cursor()
 
       # sqlの実行
-      cursor.execute(sql, (task_id, group_id, streamed_limit))
+      cursor.execute(sql, (task_id, group_id, streamed_limit, streamed_date))
 
       # DBへコミットする、streamed_idが自動採番された場合のコード
       conn.commit()
