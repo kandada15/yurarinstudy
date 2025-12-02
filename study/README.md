@@ -35,6 +35,7 @@ pip install Flask-Login
 pip install Flask-WTF
 pip install pymysql #いらなくなりました。
 pip install  mysql-connector-python
+pip install cryptography
 ```
 
 ### マイグレーション　一応の記載

@@ -1,34 +1,32 @@
-from datetime import date
-# DB内の「student」
+from apps.extensions import db
+from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
-class Student:
-    def __init__(self, student_id: int, student_name: str, password: str, entry_year: date, birthday: date, entry_date: date, is_alert: bool, group_id: int):
-        self.student_id = student_id
-        self.student_name = student_name
-        self.password = password
-        self.entry_year = entry_year
-        self.birthday = birthday
-        self.entry_date = entry_date
-        self.is_alert = is_alert
-        self.group_id = group_id
+class Student(db.Model):
+    __tablename__ = "student"
 
-    def __repr__(self) -> str:
-        return f"Student(student_id={self.student_id}, student_name={self.student_name!r}, password={self.password!r}, entry_year,)"
-
-    # # passwordという直接アクセスできない属性を定義
-    # @property
-    # def password(self):
-    #     raise AttributeError("読み取り不可") # passwordにアクセスするとエラーになる
+    student_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    student_name = db.Column(db.String(255))
+    password_hash = db.Column(db.String(255))
     
-    # ## passwordに値を代入する処理
-    # # passwordに値を入れようとすると以下の関数が実行される
-    # @password.setter 
+    # 日付系
+    entry_year = db.Column(db.Date)
+    birthday = db.Column(db.Date)
+    entry_date = db.Column(db.Date, default=datetime.now)
+    
+    is_alert = db.Column(db.Boolean, default=False)
+    
+    # 外部キー（Groupとの紐付け）
+    group_id = db.Column(db.Integer, db.ForeignKey('group.group_id'))
 
-    # # パスワードをハッシュ化するメソッドを定義
-    # def password(self, password): 
-    #     # パスワードをハッシュ化してpassword_hashに保存
-    #     self.password_hash = generate_password_hash(password) 
-
-    # # パスワードの検証
-    # def verify_password(self, password): 
-    #     return check_password_hash(self.password_hash, password)
+    # パスワード設定用プロパティ
+    @property
+    def password(self):
+        raise AttributeError("読み取り不可")
+    
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+        
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)

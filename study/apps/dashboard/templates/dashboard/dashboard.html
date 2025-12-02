@@ -1,78 +1,67 @@
-<!--件数系はすべてデータベースから持ってきて処理する-->
-<!--SUMとかでできるはず-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href=".css">
-  <title></title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>ダッシュボード</title>
 </head>
 <body>
 <h1>ダッシュボード</h1>
-<!--プロフィール-->
+
 <div>
-<p>管理者ID：＊＊＊＊</p>
-<p>氏　　名：＊＊＊＊</p>
-<p>所　　属：＊＊＊＊</p>
+  <p>管理者ID：{{ admin_id }}</p> 
+  <p>氏　　名：{{ admin_name }}</p>
+  <p>所　　属：情報システム科</p>
 </div>
 
-<!--グループ-->
 <div>
   <h3>グループ</h3>
   <table>
     <tr>
       <th>グループ名</th>
-      <th>１９人</th>
+      <th>人数</th>
     </tr>
+    {% for group in group_data %}
     <tr>
-      <th>グループ名</th>
-      <th>２０人</th>
+      <td>{{ group.name }}</td>
+      <td>{{ group.count }}人</td>
     </tr>
-    <tr>
-      <th>グループ名</th>
-      <th>９人</th>
-    </tr>
+    {% endfor %}
   </table>
 </div>
 
-<!--課題管理-->
 <div>
   <h3>課題管理</h3>
-  <!--受講者一覧へ飛ぶボタン-->
-  <button type="button" class="btn-menmber" onclick="">受講者一覧</button>
-  <!--添削状況-->
+  <button type="button" class="btn-menmber">受講者一覧</button>
+  
   <div>
     <label>累計課題配信件数</label>
-    <p>８件</p>
-  </div>
+    <p>{{ streamed_count }}件</p> </div>
   <div>
     <label>未添削課題件数</label>
-    <p>４件</p>
-  </div>
-  <!--課題提出状況-->
+    <p>{{ unchecked_count }}件</p> </div>
+
   <div>
     <label>課題提出管理</label>
+    <br>
     <label>提出済み件数</label>
-    <p>４０件</p>
+    <p>{{ submitted_count }}件</p>
+    
     <label>未提出課題件数</label>
-    <p>８件</p>
+    <p>{{ unsubmitted_count }}件</p>
+    
     <p>今週１件締切</p>
   </div>
 </div>
 
-<!--学習状況進捗-->
-<!--表示するもの変更してもあり-->
 <div>
   <h3>学習進捗</h3>
-  <!--受講者一覧へ飛ぶボタン-->
-  <button type="button" class="btn-menmber" onclick="">受講者一覧</button>
+  <button type="button" class="btn-menmber">受講者一覧</button>
   <label>全体進捗率</label>
-  <p>５０％</p>
-
+  <p>{{ progress_rate }}％</p>
 </div>  
 
-<!--Javascriptの読み込み（必ずこの位置）-->
-<script src=".js"></script> 
+<script src="{{ url_for('static', filename='script.js') }}"></script> 
 </body>
 </html>
