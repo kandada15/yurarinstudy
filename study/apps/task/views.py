@@ -7,7 +7,7 @@ from .dao.task_dao import TaskDao
 from .dao.streamed_dao import StreamedDao
 from .dao.submission_dao import SubmissionDao
 # 以下、11/27作成時
-# from .dao.group_dao import GroupDao
+from apps.crud.dao.group_dao import GroupDao
 
 
 # アプリの作成
@@ -24,7 +24,7 @@ task_bp = Blueprint(
 task_dao = TaskDao()
 streamed_dao = StreamedDao()
 submission_dao = SubmissionDao()
-# group_dao = GroupDao()
+group_dao = GroupDao()
 
 
 # @task_bp.route("/")

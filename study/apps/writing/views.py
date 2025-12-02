@@ -1,6 +1,10 @@
 from flask import Blueprint, render_template
 
-# アプリの作成
+from flask import Blueprint, redirect, render_template, abort
+from apps.app import db 
+from apps.writing.models import Category 
+
+# アプリの作成 (省略なし)
 writing_bp = Blueprint(
   'writing',
   __name__,
@@ -8,6 +12,8 @@ writing_bp = Blueprint(
   static_folder='static',
   url_prefix="/writing"
 )
+
+
 
 @writing_bp.route('/')
 def index():

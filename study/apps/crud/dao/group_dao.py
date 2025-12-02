@@ -22,7 +22,7 @@ class GroupDao:
             SELECT
                 group_id,
                 group_name,
-                admin_id
+                created_by_admin_id
             FROM `group`
             ORDER BY group_id ASC
         """
@@ -38,7 +38,7 @@ class GroupDao:
                 group_obj = Group(
                     group_id=row["group_id"],
                     group_name=row["group_name"],
-                    admin_id=row["admin_id"]
+                    admin_id=row["created_by_admin_id"]
                 )
                 groups.append(group_obj)
 
@@ -56,7 +56,7 @@ class GroupDao:
             SELECT
                 group_id,
                 group_name,
-                admin_id
+                created_by_admin_id
             FROM `group`
             WHERE group_id = %s
             LIMIT 1
@@ -79,7 +79,7 @@ class GroupDao:
         """
         sql = """
             INSERT INTO `group`
-                (group_name, admin_id)
+                (group_name, created_by_admin_id)
             VALUES
                 (%s, %s)
         """
