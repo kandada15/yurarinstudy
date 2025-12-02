@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, render_template  # ← render_template のインポートを追加
 
 # アプリの作成
 dashboard_bp = Blueprint(
@@ -7,3 +7,7 @@ dashboard_bp = Blueprint(
   template_folder="templates",
   static_folder="static"
 )
+
+@dashboard_bp.route('/')
+def index():
+    return render_template('dashboard/dashboard.html')
