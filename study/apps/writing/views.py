@@ -1,20 +1,26 @@
-from flask import Blueprint, redirect, render_template
+from flask import Blueprint, render_template
 
 # アプリの作成
-writing = Blueprint(
+writing_bp = Blueprint(
   'writing',
   __name__,
   # 使用するフォルダ
   template_folder='templates',
-  static_folder='static'
+  static_folder='static',
+  url_prefix="/writing"
 )
 
-@writing.route('/')
+@writing_bp.route('/')
 def index():
-  # templates/crud/index.htmlとなる
-  return render_template('writing/index.html')
+  """ライティングトップ / カテゴリ一覧ページ"""
+  return render_template('index.html')
 
-@writing.route('/')
-def writing_top():
-  # templates/crud/index.htmlとなる
-  return render_template('writing/writing_top.html')
+@writing_bp.route('/step_list')
+def step_list():
+  """ステージ一覧ページ"""
+  return render_template('step_list.html')
+
+@writing_bp.route('/step_learning')
+def step_learning():
+  """ステージ一覧ページ"""
+  return render_template('step_learning.html')
