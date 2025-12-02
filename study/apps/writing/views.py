@@ -1,20 +1,25 @@
-from flask import Blueprint, redirect, render_template, abort
-from apps.app import db 
-from apps.writing.models import Category 
+from flask import Blueprint, render_template
 
-# アプリの作成 (省略なし)
-writing = Blueprint(
+# アプリの作成
+writing_bp = Blueprint(
   'writing',
   __name__,
   template_folder='templates',
-  static_folder='static'
+  static_folder='static',
+  url_prefix="/writing"
 )
 
-
-@writing.route('/')
+@writing_bp.route('/')
 def index():
-  # templates/crud/index.htmlとなる
-  return render_template('writing/index.html')
+  """ライティングトップ / カテゴリ一覧ページ"""
+  return render_template('index.html')
 
-@writing.route('/')
-def writing_top():
+@writing_bp.route('/step_list')
+def step_list():
+  """ステージ一覧ページ"""
+  return render_template('step_list.html')
+
+@writing_bp.route('/step_learning')
+def step_learning():
+  """ステージ一覧ページ"""
+  return render_template('step_learning.html')

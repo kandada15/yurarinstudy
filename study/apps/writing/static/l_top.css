@@ -1,0 +1,150 @@
+/* ============================================ */
+/* リセット */
+/* ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Meiryo', sans-serif;
+  background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc8 100%);
+  max-height: 100vh;
+  padding: 20px;
+}
+
+/* ============================================ */
+/* 原稿用紙風の背景 */
+/* ============================================ */
+.app-container {
+  position: relative;
+  max-width: 1100px;
+  /* ヘッダー引いた分の高さ指定 */
+  height: 600px;
+  margin: 0 auto;
+  margin-top: 60px;
+  background: #fffef9;
+  /* 40pxの方眼模様 */
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px);
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(139, 115, 85, 0.2);
+  overflow: hidden;
+
+}
+
+/* ============================================ */
+/* コンテンツラッパー */
+/* ============================================ */
+.content-wrapper {
+  height: 600px;
+  max-width: 1100px;
+  background: rgba(255, 254, 249, 0.95);
+  padding: 30px;
+  position: relative;
+  border: 1px solid #000; /*わかりやすくボーダーをひく*/
+  overflow-y: scroll; /*縦方向にスクロール*/
+  -ms-overflow-style: none; /* Edge / IE */
+  scrollbar-width: none;    /* Firefox */
+}
+/* Chrome / Safari */
+.content-wrapper::-webkit-scrollbar {
+  display: none;
+}
+/* ============================================ */
+/* アニメーション（本をめくる効果） */
+/* ============================================ */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
+/* タイトル名 */
+.title {
+  font-size: 24px;
+  color: #5a4a3a;
+  font-weight: bold;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #8b7355;
+  padding-bottom: 15px;
+}
+
+/* 選択メッセージ */
+.choice-message {
+  font-size: 16px;
+  color: #5a4a3a;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* ボタンCSS */
+/* 横並び */
+.side {
+  margin-top: 20px;
+  display: flex;          /* 横並びにする */
+  justify-content: space-between; /* 左右に分ける */
+  align-items: center;    /* 垂直中央揃え */
+  padding: 10px 30px;
+  gap: 60px;
+}
+/* 縦並び */
+.vert {
+  display: flex;               /* Flexboxを有効化 */
+  flex-direction: column;      /* 縦に並べる */
+  justify-content: space-between; /* 上下に分ける */
+  align-items: center;         /* 左右中央揃え */
+  padding: 10px 20px;
+}
+
+.btn-primary{
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 32px;
+  font-size: 27px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: inherit;
+  background: #8b7355;
+  color: #fffef9;
+  box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+  width: 400px;
+  height: 170px;
+}
+
+.btn-primary:hover {
+  background: #6d5a44;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(139, 115, 85, 0.4);
+}
