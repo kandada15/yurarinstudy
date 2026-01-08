@@ -15,13 +15,18 @@ writing_bp = Blueprint(
 @writing_bp.route('/')
 def index():
   """ライティングトップ / カテゴリ一覧ページ"""
-  #データベースから全ての課題(Task)を取得
-  tasks = Task.query.all()
+  static_categories = [
+        {'task_id': 1, 'task_name': '小論文'},
+        {'task_id': 2, 'task_name': 'ビジネス文書'},
+        {'task_id': 3, 'task_name': 'レポート'},
+        {'task_id': 4, 'task_name': '表現トレーニング'}
+    ]
   data = {
         "page_title": "ライティング課題",
         "select_message": "学習したいコンテンツを選択してください",
-        "categories": tasks  # HTML側で categories として使う
+        "categories": static_categories
     }
+  
   return render_template('writing/writing_top.html', data=data)
 
 @writing_bp.route('/step_list')

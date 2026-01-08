@@ -19,16 +19,12 @@
                     
                     <div class="category-item">
                         
-                        <a href="{{ url_for('task.write', task_id=category.task_id) }}">
+                        <a href="{{ url_for('writing.step_list') }}">
                             
                             {{ category.task_name }}
                             
                         </a>
                     </div>
-
-                {% else %}
-                    <p>現在、選択できる課題はありません。</p>
-                {% endfor %}
 
             </div>
             
