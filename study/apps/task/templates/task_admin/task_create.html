@@ -49,11 +49,12 @@
 <div class="app-container">
   <div class="content-wrapper">
     <!-- 入力画面 -->
+    {% if mode == 'input' %}
     <div id="inputScreen">
       <h2>新規課題作成</h2>
-
       <!-- 課題作成入力フォーム -->
-      <div id="formtask" class="form">
+      <form action="{{ url_for('task.task_confirm') }}" method="POST" id="formtask" class="form">
+      <!-- <div id="formtask" class="form"> -->
         <div class="side">
           <div class="container">
             <!--課題タイトル-->
@@ -67,7 +68,12 @@
             <!--配信先グループ選択-->
             <!--この部分を今管理者が持ってるグループからセレクトでしたいからそれをデータベースさんにお願いしたい。-->
             <label for="group_id">配信先グループ選択<span style="color: red;">*</span></label>
-            <input type="text" name="group_id" id="group_id">
+            <select name="group_id" id="group_id">
+              <option value="">グループを選択してください</option>
+              {% for group in groups %}
+              <option value="{{ group.group_id }}" >{{ group.group_name }}</option>
+            </select>
+            <!-- <input type="text" name="group_id" id="group_id"> -->
             <div id="group_id_error" class="error-message"></div>
           </div>
           <div class="container">
@@ -79,7 +85,7 @@
         </div>
         <!--確認画面へ飛ぶ-->
           <button type="button" class="btn-primary" onclick="showConfirmScreen()">確認画面へ</button>
-      </div>
+      </form>
     </div>
     <!-- 確認画面 -->
     <div id="confirmScreen" class="hidden">

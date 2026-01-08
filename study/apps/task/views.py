@@ -26,7 +26,6 @@ streamed_dao = StreamedDao()
 submission_dao = SubmissionDao()
 group_dao = GroupDao()
 
-
 # @task_bp.route("/")
 # def task_index():
 #   task_list = task_dao.find_all()
@@ -41,7 +40,8 @@ group_dao = GroupDao()
 def task_create_form():
   # 配信先選択用にグループ一覧を取得
   groups = group_dao.find_all()
-  return render_template("task_admin/task_create.html", groups=groups)
+  session.pop("task_data", None)
+  return render_template("task_admin/task_create.html", groups=groups, mode="input")
 
 """ 課題作成画面(POST) """
 # 課題作成フォーム(GET)より入力した値を受け取って、確認画面より表示する。
