@@ -9,7 +9,7 @@ from .dao.submission_dao import SubmissionDao
 # 以下、11/27作成時
 from apps.crud.dao.group_dao import GroupDao
 
-
+あいうえお
 # アプリの作成
 task_bp = Blueprint(
   "task",
