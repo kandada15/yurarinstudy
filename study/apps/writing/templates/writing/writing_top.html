@@ -1,34 +1,32 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ data.page_title }}</title>
-</head>
-<body>
+{% extends "base.html" %}  {% block title %}
+    {{ data.page_title }}
+{% endblock %}
+
+{% block content %}
+
     <header>
         <h1>{{ data.page_title }}</h1> 
     </header>
     
     <main>
         <div class="selection-area">
-            <p>{{ data.select_message }}</p> 
+            <p class="select-message-label">{{ data.select_message }}</p>
             
-            <div class="category-list-container">
-                
-                {% for category in data.categories %}
-                    
-                    <div class="category-item">
-                        
-                        <a href="{{ url_for('writing.step_list') }}">
-                            
-                            {{ category.task_name }}
-                            
-                        </a>
-                    </div>
+            {% if data.categories %}
+                <ul class="category-list">
+                    {% for category in data.categories %}
+                        <li>
+                            <a href="{{ url_for('writing.category_detail', category_id=category.category_id) }}">
+                                {{ category.category_name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="no-category">現在、利用可能な学習カテゴリはありません。</p>
+            {% endif %}
 
-            </div>
-            
         </div>
     </main>
-</body>
-</html>
+
+{% endblock %}
