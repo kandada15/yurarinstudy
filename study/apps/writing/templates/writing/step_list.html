@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ステージ選択 - {{ data.name }}</title>
+    </head>
+<body>
+
+    <div class="container">
+        <div class="title"> ＜ {{ data.name }} ＞ </div>
+        
+        <p class="instruction">学習したいステージを選択し、スタートボタンを押してください。</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-stage">ステージ</th> <th class="col-phase">フェーズ</th> <th class="col-content">学習内容</th> <th class="col-action"></th> </tr>
+            </thead>
+            <tbody>
+                {# views.py から渡されたステップ一覧をループで回す #}
+                {% for step in data.steps %}
+                <tr>
+                    <td>{{ step.no }}</td>
+                    
+                    <td>{{ step.phase }}</td>
+                    
+                    <td class="col-content">{{ step.content }}</td>
+                    
+                    <td>
+                        {# 学習画面へ。どのカテゴリのどのステージか情報を渡す #}
+                        <a href="{{ url_for('writing.step_learning', category_id=data.id, stage_no=step.no) }}" >
+                        ▶
+                    </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4">現在、表示できるステップはありません。</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="footer">
+            <a href="{{ url_for('writing.index') }}" class="footer-btn">学習トップへ</a>
+        </div>
+    </div>
+
+</body>
+</html>
