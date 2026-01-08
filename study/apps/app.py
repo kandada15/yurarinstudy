@@ -1,41 +1,29 @@
 from flask import Flask
-# from flask_login import LoginManager
-from apps.config import config
-from flask_wtf.csrf import CSRFProtect
-from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
+# extensions から db と csrf を読み込む
+from apps.extensions import db, csrf
 
-## 他アプリで利用できるように
+# アプリケーションの作成
+app = Flask(__name__)
 
-# DBを他のアプリよりアクセス可能に
-db = SQLAlchemy()
-# CSRF対策
-csrf = CSRFProtect()
+# データベース設定
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqlconnector://root:20260210@localhost/study"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SECRET_KEY"] = "2AZSMss3p5QPbcY2hBsJ" # 適当な文字列でOK
 
+# db と csrf をアプリに連携（初期化）
+db.init_app(app)
+csrf.init_app(app)
 
-### 以下コードは、ユーザー取得時に開放
-## Loginmanager、create_app内のlogin_manager=init_app(app)も開放
-# login_manager = LoginManager()
-# 未ログイン時、実行したい関数を記入。
-# login_manager.login_view = 'crud/index.html'
+# -- 以下アプリとの連携 --
+# Blueprintの登録
+from apps.crud.views import crud_bp 
+app.register_blueprint(crud_bp, url_prefix='/crud')
 
+from apps.task.views import task_bp
+app.register_blueprint(task_bp, url_prefix='/task')
 
-def create_app(config_key):
-  # アプリケーション作成の準備
-  app = Flask(__name__)
+from apps.dashboard.views import dashboard_bp
+app.register_blueprint(dashboard_bp, url_prefix='/dashboard') 
 
-  # config.pyから設定を読み込む
-  app.config.from_object(config[config_key]) 
-
-  # 上から、db, DBを使う準備、csrf対策、認証機能を適用
-  db.init_app(app)
-  Migrate(app, db)
-  csrf.init_app(app)
-  # login_manager.init_app(app)
-
-  # -- 以下アプリとの連携 --
-  from apps.crud import views as crud_views
-  # crud_viewsのcrudとURL "/crud"を関連付ける
-  app.register_blueprint(crud_views.crud, url_prefix='/')
-  
-  return app
+from apps.writing.views import writing_bp
+app.register_blueprint(writing_bp, url_prefix='/writing')
