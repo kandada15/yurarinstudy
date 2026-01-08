@@ -25,5 +25,5 @@ app.register_blueprint(task_bp, url_prefix='/task')
 from apps.dashboard.views import dashboard_bp
 app.register_blueprint(dashboard_bp, url_prefix='/dashboard') 
 
-from apps.writing.views import writing_bp
-app.register_blueprint(writing_bp, url_prefix='/writing')
+# from apps.writing.views import writing_bp
+# app.register_blueprint(writing_bp, url_prefix='/writing')
