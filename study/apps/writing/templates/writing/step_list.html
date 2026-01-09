@@ -1,50 +1,52 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>ステージ選択 - {{ data.name }}</title>
-    </head>
-<body>
+{% extends "base.html" %}
 
-    <div class="container">
-        <div class="title"> ＜ {{ data.name }} ＞ </div>
-        
-        <p class="instruction">学習したいステージを選択し、スタートボタンを押してください。</p>
+{% block title %}{{ data.name }} - ステージ選択{% endblock %}
 
-        <table>
-            <thead>
-                <tr>
-                    <th class="col-stage">ステージ</th> <th class="col-phase">フェーズ</th> <th class="col-content">学習内容</th> <th class="col-action"></th> </tr>
-            </thead>
-            <tbody>
-                {# views.py から渡されたステップ一覧をループで回す #}
-                {% for step in data.steps %}
-                <tr>
-                    <td>{{ step.no }}</td>
-                    
-                    <td>{{ step.phase }}</td>
-                    
-                    <td class="col-content">{{ step.content }}</td>
-                    
-                    <td>
-                        {# 学習画面へ。どのカテゴリのどのステージか情報を渡す #}
-                        <a href="{{ url_for('writing.step_learning', category_id=data.id, stage_no=step.no) }}" >
-                        ▶
-                    </a>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="4">現在、表示できるステップはありません。</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('writing.static', filename='css/step_list.css') }}">
+{% endblock %}
 
-        <div class="footer">
-            <a href="{{ url_for('writing.index') }}" class="footer-btn">学習トップへ</a>
-        </div>
-    </div>
+{% block header %}
+    {# 受講者用共通パーツを読み込み #}
+    {% include "header_stu.html" %}
+{% endblock %}
 
-</body>
-</html>
+{% block content %}
+    <h1 class="title"> ＜ {{ data.name }} ＞ </h1>
+
+    <label class="choice-message">学習したいステージを選択してください。</label>
+
+    <table class="stageTable" id="stageTable">
+        <thead>
+        <tr>
+            <th>ステージ</th>
+            <th>フェーズ</th>
+            <th>学習内容</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {# views.pyからのデータをループで表示 #}
+        {% for step in data.steps %}
+        <tr>
+        <td>{{ step.no }}</td>
+        <td>{{ step.phase }}</td>
+        <td>{{ step.content }}</td>
+        <td>
+            <button type="button" class="start-button" 
+                    onclick="location.href='{{ url_for('writing.step_learning', category_id=data.id, stage_no=step.no) }}'">
+                スタート
+            </button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <button type="button" class="btn-primary" onclick="location.href='{{ url_for('writing.index') }}'">
+        学習トップへ戻る
+    </button>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('writing.static', filename='js/step_list.js') }}"></script>
+{% endblock %}

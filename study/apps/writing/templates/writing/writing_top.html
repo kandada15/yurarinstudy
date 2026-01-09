@@ -1,34 +1,54 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ data.page_title }}</title>
-</head>
-<body>
-    <header>
-        <h1>{{ data.page_title }}</h1> 
-    </header>
-    
-    <main>
-        <div class="selection-area">
-            <p>{{ data.select_message }}</p> 
-            
-            <div class="category-list-container">
-                
-                {% for category in data.categories %}
-                    
-                    <div class="category-item">
-                        
-                        <a href="{{ url_for('writing.step_list') }}">
-                            
-                            {{ category.task_name }}
-                            
-                        </a>
-                    </div>
-                {% endfor %}
-            </div>
-            
+{% extends "base.html" %}
+
+{% block title %}ライティング学習トップ - 文脈工房{% endblock %}
+
+{% block styles %}
+    {# このページ専用のCSSを読み込む #}
+    <link rel="stylesheet" href="{{ url_for('writing.static', filename='css/l_top.css') }}">
+{% endblock %}
+
+{% block header %}
+    {# 受講者用ヘッダーを読み込む #}
+    {% include "header_stu.html" %}
+{% endblock %}
+
+{% block content %}
+    <h1 class="title">{{ data.page_title }}</h1>
+
+    <label class="choice-message">{{ data.select_message }}</label>
+
+    <div class="vert">
+        <div class="side">
+        {# 小論文 (ID: 1) #}
+        <button type="button" class="btn-primary" 
+                onclick="location.href='{{ url_for('writing.step_list', category_id=1) }}'">
+            小論文
+        </button>
+
+        {# ビジネス文書 (ID: 2) #}
+        <button type="button" class="btn-primary" 
+                onclick="location.href='{{ url_for('writing.step_list', category_id=2) }}'">
+            ビジネス文書
+        </button>
         </div>
-    </main>
-</body>
-</html>
+
+        <div class="side">
+        {# レポート (ID: 3) #}
+        <button type="button" class="btn-primary" 
+                onclick="location.href='{{ url_for('writing.step_list', category_id=3) }}'">
+            レポート
+        </button>
+
+        {# 表現トレーニング (ID: 4) #}
+        <button type="button" class="btn-primary" 
+                onclick="location.href='{{ url_for('writing.step_list', category_id=4) }}'">
+            表現トレーニング
+        </button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {# このページ専用のJSを読み込む #}
+    <script src="{{ url_for('writing.static', filename='js/l_top.js') }}"></script>
+{% endblock %}
