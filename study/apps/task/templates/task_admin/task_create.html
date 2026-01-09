@@ -87,15 +87,17 @@
           <button type="button" class="btn-primary" onclick="showConfirmScreen()">確認画面へ</button>
       </div>
     </div>
+
     <!-- 確認画面 -->
     <div id="confirmScreen" class="hidden">
       <h2>登録内容の確認</h2>
       <div id="confirmContent"></div>
       <div class="button-group">
         <button type="button" class="btn-back" onclick="backToInput()">戻る</button>
-        <button type="button" class="btn-primary" onclick="submitForm()">登録する</button>
+        <button id="submitBtn" type="button" class="btn-primary" onclick="submitForm()">登録する</button>
       </div>
     </div>
+
     <!-- 完了画面 -->
     <div id="completeScreen" class="hidden">
       <h2>課題配信完了</h2>
