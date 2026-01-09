@@ -104,12 +104,41 @@ function backToInput() {
 }
 
 // 送信処理（ここでサーバー送信処理を実装可能）
-function submitForm() {
+async function submitForm() {
   console.log('送信データ:', formData);
+  const submitBtn = 
+  document.getElementById('submitBtn')
+  submitBtn.disabled = true;
+  submitBtn.textContent = '登録する'
 
-  // 確認画面を非表示、完了画面を表示
-  document.getElementById('confirmScreen').classList.add('hidden');
-  document.getElementById('completeScreen').classList.remove('hidden');
+  try{
+    const response = await
+    fetch('/task/create/done', {
+      method: 'POST',
+      headers: {
+        'Content-Type':'application/json',
+      },
+      body: JSON.stringify(formData)
+    });
+
+    const result = await response.json()
+    if (response.ok && result.status === 'success'){
+      document.getElementById('completeTaskName').textContent = result.task_name
+      // 確認画面を非表示、完了画面を表示
+      document.getElementById('confirmScreen').classList.add('hidden');
+      document.getElementById('completeScreen').classList.remove('hidden');
+    } else {
+      // エラーメッセージの表示
+      alert('error' + (result.message || 'エラーが発生しました。'))
+      submitBtn.disabled = false;
+      submitBtn.textContent = '登録する'
+    }
+  } catch (error) { 
+    console.error('通信エラー', error)
+    alert('通信エラーが発生しました。')
+    submitBtn.disabled = false;
+    submitBtn.textContent = '登録する'
+  }
 }
 
 // フォームをリセットして最初に戻す

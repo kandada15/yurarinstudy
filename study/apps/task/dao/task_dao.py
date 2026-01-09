@@ -94,7 +94,7 @@ class TaskDao:
       cursor.close()
       conn.close()
 
-  def insert(self, task_name, task_text) -> int:
+  def insert(self, task_name: str, task_text: str) -> int:
     """
       insert文にて課題を追加
       新しいtask_idを返す

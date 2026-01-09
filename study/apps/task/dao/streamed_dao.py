@@ -157,7 +157,7 @@ class StreamedDao:
       cursor = conn.cursor()
 
       # sqlの実行
-      cursor.execute(sql, (task_id, group_id, streamed_limit, streamed_date))
+      cursor.execute(sql, (streamed_limit, task_id, group_id, streamed_date))
 
       # DBへコミットする、streamed_idが自動採番された場合のコード
       conn.commit()

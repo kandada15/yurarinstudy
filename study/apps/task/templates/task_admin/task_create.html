@@ -6,9 +6,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="t_create.css">
+  <link rel="stylesheet" href="{{ url_for('task.static', filename='css/t_create.css') }}">
   <!--bace.htmlしたらこの一行消す-->
-  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="{{ url_for('task.static', filename='css/header.css') }}">
   <title>新規課題作成</title>
 </head>
 <body>
@@ -18,7 +18,7 @@
       <div class="logo-img">文</div>
       <span class="app-name">文脈工房</span>
     </div>
-    <div class="user-section">
+    <div class="user-section"><caption></caption>
       <span class="user-badge">管理者</span>
       <!--ここリンクをｊｓ管理してるけどアクション名？にしてログアウトできるように-->
       <button class="logout-btn" onclick="gologout()">ログアウト</button>
@@ -40,21 +40,20 @@
   <!-- 右側のタブ -->
   <!--ここのリンク url_for 処理必要-->
   <div class="tabs-container">
-    <a href="user_info_list.html" class="tab active" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
-    <a href="task_create.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
-    <a href="dashboard.html" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
+    <!-- ユーザーができ次第書き換える -->
+    <a href="{{ url_for('task.task_create_form') }}" class="tab active" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    <a href="{{ url_for('task.task_create_form') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    <a href="{{ url_for('dashboard.index') }}" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
   </div>
 <!--ここまで-->
 
 <div class="app-container">
   <div class="content-wrapper">
     <!-- 入力画面 -->
-    {% if mode == 'input' %}
     <div id="inputScreen">
       <h2>新規課題作成</h2>
       <!-- 課題作成入力フォーム -->
-      <form action="{{ url_for('task.task_confirm') }}" method="POST" id="formtask" class="form">
-      <!-- <div id="formtask" class="form"> -->
+      <div id="formtask" class="form">
         <div class="side">
           <div class="container">
             <!--課題タイトル-->
@@ -72,6 +71,7 @@
               <option value="">グループを選択してください</option>
               {% for group in groups %}
               <option value="{{ group.group_id }}" >{{ group.group_name }}</option>
+              {% endfor %}
             </select>
             <!-- <input type="text" name="group_id" id="group_id"> -->
             <div id="group_id_error" class="error-message"></div>
@@ -85,17 +85,19 @@
         </div>
         <!--確認画面へ飛ぶ-->
           <button type="button" class="btn-primary" onclick="showConfirmScreen()">確認画面へ</button>
-      </form>
+      </div>
     </div>
+
     <!-- 確認画面 -->
     <div id="confirmScreen" class="hidden">
       <h2>登録内容の確認</h2>
       <div id="confirmContent"></div>
       <div class="button-group">
         <button type="button" class="btn-back" onclick="backToInput()">戻る</button>
-        <button type="button" class="btn-primary" onclick="submitForm()">登録する</button>
+        <button id="submitBtn" type="button" class="btn-primary" onclick="submitForm()">登録する</button>
       </div>
     </div>
+
     <!-- 完了画面 -->
     <div id="completeScreen" class="hidden">
       <h2>課題配信完了</h2>
@@ -103,16 +105,16 @@
         課題を配信しました。
       </p>
       <div class="button-group">
-        <a href="dashboad.html" class="return_button">ダッシュボードに戻る</a>
+        <a href="{{ url_for('dashboard.index')}}" class="return_button">ダッシュボードに戻る</a>
       </div>
     </div>
   </div>
 </div>
 
 <!--Javascriptの読み込み（必ずこの位置）-->
-<script src="t_create.js"></script> 
+<script src="{{ url_for('task.static', filename='js/t_create.js') }}"></script> 
 <!--bace.htmlしたらこの一行消す-->
-<script src="header.js"></script> 
+<script src="{{ url_for('task.static', filename='js/header.js') }}"></script> 
 
 
 </body>
