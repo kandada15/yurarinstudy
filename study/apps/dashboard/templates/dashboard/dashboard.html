@@ -3,65 +3,118 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <title>ダッシュボード</title>
+  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='dashboard.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='header.css') }}">
+  <title>ダッシュボード - 文脈工房</title>
 </head>
 <body>
-<h1>ダッシュボード</h1>
+<header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">管理者</span>
+      <button class="logout-btn" onclick="location.href='/auth/logout'">ログアウト</button>
+    </div>
+</header>
 
-<div>
-  <p>管理者ID：{{ admin_id }}</p> 
-  <p>氏　　名：{{ admin_name }}</p>
-  <p>所　　属：情報システム科</p>
-</div>
-
-<div>
-  <h3>グループ</h3>
-  <table>
-    <tr>
-      <th>グループ名</th>
-      <th>人数</th>
-    </tr>
-    {% for group in group_data %}
-    <tr>
-      <td>{{ group.name }}</td>
-      <td>{{ group.count }}人</td>
-    </tr>
-    {% endfor %}
-  </table>
-</div>
-
-<div>
-  <h3>課題管理</h3>
-  <button type="button" class="btn-menmber">受講者一覧</button>
-  
-  <div>
-    <label>累計課題配信件数</label>
-    <p>{{ streamed_count }}件</p> </div>
-  <div>
-    <label>未添削課題件数</label>
-    <p>{{ unchecked_count }}件</p> </div>
-
-  <div>
-    <label>課題提出管理</label>
-    <br>
-    <label>提出済み件数</label>
-    <p>{{ submitted_count }}件</p>
-    
-    <label>未提出課題件数</label>
-    <p>{{ unsubmitted_count }}件</p>
-    
-    <p>今週１件締切</p>
+  <div class="holes-container">
+    {% for i in range(8) %}<div class="hole"></div>{% endfor %}
   </div>
-</div>
 
-<div>
-  <h3>学習進捗</h3>
-  <button type="button" class="btn-menmber">受講者一覧</button>
-  <label>全体進捗率</label>
-  <p>{{ progress_rate }}％</p>
-</div>  
+  <div class="tabs-container">
+    <a href="#" class="tab" data-page="users">ユーザ管理</a>
+    <a href="#" class="tab" data-page="tasks">課題配信</a>
+    <a href="{{ url_for('dashboard.index') }}" class="tab active" data-page="dashboard">ダッシュボード</a>
+  </div>
 
-<script src="{{ url_for('static', filename='script.js') }}"></script> 
+  <div class="app-container">
+    <div class="content-wrapper">
+      <h1 class="page-title">ダッシュボード</h1>
+    
+      <div class="dashboard-grid">
+        <div class="left-column">
+          <div class="profile-box box">
+            <h2 class="box-title">プロフィール情報</h2>
+            <div class="profile-item">
+              <span class="profile-label">管理者ID</span>
+              <span class="profile-value">{{ admin.admin_id }}</span>
+            </div>
+            <div class="profile-item">
+              <span class="profile-label">氏　　名</span>
+              <span class="profile-value">{{ admin.name }}</span>
+            </div>
+          </div><br>
+
+          <div class="group-box box">
+            <h2 class="box-title">グループ</h2>
+            <table class="group-table">
+              <thead>
+                <tr>
+                  <th>グループ名</th>
+                  <th>管理者名</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for group in groups %}
+                <tr>
+                  <td>{{ group.name }}</td>
+                  <td>{{ group.admin_name }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="right-column">
+          <div class="tasks-box box">
+            <h2 class="box-title">配信済課題</h2>
+            
+            <div class="submission-content">
+              <div class="task-item">
+                <div class="task-header">
+                  <label class="task-label">累計課題配信数</label>
+                  <button type="button" class="btn-detail" onclick="location.href='/task/list'">詳細</button>
+                </div>
+                <p class="task-num">{{ streamed_count }}コ</p>
+              </div>
+
+              <div class="task-item">
+                <div class="task-header">
+                  <label class="task-label">未添削課題</label>
+                  <button type="button" class="btn-detail" onclick="location.href='/check/list'">詳細</button>
+                </div>
+                <p class="task-num">{{ unchecked_count }}件</p>
+              </div>
+            </div>
+
+            <div class="submission-section">
+              <h3 class="submission-title">課題提出管理</h3>
+              <div class="submission-content">
+                <div class="submission-row">
+                  <span class="submission-label">提出済み</span>
+                  <span class="submission-num">{{ submitted_count }}件</span>
+                </div>
+                <div class="submission-row">
+                  <span class="submission-label">未提出</span>
+                  <span class="submission-num">{{ unsubmitted_count }}件</span>
+                </div>
+                <p class="deadline-info">今週 {{ weekly_deadline_count }}件締切</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bottom-buttons">
+            <button type="button" class="big-btn" onclick="location.href='/progress/all'">学習進捗</button>
+            <button type="button" class="big-btn" onclick="location.href='/returned/list'">返却済課題</button>
+          </div>   
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('dashboard.static', filename='dashboard.js') }}"></script> 
 </body>
 </html>

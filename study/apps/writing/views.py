@@ -1,4 +1,3 @@
-from flask import Blueprint, render_template
 from apps.task.models.model_task import Task
 from flask import Blueprint, redirect, render_template, abort, request
 
@@ -34,6 +33,7 @@ def step_list():
     category_id = request.args.get('category_id')
     all_category_data = {
         '1': {
+            'id': '1',
             'name': '小論文',
             'steps': [
                 {'no': 1, 'phase': '理解', 'content': '小論文とは／目的と特徴'},
@@ -41,6 +41,17 @@ def step_list():
                 {'no': 3, 'phase': '思考', 'content': '問題把握／主張の立て方／論理展開'},
                 {'no': 4, 'phase': '表現', 'content': '文体／語彙／文法／接続詞'},
                 {'no': 5, 'phase': '実践', 'content': '添削／推敲／模擬問題／評価基準の理解'}
+            ]
+        },
+        '2': {
+            'id': '2',
+            'name': 'ビジネス文書',
+            'steps': [
+                {'no': 1, 'phase': '理解', 'content': 'ビジネス文書とは／目的と特徴'},
+                {'no': 2, 'phase': '構成', 'content': '序論・本論・結論の作り方'},
+                {'no': 3, 'phase': '思考', 'content': '問題把握／主張の立て方／論理展開'},
+                {'no': 4, 'phase': 'できたら', 'content': 'この辺変更しようね'},
+                {'no': 5, 'phase': '', 'content': ''}
             ]
         }
     }
