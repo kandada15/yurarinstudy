@@ -21,8 +21,7 @@ class GroupDao:
         sql = """
             SELECT
                 group_id,
-                group_name,
-                admin_id
+                group_name
             FROM `group`
             ORDER BY group_id ASC
         """
@@ -37,8 +36,7 @@ class GroupDao:
             for row in rows:
                 group_obj = Group(
                     group_id=row["group_id"],
-                    group_name=row["group_name"],
-                    admin_id=row["admin_id"]
+                    group_name=row["group_name"]
                 )
                 groups.append(group_obj)
 
@@ -55,8 +53,7 @@ class GroupDao:
         sql = """
             SELECT
                 group_id,
-                group_name,
-                admin_id
+                group_name
             FROM `group`
             WHERE group_id = %s
             LIMIT 1
@@ -72,14 +69,14 @@ class GroupDao:
             cursor.close()
             conn.close()
 
-    def insert(self, group_name: str, admin_id: str) -> int:
+    def insert(self, group_name: str) -> int:
         """
         insert文にてグループを追加
         group_id (AUTO_INCREMENT) を返す
         """
         sql = """
             INSERT INTO `group`
-                (group_name, admin_id)
+                (group_name)
             VALUES
                 (%s, %s)
         """
@@ -87,7 +84,7 @@ class GroupDao:
         conn = self._get_connection()
         try:
             cursor = conn.cursor()
-            cursor.execute(sql, (group_name, admin_id))
+            cursor.execute(sql, (group_name,))
             conn.commit()
             
             return cursor.lastrowid
