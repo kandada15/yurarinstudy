@@ -87,7 +87,7 @@ class StreamedDao:
         SELECT
         st.streamed_id,
         st.streamed_limit,
-        st.streamed_date,
+        st.sent_at,
         t.task_id,
         t.task_name,
         t.task_text
@@ -137,7 +137,7 @@ class StreamedDao:
 
 
 
-  def insert(self, streamed_limit: str, task_id: int, group_id: int, streamed_date: datetime):
+  def insert(self, streamed_limit: str, task_id: int, group_id: int):
     """ 
     streamed テーブルに配信情報を追加 
     streamed_limit は文字列でも DATE 型に変換可能
@@ -146,9 +146,9 @@ class StreamedDao:
     
     sql = """
         INSERT INTO streamed 
-          (streamed_limit, task_id, group_id, streamed_date)
+          (streamed_limit, task_id, group_id)
         VALUES 
-          (%s, %s, %s, %s)
+          (%s, %s, %s)
     """
 
     conn = self._get_connection()
@@ -157,7 +157,7 @@ class StreamedDao:
       cursor = conn.cursor()
 
       # sqlの実行
-      cursor.execute(sql, (streamed_limit, task_id, group_id, streamed_date))
+      cursor.execute(sql, (streamed_limit, task_id, group_id))
 
       # DBへコミットする、streamed_idが自動採番された場合のコード
       conn.commit()
