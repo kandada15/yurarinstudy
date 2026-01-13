@@ -47,15 +47,12 @@ def task_create_form():
 @task_bp.route("/create", methods=["POST"])
 # @login_required
 def task_create_confirm():
+  groups = group_dao.find_all()
+
   task_name = request.form.get("task_name")
   task_text = request.form.get("task_text")
   group_id = request.form.get("group_id")
   streamed_limit = request.form.get("streamed_limit")
-
-  # バリデーション
-  if not task_name or not task_text or not group_id or not streamed_limit:
-    flash("入力内容のいずれかに不備があります。", "error")
-    return redirect(url_for("task.task_create_form"))
   
   # sessionaに一時保存して確認画面へ渡す。
   task_data = {
@@ -64,12 +61,17 @@ def task_create_confirm():
     "group_id": group_id,
     "streamed_limit": streamed_limit
   }
-  session["task_data"] = task_data
+  # バリデーション
+  if not all(task_data.values()):
+    flash("入力内容のいずれかに不備があります。", "error")
+    return render_template("task_admin/task_create.html", groups=groups, task_data=task_data, mode="input")
+  # session["task_data"] = task_data
 
   # グループ名を取得,render_templateがなくなったため、取得方法を変える。
-  # group = next((g for g in group_dao.find_all() if str(g.group_id) == group_id), None)
-  group = group_dao.find_by_id(int(group_id))
-  group_name = group["group_name"] if group else "no group"
+  
+  group = next((g for g in groups if str(g.group_id) == task_data["group_id"]), None)
+  # group = group_dao.find_by_id(int(group_id))
+  # group_name = group["group_name"] if group else "no group"
   
   # # Taskを登録
   # task_id = task_dao.insert(task_name, task_text)
@@ -78,7 +80,7 @@ def task_create_confirm():
   # streamed_dao.insert(task_id=task_id, group_id= group_id, streamed_limit=streamed_limit)
 
   # 確認画面へ
-  return render_template("task_admin/task_create.html", task_data=task_data, group_name=group_name, mode="confirm")
+  return render_template("task_admin/task_create.html", task_data=task_data, group_name=group.group_name, groups=groups, mode="confirm")
 
 """
 課題配信の完了。
@@ -88,44 +90,28 @@ DBに課題・配信情報を登録する
 @task_bp.route("/create/done", methods=["POST"])
 # @login_required
 def task_create_complete():
-  # task_data = session.get('task_data')
-  if not request.is_json:
-    return jsonify(
-      status="error",
-      message="不正なリクエストです。"
-    )
-
-  task_data = request.get_json()
-  # if not task_data:
-  #   flash("課題データが存在しません。再入力してください。", "error")
-  #   return redirect(url_for("task.task_create_form"))
-  
+  task_name = request.form.get("task_name")
+  task_text = request.form.get("task_text")
+  group_id = request.form.get("group_id")
+  streamed_limit = request.form.get("streamed_limit")
   # DBに課題を登録
-  task_id = task_dao.insert(task_data["task_name"], task_data["task_text"])
+  task_id = task_dao.insert(task_name, task_text)
 
   # 配信日時を現在日時で取得
-  streamed_date = datetime.now()
+  # streamed_date = datetime.now()
 
   # 配信済みテーブルに登録
   streamed_dao.insert(
-    streamed_limit=task_data["streamed_limit"],
     task_id=task_id,
-    group_id=task_data["group_id"],
-    streamed_date=streamed_date
+    group_id=group_id,
+    streamed_limit=streamed_limit,
+
   )
 
-  # # sessionのデータは削除
-  # session.pop('task_data', None)
-  # 成功レスポンスを返す
-  return jsonify({
-    "status": "success", 
-    "message": "課題を登録しました",
-    "task_name": task_data["task_name"]
-  })
+  return render_template(
+    "task_admin/task_create.html", task_name=task_name, mode="complete")
 
-  # return render_template(
-  #   "task_admin/task_create.html", task_name=task_data["task_name"], mode="complete"
-  # )
+
 
 
 
