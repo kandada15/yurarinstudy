@@ -11,5 +11,3 @@ class Returned(db.Model):
       q_a_t = db.Column(db.Text)
       # 提出物ID(外部キー)
       submission_id = db.Column(db.Integer, db.ForeignKey('submission.submission_id'))
-      
-      a
