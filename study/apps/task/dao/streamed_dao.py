@@ -38,8 +38,8 @@ class StreamedDao:
             g.group_name
             
         FROM streamed AS s
-        LEFT JOIN task AS t ON s.task_id = t.task_id
-        LEFT JOIN `group` AS g ON s.group_id = g.group_id
+        LEFT OUTER JOIN task AS t ON s.task_id = t.task_id
+        LEFT OUTER JOIN `group` AS g ON s.group_id = g.group_id
         ORDER BY s.streamed_id ASC
     """
 
@@ -93,7 +93,7 @@ class StreamedDao:
         t.task_text
 
         FROM streamed AS st
-        JOIN task AS t ON st.task_id = t.task_id
+        INNER JOIN task AS t ON st.task_id = t.task_id
         WHERE st.group_id = %s
         ORDER BY st.streamed_limit ASC
     """
