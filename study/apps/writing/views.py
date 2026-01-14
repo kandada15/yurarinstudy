@@ -60,5 +60,14 @@ def step_list():
 
 @writing_bp.route('/step_learning')
 def step_learning():
-  """ステージ一覧ページ"""
-  return render_template('writing/step_learning.html')
+    """ステップ学習ページ"""
+    # 1. URLの「?category_id=1&stage_no=2」などの値を取得する
+    category_id = request.args.get('category_id')
+    stage_no = request.args.get('stage_no')
+    
+    # 2. テンプレートにそれらの値を渡す
+    return render_template(
+        'writing/step_learning.html', 
+        category_id=category_id, 
+        stage_no=stage_no
+    )
