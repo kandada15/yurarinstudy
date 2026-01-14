@@ -1,52 +1,86 @@
-{% extends "base.html" %}
-
-{% block title %}{{ data.name }} - ステージ選択{% endblock %}
-
-{% block styles %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ data.name }} - ステージ選択 - 文脈工房</title>
+    
+    {# CSSの読み込み #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
     <link rel="stylesheet" href="{{ url_for('writing.static', filename='css/step_list.css') }}">
-{% endblock %}
+</head>
+<body>
 
-{% block header %}
-    {# 受講者用共通パーツを読み込み #}
-    {% include "header_stu.html" %}
-{% endblock %}
+    {# ヘッダー部分 #}
+    <header class="top-header">
+        <div class="logo-section">
+            <span class="app-name">文脈工房</span>
+        </div>
+        <div class="user-section">
+            <span class="user-badge">受講者 さん</span>
+            <button class="logout-btn">ログアウト</button>
+        </div>
+    </header>
 
-{% block content %}
-    <h1 class="title"> ＜ {{ data.name }} ＞ </h1>
+    {# 左側の穴 #}
+    <div class="holes-container">
+        <div class="hole"></div>
+        <div class="hole"></div>
+        <div class="hole"></div>
+        <div class="hole"></div>
+        <div class="hole"></div>
+        <div class="hole"></div>
+        <div class="hole"></div>
+        <div class="hole"></div>
+        <div class="hole"></div>
+        <div class="hole"></div>
+    </div>
 
-    <label class="choice-message">学習したいステージを選択してください。</label>
+    {# 右側のタブ #}
+    <div class="tabs-container">
+        <a href="{{ url_for('writing.index') }}" class="tab active" data-page="users" data-color="#e8dcc8">ライティング学習</a>
+        <a href="#" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
+        <a href="#" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
+    </div>
 
-    <table class="stageTable" id="stageTable">
-        <thead>
-        <tr>
-            <th>ステージ</th>
-            <th>フェーズ</th>
-            <th>学習内容</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {# views.pyからのデータをループで表示 #}
-        {% for step in data.steps %}
-        <tr>
-        <td>{{ step.no }}</td>
-        <td>{{ step.phase }}</td>
-        <td>{{ step.content }}</td>
-        <td>
-            <button type="button" class="start-button" 
-                    onclick="location.href='{{ url_for('writing.step_learning', category_id=data.id, stage_no=step.no) }}'">
-                スタート
-            </button>
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <button type="button" class="btn-primary" onclick="location.href='{{ url_for('writing.index') }}'">
-        学習トップへ戻る
-    </button>
-{% endblock %}
+    {# メインコンテンツ #}
+    <main class="main-content">
+        <h1 class="title"> ＜ {{ data.name }} ＞ </h1>
 
-{% block scripts %}
+        <label class="choice-message">学習したいステージを選択してください。</label>
+
+        <table class="stageTable" id="stageTable">
+            <thead>
+                <tr>
+                    <th>ステージ</th>
+                    <th>フェーズ</th>
+                    <th>学習内容</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {# views.pyからのデータをループで表示（ロジック維持） #}
+                {% for step in data.steps %}
+                <tr>
+                    <td>{{ step.no }}</td>
+                    <td>{{ step.phase }}</td>
+                    <td>{{ step.content }}</td>
+                    <td>
+                        <button type="button" class="start-button" 
+                                onclick="location.href='{{ url_for('writing.step_learning', category_id=data.id, stage_no=step.no) }}'">
+                            スタート
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="button" class="btn-primary" onclick="location.href='{{ url_for('writing.index') }}'">
+            学習トップへ戻る
+        </button>
+    </main>
+
+    {# スクリプトの読み込み #}
     <script src="{{ url_for('writing.static', filename='js/step_list.js') }}"></script>
-{% endblock %}
+</body>
+</html>
