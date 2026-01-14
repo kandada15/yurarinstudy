@@ -1,13 +1,13 @@
 from apps.extensions import db
 
-# 管理者テーブル
+# adminテーブルを操作する為のモデル
 class Admin(db.Model):
     __tablename__ = 'ADMIN'
     admin_id = db.Column("ADMIN_ID", db.String(10), primary_key=True)
     admin_name = db.Column("ADMIN_NAME", db.String(50), nullable=False)
     password = db.Column("PASSWORD", db.String(255), nullable=False)
 
-# グループテーブル
+# groupテーブルを操作する為のモデル
 class Group(db.Model):
     __tablename__ = 'GROUP'
     group_id = db.Column("GROUP_ID", db.Integer, primary_key=True, autoincrement=True)

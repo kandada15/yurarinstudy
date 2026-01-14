@@ -4,19 +4,23 @@ from typing import Optional
 from apps.crud.models.model_admin import Admin
 from apps.config.db_config import DB_CONFIG
 
+# MySQLに直接アクセスするDAOクラス※adminテーブル専用
 class AdminDao:
-    """ adminテーブルにアクセスするためのDAOクラス """
 
+    # 初期化処理(DB接続設定)
     def __init__(self, config: dict | None = None) -> None:
         self.config = config or DB_CONFIG
 
+    # DB接続メソッド(共通処理)
     def _get_connection(self) -> MySQLConnection:
         return mysql.connector.connect(**self.config)
 
+    # 全件取得
     def find_all(self) -> list[Admin]:
         """ 
         adminテーブルの全レコードを取得
         Adminオブジェクトのリストとして返す。
+        管理者情報をadmin_id順で取得
         """
         sql = """
             SELECT
@@ -29,12 +33,14 @@ class AdminDao:
             ORDER BY admin_id ASC
         """
 
+        # 結果を辞書形式で取得
         conn = self._get_connection()
         try:
             cursor = conn.cursor(dictionary=True)
             cursor.execute(sql)
             rows = cursor.fetchall()
 
+            # Adminオブジェクトに変換
             admins: list[Admin] = []
             for row in rows:
                 admin = Admin(
@@ -51,6 +57,7 @@ class AdminDao:
             cursor.close()
             conn.close()
 
+    # admin ID検索
     def find_by_id(self, admin_id: str) -> Optional[dict]:
         """ 
         admin_idで admin テーブルから1件取得。見つからなければNoneを返す。
@@ -78,6 +85,7 @@ class AdminDao:
             cursor.close()
             conn.close()
 
+    # admin新規登録
     def insert(self, admin_id: str, admin_name: str, password: str, birthday) -> str:
         """
         insert文にて管理者を追加
@@ -90,6 +98,7 @@ class AdminDao:
                 (%s, %s, %s, %s, NOW())
         """
 
+        # 実行＆コミット
         conn = self._get_connection()
         try:
             cursor = conn.cursor()
