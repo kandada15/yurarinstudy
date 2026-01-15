@@ -1,7 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 # 以下、11/27作成
 from flask_login import login_required, current_user
-from datetime import datetime
 
 from .dao.task_dao import TaskDao
 from .dao.streamed_dao import StreamedDao
@@ -26,12 +25,6 @@ streamed_dao = StreamedDao()
 submission_dao = SubmissionDao()
 group_dao = GroupDao()
 
-
-# @task_bp.route("/")
-# def task_index():
-#   task_list = task_dao.find_all()
-#   return render_template('task_stu/ass_list.html', tasks=task_list)
-
 """ 
 課題作成画面(入力フォーム) 
 入力項目: 課題名、問題文、提出期限、配信先グループ
@@ -41,7 +34,7 @@ group_dao = GroupDao()
 def task_create_form():
   # 配信先選択用にグループ一覧を取得
   groups = group_dao.find_all()
-  return render_template("task_admin/task_create.html", groups=groups)
+  return render_template("task_admin/task_create.html", groups=groups, stream_data={}, mode="input")
 
 """ 課題作成画面(POST) """
 # 課題作成フォーム(GET)より入力した値を受け取って、確認画面より表示する。
