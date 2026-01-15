@@ -16,5 +16,5 @@ DB_CONFIG = {
  
     # 利用するデータベース名
     # 例：CREATE DATABASE flask_sample; で作ったもの
-    "database": "study",
+    "database": "study2",
 }
