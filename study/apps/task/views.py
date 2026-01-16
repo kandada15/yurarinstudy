@@ -106,32 +106,42 @@ streamedDBによりデータを取得後、画面へ表示
 @task_bp.route("/student/tasks")
 # @login_required
 def student_task_list():
-  student_id = current_user.student_id
-  # current_userのグループIDの取得
-  group_id = current_user.group_id
+  """ 現在ログインしている情報を取得 """
+  # student_id = current_user.student_id
+  # # current_userのグループIDの取得
+  # group_id = current_user.group_id
 
   # current_userに配信されている課題一覧、配信済みテーブルより取得
   ## 「group_id = 」にて指定したcurrent_userより入手したgroup_idと関連付ける
   """ 管理者を取ってくるものが記入されていない。＝配信者を持ってこれない """
-  tasks = streamed_dao.find_by_group(group_id)
+  # tasks = streamed_dao.find_by_group(group_id)
 
   # 各課題の提出状況の取得、task_id,task_name,task_text
-  task_status_list = []
-  for dict_task in tasks:
-    submission = submission_dao.find_by_task_student(task_id=dict_task.task_id, student_id=student_id)
-    task_status_list.append({
-      # dict情報を格納する
-      "task": dict_task,
-      # 未提出or提出済み
-      # "submitted": submission.submit_flag if submission else False,
-      "submitted": bool(submission["submit_flag"]) if submission else False,
-      "submission_id": submission["submission_id"] if submission else None,
-      "streamed_limit": dict_task.get("streamed_limit"),
-      "streamed_date": dict_task.get("streamed_date")
-      # "creator": dict_task.get("creator_name", "-") 
-    })
+  # task_status_list = []
+  # for dict_task in tasks:
+  #   submission = submission_dao.find_by_task_student(task_id=dict_task.task_id, student_id=student_id)
+  #   task_status_list.append({
+  #     # dict情報を格納する
+  #     "task": dict_task,
+  #     # 未提出or提出済み
+  #     # "submitted": submission.submit_flag if submission else False,
+  #     "submitted": bool(submission["submit_flag"]) if submission else False,
+  #     "submission_id": submission["submission_id"] if submission else None,
+  #     "streamed_limit": dict_task.get("streamed_limit"),
+  #     "streamed_date": dict_task.get("streamed_date")
+  #     # "creator": dict_task.get("creator_name", "-") 
+  #   })
   
-  return render_template("student/ass_list.html", task_status_list=task_status_list)
+  return render_template("task_stu/task_list.html")
+
+""" test """
+@task_bp.route("student/tasks/inq")
+def task_inq():
+  return render_template("task_stu/task_inq.html")
+
+@task_bp.route("student/tasks")
+def task_submit():
+  return render_template("task_stu/task_list.html")
 
 
 """  
