@@ -12,18 +12,17 @@ class GroupDao:
 
     def _get_connection(self) -> MySQLConnection:
         return mysql.connector.connect(**self.config)
-    
+
     def find_all(self) -> list[Group]:
         """ 
         groupテーブルの全レコードを取得
         Groupオブジェクトのリストとして返す。
         """
-        
         sql = """
             SELECT
                 group_id,
                 group_name,
-                created_by_admin_id
+                admin_id
             FROM `group`
             ORDER BY group_id ASC
         """
@@ -39,7 +38,7 @@ class GroupDao:
                 group_obj = Group(
                     group_id=row["group_id"],
                     group_name=row["group_name"],
-                    created_by_admin_id=row["created_by_admin_id"]
+                    admin_id=row["admin_id"]
                 )
                 groups.append(group_obj)
 

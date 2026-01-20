@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template
 from apps.task.models.model_task import Task
-from flask import Blueprint, redirect, render_template, abort
+from flask import Blueprint, redirect, render_template, abort, request ,session
+from apps.app import db 
+from apps.writing.models import Progress
 
 # アプリの作成 (省略なし)
 writing_bp = Blueprint(
@@ -31,10 +32,69 @@ def index():
 
 @writing_bp.route('/step_list')
 def step_list():
-  """ステージ一覧ページ"""
-  return render_template('writing/step_list.html')
+    category_id = request.args.get('category_id')
+    student_id = session.get('user_id')
+    category_names = {
+        '1': '小論文',
+        '2': 'ビジネス文書',
+        '3': 'レポート',
+        '4': '表現トレーニング'
+    }
+    data = {
+        'name': category_names.get(category_id, '不明なカテゴリー'),
+        'id': category_id
+    }
+
+    completed_stages = db.session.query(Progress.phase_name).filter_by(
+        student_id=student_id, 
+        stage_flag=True
+    ).all()
+    
+    completed_list = [p.phase_name for p in completed_stages]
+
+    return render_template(
+        'writing/step_list.html', 
+        data=data,               
+        category_id=category_id,
+        completed_list=completed_list
+    )
 
 @writing_bp.route('/step_learning')
 def step_learning():
-  """ステージ一覧ページ"""
-  return render_template('writing/step_learning.html')
+    """ステップ学習ページ"""
+    # 1. URLの「?category_id=1&stage_no=2」などの値を取得する
+    category_id = request.args.get('category_id')
+    stage_no = request.args.get('stage_no')
+    
+    # 2. テンプレートにそれらの値を渡す
+    return render_template(
+        'writing/step_learning.html', 
+        category_id=category_id, 
+        stage_no=stage_no
+    )
+
+@writing_bp.route('/update_progress', methods=['POST'])
+def update_progress():
+    data = request.get_json()
+    category_id = data.get('category_id')
+    stage_no = data.get('stage_no')
+    
+    # ログイン中のユーザーIDをセッションから取得（例）
+    student_id = session.get('user_id') 
+
+    if not student_id:
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 401
+
+    # --- DB更新ロジック ---
+    # progressテーブルの stage_flag を 1 (True) に更新する
+    # ※phase_name を stage_no から特定するか、stage_no 自体を管理に使う
+    
+    try:
+        # SQL実行例: 
+        # UPDATE progress SET stage_flag = 1 
+        # WHERE student_id = %s AND phase_name = %s
+        
+        # ※ もしレコードがなければ INSERT、あれば UPDATE する処理が必要
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
