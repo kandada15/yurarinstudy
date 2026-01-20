@@ -101,6 +101,59 @@ class StreamedDao:
       cursor.close()
       conn.close()
 
+  def find_all_for_student(self) -> list[Streamed]:
+    sql = """
+        SELECT
+            streamed_id,
+            streamed_name,
+            streamed_limit,
+            created_by_admin_name,
+            sent_at
+        FROM streamed
+        ORDER BY created_at DESC
+    """
+    conn = self._get_connection()
+    try:
+      # cursor(dictionary=True) にし、SELECT文の結果を辞書型で受け取る
+      # row[""],row[""]でアクセス可能
+      cursor = conn.cursor(dictionary=True)
+
+      # sqlの実行
+      cursor.execute(sql)
+
+      # 全行を取得
+      rows = cursor.fetchall()
+
+      streamed: list[Streamed] = []
+      for row in rows:
+        stream = Streamed(
+          streamed_id=row["streamed_id"],
+          streamed_name=row["streamed_name"],
+          streamed_limit=row["streamed_limit"],
+          created_by_admin_name=row["created_by_admin_name"],
+          sent_at=row["sent_at"]
+        )
+        streamed.append(stream)
+
+      return streamed
+    finally:
+      # 例外処理なしで、カーソルと接続を閉じる
+      cursor.close()
+      conn.close()
+
+  def find_by_id(self, streamed_id):
+    sql = """
+        SELECT
+            streamed_id,
+            streamed_name,
+            streamed_text,
+            streamed_limit,
+            created_by_admin_name
+        FROM streamed
+        WHERE streamed_id = %s
+    """
+    
+
   """ 関数より持ってきたい情報を明確にしてください """
   def find_by_group(self, group_id) -> List[dict]:
     """

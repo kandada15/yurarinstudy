@@ -54,7 +54,7 @@
       <div id="inputScreen">
         <!--課題タイトル-->
         <!--データベースから持ってくる-->
-        <h2>小論文の順序立て構成練習</h2>
+        <h2>{{ task.streamed_name }}</h2>
         <!-- 課題入力フォーム -->
         <div id="formtask" class="form hidden">
           <!--問題文-->
@@ -62,7 +62,7 @@
             <label>問題文</label>
             <div class="question-text">
               <!--データベースから持ってくる-->
-              あいうえお
+              {{ task.streamed_text }}
             </div>
           </div>
           <!-- preタグで改行を保持 -->
