@@ -81,6 +81,11 @@
     </main>
 
     {# スクリプトの読み込み #}
-    <script src="{{ url_for('writing.static', filename='js/step_list.js') }}"></script>
+    <script>
+    const currentCategoryId = "{{ category_id }}";
+    // PythonのリストをJSの配列として受け取る
+    const completedStages = {{ completed_list | tojson }};
+</script>
+<script src="{{ url_for('writing.static', filename='js/step_list.js') }}"></script>
 </body>
 </html>

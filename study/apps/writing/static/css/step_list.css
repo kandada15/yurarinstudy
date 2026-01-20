@@ -242,3 +242,20 @@ body {
   transform: translateY(0);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
+
+/* 完了バッジのスタイル */
+.complete-badge {
+    background-color: #28a745; /* 緑色 */
+    color: white;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+/* 完了した行の背景を薄い緑にする（任意） */
+.row-complete {
+    background-color: #f8fff9;
+}

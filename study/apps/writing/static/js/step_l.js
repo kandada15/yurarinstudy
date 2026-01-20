@@ -259,7 +259,28 @@ function goToStep(stepNumber, phase) {
 // その他（完了・戻る・記述監視）
 // ============================================
 function completeSteps() {
-    goToStep(0); // 全非表示
+    // 1. サーバーに進捗を保存するリクエストを送信
+    fetch('/writing/update_progress', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            category_id: currentCategoryId,
+            stage_no: currentStageNo,
+            // 必要に応じて student_id を含める（通常はセッションで管理）
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            console.log('進捗が保存されました');
+        }
+    })
+    .catch(error => console.error('進捗保存エラー:', error));
+
+    // 2. 完了画面への切り替え表示（既存の処理）
+    goToStep(0); 
     setTimeout(() => {
         const screen = document.getElementById('complete-screen');
         if (screen) {

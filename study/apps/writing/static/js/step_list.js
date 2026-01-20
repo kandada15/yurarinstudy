@@ -14,52 +14,50 @@ async function createStageTable() {
     if (!tableBody) return;
 
     try {
-        // 1. JSONファイルを読み込む
         const response = await fetch('/writing/static/json/steps_data.json');
-        if (!response.ok) throw new Error('JSONの読み込み失敗');
         const allData = await response.json();
-
-        // 2. テーブルをクリア
         tableBody.innerHTML = "";
 
-        // 3. JSONのキー（1, 2, 3...）をループして行を生成
         Object.keys(allData).forEach((key) => {
             const phaseData = allData[key];
-            // 各ステップから代表してstep1の情報を取得
             const stepInfo = phaseData.step1;
 
             const tr = document.createElement("tr");
 
-            // ステージ番号（JSONのキー）
+            // --- ステージ番号 ---
             const tdStage = document.createElement("td");
             tdStage.textContent = key;
             tr.appendChild(tdStage);
 
-            // フェーズ
+            // --- フェーズ（ここに完了マークを出す例） ---
             const tdPhase = document.createElement("td");
-            tdPhase.textContent = stepInfo.phase || "未設定";
+            let phaseHtml = stepInfo.phase || "未設定";
+            
+            // ★完了リストに含まれているかチェック
+            if (completedStages.includes(String(key))) {
+                phaseHtml += ' <span class="complete-badge">完了</span>';
+                tr.classList.add('row-complete'); // 行全体の色を変える場合
+            }
+            
+            tdPhase.innerHTML = phaseHtml;
             tr.appendChild(tdPhase);
 
-            // 学習内容（タイトル）
+            // --- 学習内容 ---
             const tdContent = document.createElement("td");
             tdContent.textContent = stepInfo.title || "未設定";
             tr.appendChild(tdContent);
 
-            // スタートボタン
+            // --- スタートボタン ---
             const tdLink = document.createElement("td");
             const btn = document.createElement("button");
-            btn.textContent = "スタート";
+            btn.textContent = completedStages.includes(String(key)) ? "再学習" : "スタート";
             btn.className = "start-button";
-            btn.onclick = function() {
-                goStep(key);
-            };
-            
+            btn.onclick = () => goStep(key);
             tdLink.appendChild(btn);
             tr.appendChild(tdLink);
 
             tableBody.appendChild(tr);
         });
-
     } catch (error) {
         console.error('テーブル生成エラー:', error);
     }

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('auth.static', filename='css/login.css') }}">
+    <title>文脈工房 - ログイン</title>
+</head>
+<body>
+    <div class="container">
+        <div class="mode-toggle">
+            <div class="toggle-switch" id="modeToggle">
+                <div class="toggle-slider">受講者</div>
+                <span class="toggle-text student">受講者</span>
+                <span class="toggle-text admin">管理者</span>
+            </div>
+        </div>
+
+        <div class="title">
+            <h1>文脈工房</h1>
+        </div>
+
+        <form id="loginForm" action="{{ url_for('auth.login') }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <input type="hidden" name="user_type" id="userTypeInput" value="student">
+    
+            <div class="form-group">
+                <label for="username">ユーザ名</label>
+                <input type="text" id="username" name="username">
+                <div class="error-message" id="usernameError">
+                    {% if error %}{{ error }}{% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">パスワード</label>
+                <input type="password" id="password" name="password">
+                <div class="error-message" id="passwordError"></div>
+            </div>
+
+            <button type="submit" class="submit-btn">入室</button>
+        </form>
+    </div>
+
+    <script>
+        const modeToggle = document.getElementById('modeToggle');
+        const toggleSlider = modeToggle.querySelector('.toggle-slider');
+        const userTypeInput = document.getElementById('userTypeInput'); // 追加
+        let isAdmin = false;
+
+        modeToggle.addEventListener('click', () => {
+            isAdmin = !isAdmin;
+            modeToggle.classList.toggle('admin');
+            toggleSlider.textContent = isAdmin ? '管理者' : '受講者';
+            // サーバーに送る値を更新
+            userTypeInput.value = isAdmin ? 'admin' : 'student';
+        });
+
+        const loginForm = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const usernameError = document.getElementById('usernameError');
+        const passwordError = document.getElementById('passwordError');
+
+        loginForm.addEventListener('submit', (e) => {
+            // JSでの即時エラー表示を維持しつつ、問題なければ送信
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            let hasError = false;
+
+            // エラーリセット
+            usernameError.textContent = '';
+            usernameError.classList.remove('show');
+
+            if (!username || !password) {
+                e.preventDefault(); // 送信を止める
+                usernameError.textContent = 'ユーザ名とパスワードを入力してください';
+                usernameError.classList.add('show');
+                hasError = true;
+            }
+            
+            // hasErrorがfalseならそのままaction先（Flask）へ送信されます
+        });
+
+        // エラー表示用の初期化
+        {% if error %}
+            usernameError.classList.add('show');
+            usernameInput.classList.add('error');
+            passwordInput.classList.add('error');
+        {% endif %}
+    </script>
+</body>
+</html>

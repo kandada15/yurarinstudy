@@ -4,7 +4,8 @@ from apps.task.models.model_streamed import Streamed
 from apps.task.models.model_submission import Submission
 # 管理者(Admin)とグループ(Group)のモデルをインポート
 # ※ファイル名はご自身の環境に合わせて調整してください
-from apps.auth.models import Admin, Group 
+from apps.crud.models.model_admin import Admin
+from apps.crud.models.model_group import Group
 from datetime import datetime, timedelta
 
 # ブループリントの設定

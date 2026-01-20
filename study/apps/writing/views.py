@@ -1,5 +1,7 @@
 from apps.task.models.model_task import Task
-from flask import Blueprint, redirect, render_template, abort, request
+from flask import Blueprint, redirect, render_template, abort, request ,session
+from apps.app import db 
+from apps.writing.models import Progress
 
 # アプリの作成 (省略なし)
 writing_bp = Blueprint(
@@ -31,32 +33,31 @@ def index():
 @writing_bp.route('/step_list')
 def step_list():
     category_id = request.args.get('category_id')
-    all_category_data = {
-        '1': {
-            'id': '1',
-            'name': '小論文',
-            'steps': [
-                {'no': 1, 'phase': '理解', 'content': '小論文とは／目的と特徴'},
-                {'no': 2, 'phase': '構成', 'content': '序論・本論・結論の作り方'},
-                {'no': 3, 'phase': '思考', 'content': '問題把握／主張の立て方／論理展開'},
-                {'no': 4, 'phase': '表現', 'content': '文体／語彙／文法／接続詞'},
-                {'no': 5, 'phase': '実践', 'content': '添削／推敲／模擬問題／評価基準の理解'}
-            ]
-        },
-        '2': {
-            'id': '2',
-            'name': 'ビジネス文書',
-            'steps': [
-                {'no': 1, 'phase': '理解', 'content': 'ビジネス文書とは／目的と特徴'},
-                {'no': 2, 'phase': '構成', 'content': '序論・本論・結論の作り方'},
-                {'no': 3, 'phase': '思考', 'content': '問題把握／主張の立て方／論理展開'},
-                {'no': 4, 'phase': 'できたら', 'content': 'この辺変更しようね'},
-                {'no': 5, 'phase': '', 'content': ''}
-            ]
-        }
+    student_id = session.get('user_id')
+    category_names = {
+        '1': '小論文',
+        '2': 'ビジネス文書',
+        '3': 'レポート',
+        '4': '表現トレーニング'
     }
-    selected_data = all_category_data.get(category_id, all_category_data['1'])
-    return render_template('writing/step_list.html', data=selected_data)
+    data = {
+        'name': category_names.get(category_id, '不明なカテゴリー'),
+        'id': category_id
+    }
+
+    completed_stages = db.session.query(Progress.phase_name).filter_by(
+        student_id=student_id, 
+        stage_flag=True
+    ).all()
+    
+    completed_list = [p.phase_name for p in completed_stages]
+
+    return render_template(
+        'writing/step_list.html', 
+        data=data,               
+        category_id=category_id,
+        completed_list=completed_list
+    )
 
 @writing_bp.route('/step_learning')
 def step_learning():
@@ -71,3 +72,29 @@ def step_learning():
         category_id=category_id, 
         stage_no=stage_no
     )
+
+@writing_bp.route('/update_progress', methods=['POST'])
+def update_progress():
+    data = request.get_json()
+    category_id = data.get('category_id')
+    stage_no = data.get('stage_no')
+    
+    # ログイン中のユーザーIDをセッションから取得（例）
+    student_id = session.get('user_id') 
+
+    if not student_id:
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 401
+
+    # --- DB更新ロジック ---
+    # progressテーブルの stage_flag を 1 (True) に更新する
+    # ※phase_name を stage_no から特定するか、stage_no 自体を管理に使う
+    
+    try:
+        # SQL実行例: 
+        # UPDATE progress SET stage_flag = 1 
+        # WHERE student_id = %s AND phase_name = %s
+        
+        # ※ もしレコードがなければ INSERT、あれば UPDATE する処理が必要
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500

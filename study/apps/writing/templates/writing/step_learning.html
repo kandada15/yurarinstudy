@@ -271,14 +271,14 @@
                 </div>
             </div>
         </div>
-    </main>
+</main>
+
+    <script>
+        const currentCategoryId = "{{ category_id }}";
+        const currentStageNo = "{{ stage_no }}";
+    </script>
 
     {# スクリプトの読み込み #}
-    <script src="{{ url_for('writing.static', filename='js/step_l.js') }}"></script>
-    <script>
-        // Flaskから渡された category_id をJavaScript変数に格納
-        const currentCategoryId = "{{ category_id }}"; 
-    </script>
     <script src="{{ url_for('writing.static', filename='js/step_l.js') }}"></script>
 </body>
 </html>
