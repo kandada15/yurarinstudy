@@ -1,23 +1,15 @@
 from apps.extensions import db
 from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
 
 class Admin(db.Model):
     __tablename__ = "admin"
 
-    admin_id = db.Column(db.String(255), primary_key=True)
-    admin_name = db.Column(db.String(255))
-    password_hash = db.Column(db.String(255))
-    birthday = db.Column(db.Date)
-    entry_date = db.Column(db.DateTime, default=datetime.now)
-
-    @property
-    def password(self):
-        raise AttributeError("読み取り不可")
+    # DBのカラム名に合わせて定義
+    admin_id = db.Column("admin_id", db.String(10), primary_key=True)
+    admin_name = db.Column("admin_name", db.String(50), nullable=False)
     
-    @password.setter
-    def password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def verify_password(self, password):
-        return check_password_hash(self.password_hash, password)
+    # ★修正点: DBのカラム名は 'password' なので、それに合わせます
+    # 'password_hash' にすると Unknown column エラーになります
+    password = db.Column("password", db.String(255), nullable=False)
+    
+    birthday = db.Column("birthday", db.Date, nullable=False)

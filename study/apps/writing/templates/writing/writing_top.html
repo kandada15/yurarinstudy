@@ -2,33 +2,83 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>{{ data.page_title }}</title>
+    <title>{{ data.page_title }} - 文脈工房</title>
+    
+    {# CSSの読み込み #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('writing.static', filename='css/l_top.css') }}">
 </head>
 <body>
-    <header>
-        <h1>{{ data.page_title }}</h1> 
-    </header>
-    
-    <main>
-        <div class="selection-area">
-            <p>{{ data.select_message }}</p> 
-            
-            <div class="category-list-container">
-                
-                {% for category in data.categories %}
-                    
-                    <div class="category-item">
-                        
-                        <a href="{{ url_for('writing.step_list') }}">
-                            
-                            {{ category.task_name }}
-                            
-                        </a>
-                    </div>
 
+    <header class="top-header">
+        <div class="logo-section">
+            <span class="app-name">文脈工房</span>
+        </div>
+        <div class="user-section">
+            <span class="user-badge">受講者 さん</span>
+            <button class="logout-btn">ログアウト</button>
+        </div>
+    </header>
+
+    {# 左側の穴 #}
+    <div class="holes-container">
+        <div class="hole"></div>
+        <div class="hole"></div>
+        <div class="hole"></div>
+        <div class="hole"></div>
+        <div class="hole"></div>
+        <div class="hole"></div>
+        <div class="hole"></div>
+        <div class="hole"></div>
+        <div class="hole"></div>
+        <div class="hole"></div>
+    </div>
+
+    {# 右側のタブ #}
+    <div class="tabs-container">
+        <a href="{{ url_for('writing.index') }}" class="tab {% if request.endpoint == 'writing.index' %}active{% endif %}" data-page="users" data-color="#e8dcc8">ライティング学習</a>
+        <a href="#" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
+        <a href="#" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
+    </div>
+
+    {# メインコンテンツ #}
+    <main class="main-content">
+        <h1 class="title">{{ data.page_title }}</h1>
+
+        <label class="choice-message">{{ data.select_message }}</label>
+
+        <div class="vert">
+            <div class="side">
+                {# 小論文 (ID: 1) #}
+                <button type="button" class="btn-primary" 
+                        onclick="location.href='{{ url_for('writing.step_list', category_id=1) }}'">
+                    小論文
+                </button>
+
+                {# ビジネス文書 (ID: 2) #}
+                <button type="button" class="btn-primary" 
+                        onclick="location.href='{{ url_for('writing.step_list', category_id=2) }}'">
+                    ビジネス文書
+                </button>
             </div>
-            
+
+            <div class="side">
+                {# レポート (ID: 3) #}
+                <button type="button" class="btn-primary" 
+                        onclick="location.href='{{ url_for('writing.step_list', category_id=3) }}'">
+                    レポート
+                </button>
+
+                {# 表現トレーニング (ID: 4) #}
+                <button type="button" class="btn-primary" 
+                        onclick="location.href='{{ url_for('writing.step_list', category_id=4) }}'">
+                    表現トレーニング
+                </button>
+            </div>
         </div>
     </main>
+
+    {# スクリプトの読み込み #}
+    <script src="{{ url_for('writing.static', filename='js/l_top.js') }}"></script>
 </body>
 </html>
