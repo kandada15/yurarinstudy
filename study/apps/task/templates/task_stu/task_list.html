@@ -1,0 +1,157 @@
+<!--TASK_LIST.HTML-->
+<!--課題一覧と課題詳細表示-->
+<!--課題が増えた時の動作確認してない-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('task.static', filename='css/css_stu/task_list.css') }}">
+  <link rel="stylesheet" href="{{ url_for('task.static', filename='css/header.css') }}">
+  <title>課題一覧</title>
+</head>
+<body>
+<!--ここからbace.htmlから引っ張れる-->
+<header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">管理者</span>
+      <!--ここリンクをｊｓ管理してるけどアクション名？にしてログアウトできるように-->
+      <button class="logout-btn" onclick="gologout()">ログアウト</button>
+    </div>
+  </header>
+
+  <!-- 左側の穴 -->
+  <div class="holes-container">
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+
+    
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+  </div>
+
+  <!-- 右側のタブ -->
+  <div class="tabs-container">
+    <a href="learning_top.html" class="tab active" data-page="users" data-color="#e8dcc8">ライティング学習</a>
+    <a href="ass_list.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
+    <a href="mypage.html" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
+  </div>
+<!--ここまで-->
+
+  <div class="app-container">
+    <div class="content-wrapper">
+      <form method="post" action="{% if mode == 'detail' %}
+                                    {{ url_for('task.student_task_submit') }}
+                                  {% endif %}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% if mode != "detail" and mode != "submit" %}
+        <h1>課題一覧</h1>
+
+        <!--Flaskで繰り返し表示する用に変える必要-->
+        {% if tasks %}
+          <div class="task-grid">
+            {% for task in tasks %}
+              <button class="task-card" onclick="openModal()" id="{{ task.streamed_id }}">
+                <div class="grou_content">
+                <!--データベースから持ってくる。下の例文のようにしたら文字と一緒にひょじできる-->
+                <!--例文：配信日{{データベースから持ってくる構文みたいな}}-->
+                <label>配信日{{ task.created_at }}</label>
+                <!--データベースから持ってくる{}-->
+                <p class="task_title">{{ task.streamed_name }}</p><br>
+                <!--データベースから持ってくる{}-->
+                <!-- 配信者に関してはDAOの問題があるので見直し -->
+                <p>配信者：{{ task.admin_name }}</p>
+                <!--データベースから持ってくる{}-->
+                <p>提出期限：{{ task.streamed_limit }}</p>
+                </div>
+              </button>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="no_task">現在課題はありません</p>
+        {% endif %}
+      
+        <div class="pagination">
+          <button type="button" class="btn-back" onclick="backToList()"></button>
+          <button type="button" class="btn-next" onclick="nextToList()"></button>
+        </div>
+      </div>
+     </div>
+
+     <!--課題内容表示 以下よりformタグ？-->
+      {% elif mode == "detail" %}
+     <div id="detail-modal" class="modal">
+      <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <div class="modal-header">
+       <h1>課題詳細</h1>
+      </div>
+      <div class="modal-header">
+        <!--データベースから持ってくる{}-->
+        <h2 class="modal-title">{{  }}</h2>
+        <div class="modal-meta">
+          <div class="modal-meta-item">
+            <span class="modal-meta-label">配信者:</span>
+            <!--データベースから持ってくる{}-->
+            <span>猪口慎一</span>
+          </div>
+          <div class="modal-meta-item">
+            <span class="modal-meta-label">提出期限:</span>
+            <!--データベースから持ってくる{}-->
+            <span>12月26日</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <label class="modal-body-label">問題文</label>
+        <div class="modal-text">
+          <!--データベースから持ってくる{}-->
+          あいうえお
+        </div>
+      </div>
+      <!--jsにリンクあり、FLASK仕様変更求-->
+      <button type="button" class="btn-answer" onclick="submitAnswerForm()">回答する</button>
+
+      <script>
+        const modal = document.getElementById("detail-modal");
+        // let selectedTaskId = null;
+        // モーダルを開く
+        function openModal() {
+        // selectedTaskId = taskId;
+        modal.style.display = "block";
+        }
+
+        // モーダルを閉じる
+        function closeModal() {
+        modal.style.display = "none";
+        }
+
+        // モーダルの外をクリックしたら閉じる
+        window.addEventListener('click', function(e) {
+          if (e.target === modal) {
+          modal.style.display = "none";
+        }
+        });
+      </script>
+    </div>
+  </div>
+  
+</form>
+
+<!--Javascriptの読み込み（必ずこの位置）-->
+<script src="{{ url_for('task.static', filename='js/js_stu/task_list.js') }}"></script> 
+<!--Javascriptの読み込み（必ずこの位置）-->
+<script src="{{ url_for('task.static', filename='js/header.js') }}"></script> 
+<script>
+  const TASK_INQ_URL = `/student/tasks/${selectedTaskId}/inq`
+</script>
+</body>
+</html>

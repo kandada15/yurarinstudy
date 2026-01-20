@@ -101,12 +101,17 @@ task_indexについて：学生用機能として起用、配信日（？）、�
 受講者用トップ画面より、「課題一覧」を押下することで関数が動く
 streamedDBによりデータを取得後、画面へ表示
 """
+"""  
+ログインした学生の配信済みデータを取得する。←動作確認をした後で、コードの追加を行う※ログイン機能が未実装のため
+配信済み課題を課題一覧に表示し、学生は選択した課題を行う。
+"""
 
 """ 課題一覧の表示 """
-@task_bp.route("/student/tasks")
+@task_bp.route("/student/tasks", methods=["GET"])
 # @login_required
 def student_task_list():
-  """ 現在ログインしている情報を取得 """
+  tasks = streamed_dao.find_all_for_student()
+  """ 現在ログインしている学生の配信済み課題の情報を取得 """
   # student_id = current_user.student_id
   # # current_userのグループIDの取得
   # group_id = current_user.group_id
@@ -132,16 +137,36 @@ def student_task_list():
   #     # "creator": dict_task.get("creator_name", "-") 
   #   })
   
-  return render_template("task_stu/task_list.html")
+  return render_template("task_stu/task_list.html", tasks=tasks, mode="send")
 
-""" test """
-@task_bp.route("student/tasks/inq")
-def task_inq():
-  return render_template("task_stu/task_inq.html")
+"""
+stream_list_dataのdetailを取り出したい。
 
-@task_bp.route("student/tasks")
-def task_submit():
-  return render_template("task_stu/task_list.html")
+"""
+@task_bp.route("student/tasks/<int:streamed_id>", methods=["POST"])
+# @login_required
+def student_task_detail(streamed_id):
+  task = streamed_dao.find_by_id(streamed_id)
+  streamed_data = streamed_dao.find_all()
+  stream_list_data = {
+    "streamed_name": request.form.get("streamed_name"), 
+    "streamed_text": request.form.get("streamed_text"),
+    "streamed_limit": request.form.get("streamed_limit"),
+    "admin_name": request.form.get("admin_name")
+  }
+  return render_template("task_stu/task_list.html", task=task, mode="detail")
+
+@task_bp.route("student/tasks/<int:streamed_id>/inq")
+# @login_required
+def task_submit(streamed_id):
+  task = streamed_dao.find_by_id(streamed_id)
+
+  return render_template("task_stu/task_inq.html", task=task, mode="submit")
+
+# @task_bp.route("student/tasks")
+# # @login_required
+# def task_submit():
+#   return render_template("task_stu/task_list.html")
 
 
 """  
@@ -151,24 +176,24 @@ def task_submit():
 methods=["GET"]が必要ないかも
 """
 
-""" 課題の詳細表示 """
-@task_bp.route("/student/tasks/<int:task_id>")
-# @login_required
-def student_task_detail(task_id):
-  student_id = current_user.student_id
-  # 課題情報の取得
-  task = task_dao.find_by_id(task_id)
+# """ 課題の詳細表示 """
+# @task_bp.route("/student/tasks/<int:task_id>")
+# # @login_required
+# def student_task_detail(task_id):
+#   student_id = current_user.student_id
+#   # 課題情報の取得
+#   task = task_dao.find_by_id(task_id)
 
-  # 課題が無い場合
-  if not task:
-    flash("該当する課題が見つかりません", "warning")
-    return redirect(url_for("task.student_task_list"))
+#   # 課題が無い場合
+#   if not task:
+#     flash("該当する課題が見つかりません", "warning")
+#     return redirect(url_for("task.student_task_list"))
   
-  # 提出状況の取得
-  submission = submission_dao.find_by_task_student(task_id=task_id, student_id=student_id)
-  return render_template("student/ass_inq.html",
-                          task=task,
-                          submission=submission)
+#   # 提出状況の取得
+#   submission = submission_dao.find_by_task_student(task_id=task_id, student_id=student_id)
+#   return render_template("student/ass_inq.html",
+#                           task=task,
+#                           submission=submission)
 
 """ 課題入力画面(入力フォーム) """
 @task_bp.route("/student/tasks/<int:task_id>/answer", methods=["GET"])
