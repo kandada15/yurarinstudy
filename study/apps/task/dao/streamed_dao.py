@@ -2,7 +2,7 @@
 
 import mysql.connector
 from mysql.connector import MySQLConnection
-from typing import List
+from typing import List, Text
 from datetime import datetime
 
 from apps.task.models.model_streamed import Streamed
@@ -31,14 +31,14 @@ class StreamedDao:
     sql = """
         SELECT
             s.streamed_id,
+            s.streamed_name,
+            s.streamed_text,
             s.streamed_limit,
-            s.task_id,
-            t.task_text,
-            s.group_id,
-            g.group_name
+            g.group_id
             
         FROM streamed AS s
-        LEFT JOIN task AS t ON s.task_id = t.task_id
+        LEFT OUTER JOIN task AS t ON s.task_id = t.task_id
+        LEFT OUTER JOIN `group` AS g ON s.group_id = g.group_id
         LEFT JOIN `group` AS g ON s.group_id = g.group_id
         ORDER BY s.streamed_id ASC
     """
@@ -59,18 +59,47 @@ class StreamedDao:
       for row in rows:
         stream = Streamed(
           streamed_id=row["streamed_id"],
+          streamed_name=row["streamed_name"],
+          streamed_text=row["streamed_text"],
           streamed_limit=row["streamed_limit"],
-          task_id=row["task_id"],
-          group_id=row["group_id"],
-          task_text=row.get("task_text"),
-          group_name=row.get("group_name")
-          
+          group_id=row["group_id"]
         )
         streamed.append(stream)
 
       return streamed
     finally:
       # 例外処理なしで、カーソルと接続を閉じる
+      cursor.close()
+      conn.close()
+
+  
+  def insert(self, streamed_name: str, streamed_text: Text, streamed_limit: datetime, group_id: int):
+    """ 
+    streamed テーブルに配信情報を追加 
+    streamed_limit は文字列でも DATE 型に変換可能
+    """
+    
+    sql = """
+        INSERT INTO streamed 
+          (streamed_name, streamed_text, streamed_limit, group_id)
+        VALUES 
+          (%s, %s, %s, %s)
+    """
+
+    conn = self._get_connection()
+    try:
+      # cursor() にする。辞書型にする必要はないため。
+      cursor = conn.cursor()
+
+      # sqlの実行
+      cursor.execute(sql, (streamed_name, streamed_text, streamed_limit, group_id))
+
+      # DBへコミットする、streamed_idが自動採番された場合のコード
+      conn.commit()
+      return cursor.lastrowid
+    
+    finally:
+      # 例外処理なしで閉じる
       cursor.close()
       conn.close()
 
@@ -87,13 +116,13 @@ class StreamedDao:
         SELECT
         st.streamed_id,
         st.streamed_limit,
-        st.streamed_date,
+        st.sent_at,
         t.task_id,
         t.task_name,
         t.task_text
 
         FROM streamed AS st
-        JOIN task AS t ON st.task_id = t.task_id
+        INNER JOIN task AS t ON st.task_id = t.task_id
         WHERE st.group_id = %s
         ORDER BY st.streamed_limit ASC
     """
@@ -134,42 +163,3 @@ class StreamedDao:
     #   # 例外処理なしで、カーソルと接続を閉じる
     #   cursor.close()
     #   conn.close()
-
-
-
-  def insert(self, streamed_limit: str, task_id: int, group_id: int, streamed_date: datetime):
-    """ 
-    streamed テーブルに配信情報を追加 
-    streamed_limit は文字列でも DATE 型に変換可能
-    streamed_date は datetime.now() で取得
-    """
-    
-    sql = """
-        INSERT INTO streamed 
-          (streamed_limit, task_id, group_id, streamed_date)
-        VALUES 
-          (%s, %s, %s, %s)
-    """
-
-    conn = self._get_connection()
-    try:
-      # cursor() にする。辞書型にする必要はないため。
-      cursor = conn.cursor()
-
-      # sqlの実行
-      cursor.execute(sql, (task_id, group_id, streamed_limit, streamed_date))
-
-      # DBへコミットする、streamed_idが自動採番された場合のコード
-      conn.commit()
-      return cursor.lastrowid
-    
-    finally:
-      # 例外処理なしで閉じる
-      cursor.close()
-      conn.close()
-
-
-
-          
-        
-        
