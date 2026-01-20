@@ -1,6 +1,7 @@
 from apps.extensions import db
 from datetime import datetime
 
+# Admin テーブルモデル作成
 class Admin(db.Model):
     __tablename__ = "admin"
 
@@ -11,5 +12,4 @@ class Admin(db.Model):
     # ★修正点: DBのカラム名は 'password' なので、それに合わせます
     # 'password_hash' にすると Unknown column エラーになります
     password = db.Column("password", db.String(255), nullable=False)
-    
     birthday = db.Column("birthday", db.Date, nullable=False)
