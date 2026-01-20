@@ -21,7 +21,6 @@ class GroupDao:
         groupテーブルの全レコードを取得
         Groupオブジェクトのリストとして返す。
         """
-        
         sql = """
             SELECT
                 group_id,
