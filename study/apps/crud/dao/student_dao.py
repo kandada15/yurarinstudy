@@ -4,15 +4,18 @@ from typing import Optional
 from apps.crud.models.model_student import Student
 from apps.config.db_config import DB_CONFIG
 
+# MySQLに直接アクセスするDAOクラス※studentテーブル専用
 class StudentDao:
-    """ studentテーブルにアクセスするためのDAOクラス """
 
+    # 初期化処理
     def __init__(self, config: dict | None = None) -> None:
         self.config = config or DB_CONFIG
 
+    # DB接続処理
     def _get_connection(self) -> MySQLConnection:
         return mysql.connector.connect(**self.config)
 
+    # 全件取得
     def find_all(self) -> list[Student]:
         """ 
         studentテーブルの全レコードを取得
@@ -32,6 +35,8 @@ class StudentDao:
             ORDER BY student_id ASC
         """
 
+        # クラス内部の_get_connection()を使ってMySQL接続を取得
+        # 結果を辞書形式で取得
         conn = self._get_connection()
         try:
             cursor = conn.cursor(dictionary=True)
@@ -57,6 +62,7 @@ class StudentDao:
             cursor.close()
             conn.close()
 
+    # student ID検索
     def find_by_id(self, student_id: int) -> Optional[dict]:
         """ 
         student_idで student テーブルから1件取得。見つからなければNoneを返す。
@@ -77,6 +83,8 @@ class StudentDao:
             LIMIT 1
         """
 
+        # クラス内部の_get_connection()を使ってMySQL接続を取得
+        # 結果を辞書形式で取得
         conn = self._get_connection()
         try:
             cursor = conn.cursor(dictionary=True)
@@ -87,6 +95,7 @@ class StudentDao:
             cursor.close()
             conn.close()
 
+    # 新規登録
     def insert(self, student_id: int, student_name: str, password: str, entry_year, birthday, is_alert: bool, group_id: int) -> int:
         """
         insert文にて学生を追加
@@ -98,7 +107,8 @@ class StudentDao:
             VALUES
                 (%s, %s, %s, %s, %s, NOW(), %s, %s)
         """
-        
+        # クラス内部の_get_connection()を使ってMySQL接続を取得
+        # 実行＆コミット
         conn = self._get_connection()
         try:
             cursor = conn.cursor()
@@ -111,9 +121,10 @@ class StudentDao:
             cursor.close()
             conn.close()
 
+    # 指定されたgroup_idに属するstudentを取得し、Studentオブジェクトのリストとして返す
     def find_by_group_id(self, group_id: int) -> list[Student]:
         """
-        指定されたgroup_idに所属する生徒リストを取得
+        %s はプレースホルダー
         """
         sql = """
             SELECT
@@ -130,6 +141,8 @@ class StudentDao:
             ORDER BY student_id ASC
         """
         
+        # クラス内部の_get_connection()を使ってMySQL接続を取得
+        # 結果を辞書形式で取得
         conn = self._get_connection()
         try:
             cursor = conn.cursor(dictionary=True)

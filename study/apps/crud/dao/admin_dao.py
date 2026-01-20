@@ -33,6 +33,7 @@ class AdminDao:
             ORDER BY admin_id ASC
         """
 
+        # クラス内部の_get_connection()を使ってMySQL接続を取得
         # 結果を辞書形式で取得
         conn = self._get_connection()
         try:
@@ -62,6 +63,7 @@ class AdminDao:
         """ 
         admin_idで admin テーブルから1件取得。見つからなければNoneを返す。
         戻り値: 辞書型 {"admin_id":..., "admin_name":...}
+        %s はプレースホルダー
         """
         sql = """
             SELECT
@@ -75,6 +77,8 @@ class AdminDao:
             LIMIT 1
         """
 
+        # クラス内部の_get_connection()を使ってMySQL接続を取得
+        # 結果を辞書形式で取得
         conn = self._get_connection()
         try:
             cursor = conn.cursor(dictionary=True)
@@ -98,6 +102,7 @@ class AdminDao:
                 (%s, %s, %s, %s, NOW())
         """
 
+        # クラス内部の_get_connection()を使ってMySQL接続を取得
         # 実行＆コミット
         conn = self._get_connection()
         try:
