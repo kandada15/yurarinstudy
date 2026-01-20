@@ -34,9 +34,7 @@ function clearErrors() {
   });
 }
 
-// =========================
 // 回答確認画面へ遷移
-// =========================
 function showConfirmScreen() {
 
   // JS全体のバリデーションを利用
@@ -65,17 +63,14 @@ function showConfirmScreen() {
   document.getElementById("confirmScreen").classList.remove("hidden");
 }
 
-// =========================
 // 入力画面へ戻る
-// =========================
 function backToInput() {
   document.getElementById("confirmScreen").classList.add("hidden");
   document.getElementById("inputScreen").classList.remove("hidden");
 }
 
-// =========================
+
 // 提出完了画面へ
-// =========================
 function submitForm() {
   const answerText = document.getElementById("answer_text").value.trim();
 

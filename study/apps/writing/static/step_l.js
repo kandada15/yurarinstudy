@@ -1,13 +1,9 @@
-// ============================================
 // グローバル変数
-// ============================================
 let currentStepData = {}; // 現在のステップのデータ
 let userAnswers = []; // ユーザーの回答（ステップ2用）
 let gradingResults = {}; // 採点結果
 
-// ============================================
 // ダミーデータ（後でFlask APIから取得するデータ）
-// ============================================
 const dummyData = {
   step1: {
     phase: "理解",
@@ -31,17 +27,14 @@ const dummyData = {
   }
 };
 
-// ============================================
 // 初期化処理（ページ読み込み時に実行）
-// ============================================
 document.addEventListener('DOMContentLoaded', function() {
   // ステップ1のデータを読み込む
   loadStepData(1);
 });
 
-// ============================================
+
 // データ取得関数（Flask APIから取得する）
-// ============================================
 async function fetchStepData(stepNumber) {
   // TODO: ここをFlask APIエンドポイントに置き換える
   // 例: const response = await fetch(`/api/step/${stepNumber}`);
@@ -67,9 +60,8 @@ async function fetchStepData(stepNumber) {
   });
 }
 
-// ============================================
+
 // ステップデータの読み込み
-// ============================================
 async function loadStepData(stepNumber) {
   try {
     // データベースからデータを取得
@@ -91,9 +83,8 @@ async function loadStepData(stepNumber) {
   }
 }
 
-// ============================================
+
 // ステップ1の表示を更新
-// ============================================
 function updateStep1Display(data) {
   if (document.getElementById('step1-phase')) {
     document.getElementById('step1-phase').textContent = data.phase || '理解';
@@ -109,9 +100,7 @@ function updateStep1Display(data) {
   }
 }
 
-// ============================================
 // ステップ2の表示を更新
-// ============================================
 function updateStep2Display(data) {
   // 問題表示画面（回答入力）
   if (document.getElementById('step2-phase')) {
@@ -140,9 +129,7 @@ function updateStep2Display(data) {
   }
 }
 
-// ============================================
 // ステップ3の表示を更新
-// ============================================
 function updateStep3Display(data) {
   if (document.getElementById('step3-phase')) {
     document.getElementById('step3-phase').textContent = data.phase || '理解';
@@ -164,10 +151,8 @@ function updateStep3Display(data) {
   }
 }
 
-// ============================================
 // 回答テーブルを動的に生成（回答入力用）
 // correctAnswers.lengthから回答欄の数を自動判断
-// ============================================
 function generateAnswerTableInput(answerCount) {
   const table = document.getElementById('answer-table-input');
   if (!table) return;
@@ -216,9 +201,7 @@ function generateAnswerTableInput(answerCount) {
   }
 }
 
-// ============================================
 // 自動採点処理
-// ============================================
 function gradeAnswers() {
   if (!currentStepData.correctAnswers) {
     alert('採点データがありません');
@@ -258,9 +241,7 @@ function gradeAnswers() {
   goToStep(2, 'answer');
 }
 
-// ============================================
 // 採点結果テーブルを生成（答え合わせ用）
-// ============================================
 function generateAnswerTableResult() {
   const table = document.getElementById('answer-table-result');
   if (!table || !gradingResults.results) return;
@@ -323,9 +304,7 @@ function generateAnswerTableResult() {
   }
 }
 
-// ============================================
 // 画面遷移処理（アニメーション付き）
-// ============================================
 function goToStep(stepNumber, phase) {
   // 現在表示中の画面を取得
   const allScreens = document.querySelectorAll('.content-wrapper');
@@ -397,9 +376,7 @@ function goToStep(stepNumber, phase) {
   }, 300); // CSSのアニメーション時間と合わせる
 }
 
-// ============================================
 // ステップ学習完了処理
-// ============================================
 function completeSteps() {
   const allScreens = document.querySelectorAll('.content-wrapper');
   let currentScreen = null;
@@ -432,16 +409,14 @@ function completeSteps() {
   }, 300);
 }
 
-// ============================================
+
 // 一覧に戻る処理
-// ============================================
 function returnToList() {
   window.location.href = 'step_list.html';
 }
 
-// ============================================
+
 // ステップ3のテキストエリアの値を保存
-// ============================================
 document.addEventListener('DOMContentLoaded', function() {
   // ステップ3のテキストエリアに入力監視を追加
   const textarea1 = document.getElementById('essay-textarea');
