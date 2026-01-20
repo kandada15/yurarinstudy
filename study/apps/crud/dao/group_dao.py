@@ -21,10 +21,12 @@ class GroupDao:
         groupテーブルの全レコードを取得
         Groupオブジェクトのリストとして返す。
         """
+        
         sql = """
             SELECT
                 group_id,
-                group_name
+                group_name,
+                created_by_admin_id
             FROM `group`
             ORDER BY group_id ASC
         """
@@ -41,7 +43,8 @@ class GroupDao:
             for row in rows:
                 group_obj = Group(
                     group_id=row["group_id"],
-                    group_name=row["group_name"]
+                    group_name=row["group_name"],
+                    created_by_admin_id=row["created_by_admin_id"]
                 )
                 groups.append(group_obj)
 
@@ -60,7 +63,8 @@ class GroupDao:
         sql = """
             SELECT
                 group_id,
-                group_name
+                group_name,
+                admin_id
             FROM `group`
             WHERE group_id = %s
             LIMIT 1
@@ -86,7 +90,7 @@ class GroupDao:
         """
         sql = """
             INSERT INTO `group`
-                (group_name)
+                (group_name, admin_id)
             VALUES
                 (%s)
         """
@@ -96,7 +100,7 @@ class GroupDao:
         conn = self._get_connection()
         try:
             cursor = conn.cursor()
-            cursor.execute(sql, (group_name,))
+            cursor.execute(sql, (group_name, admin_id))
             conn.commit()
             
             # AUTO_INCREMENT取得

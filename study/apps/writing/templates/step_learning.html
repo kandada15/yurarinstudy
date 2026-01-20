@@ -1,16 +1,50 @@
-{% extends "base.html" %}
+<!--ステップ学習ページ-->
+<!--データベース系をｊｓで臨時データを入れてる。-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文脈工房 - ステップ学習</title>
+  <link rel="stylesheet" href="step_l.css">
+  <!--bace.htmlしたらこの一行消す-->
+  <link rel="stylesheet" href="header.css">
+</head>
+<body>
+<!--ここからbace.htmlから引っ張れる-->
+<header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">受講者</span>
+      <!--ここリンクをｊｓ管理してるけどアクション名？にしてログアウトできるように-->
+      <button class="logout-btn" onclick="gologout()">ログアウト</button>
+    </div>
+  </header>
 
-{% block title %}ステップ学習{% endblock %}
+  <!-- 左側の穴 -->
+  <div class="holes-container">
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+  </div>
 
-{% block styles %}
-    <link rel="stylesheet" href="{{ url_for('writing.static', filename='css/step_l.css') }}">
-{% endblock %}
+  <!-- 右側のタブ -->
+  <div class="tabs-container">
+    <a href="learning_top.html" class="tab active" data-page="users" data-color="#e8dcc8">ライティング学習</a>
+    <a href="../ass_list.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
+    <a href="../mypage.html" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
+  </div>
+<!--ここまで-->
 
-{% block header %}
-    {# 受講者用共通パーツを読み込み #}
-    {% include "header_stu.html" %}
-{% endblock %}
-{% block content %}
+
   <div class="app-container">
     <!-- ステップ1: 導入画面 -->
     <div id="step1" class="content-wrapper fade-in">
@@ -250,7 +284,10 @@
       </div>
     </div>
   </div>
-{% endblock %}
-{% block scripts %}
-    <script src="{{ url_for('writing.static', filename='js/step_l.js') }}"></script>
-{% endblock %}
+
+  <!-- JavaScriptの読み込み（必ずこの位置） -->
+  <script src="step_l.js"></script>
+  <!--bace.htmlしたらこの一行消す-->
+  <script src="header.js"></script> 
+</body>
+</html>

@@ -1,76 +1,62 @@
-from flask import Blueprint, render_template, session, redirect, url_for
-from apps.extensions import db
-from apps.task.models.model_streamed import Streamed
-from apps.task.models.model_submission import Submission
-# 管理者(Admin)とグループ(Group)のモデルをインポート
-# ※ファイル名はご自身の環境に合わせて調整してください
-from apps.auth.models import Admin, Group 
-from datetime import datetime, timedelta
+from flask import Blueprint, render_template
+from apps.extensions import db 
+from sqlalchemy import func
 
-# ブループリントの設定
+#各モデルのインポート
+from apps.task.models import Task, Submission, Streamed
+from apps.crud.models import Student, Group, Admin
+
 dashboard_bp = Blueprint(
-    'dashboard', 
-    __name__, 
-    template_folder='templates',
-    static_folder='static'
+    "dashboard",
+    __name__,
+    template_folder="templates",
+    static_folder="static"
 )
 
 @dashboard_bp.route('/')
 def index():
-    """管理者ダッシュボード画面"""
+    # --- 1. プロフィール情報 (仮でID=1の管理者を表示する場合) ---
+    # 実際は current_user などを使います
+    # admin = Admin.query.filter_by(admin_id='admin01').first() 
     
-    # 1. セッションからログイン中の管理者IDを取得
-    # login_admin_id = session.get('user_id')
+    # --- 2. グループごとの人数 ---
+    # グループ名と、そのグループに所属する生徒数を取得
+    # SQLイメージ: SELECT group_name, COUNT(student_id) FROM group JOIN student ...
+    # ここでは簡易的に全グループを取得してループ処理する例を書きます
+    groups = Group.query.all()
+    group_data = []
+    for g in groups:
+        count = Student.query.filter_by(group_id=g.group_id).count()
+        group_data.append({"name": g.group_name, "count": count})
 
-    # # ログインしていない場合はログイン画面へ強制リダイレクト
-    # if not login_admin_id:
-    #     return redirect(url_for('auth.login'))
-    login_admin_id = session.get('user_id')
-    # 2. ログイン中の管理者情報をDBから取得
-    # 定義書の物理名に合わせて Admin.ADMIN_ID で検索
-    admin_data = Admin.query.filter_by(admin_id=login_admin_id).first()
+    # --- 3. 課題管理の集計 ---
+    # 累計課題配信件数 (Streamedテーブルの全件数)
+    streamed_count = Streamed.query.count()
 
-    # 万が一DBにデータがない場合の安全策
-    # if not admin_data:
-    #     session.clear() # セッションを破棄してログインへ
-    #     return redirect(url_for('auth.login'))
+    # 未添削課題件数 (提出済み(submit_flag=True) かつ 未添削(checked_flag=False))
+    unchecked_count = Submission.query.filter_by(submit_flag=True, check_flag=False).count()
 
-    # 3. 担当グループ一覧の取得
-    # 管理者IDに紐づくグループを取得
-    groups = Group.query.filter_by(admin_id=login_admin_id).all()
+    # 提出済み件数
+    submitted_count = Submission.query.filter_by(submit_flag=True).count()
 
-    # 4. 統計データの集計
-    
-    # (1) 累計課題配信数
-    streamed_count = TaskStreamed.query.count()
+    # 未提出課題件数 (submit_flag=False)
+    unsubmitted_count = Submission.query.filter_by(submit_flag=False).count()
 
-    # (2) 未添削課題数 (CHECK_FLAG が False のもの)
-    # ※定義書に基づき物理名 CHECK_FLAG を参照
-    unchecked_count = TaskSubmission.query.filter_by(check_flag=False).count()
+    # --- 4. 学習進捗 (全体の提出率など) ---
+    # 例: 全提出物の中で「提出済み」が何％あるか
+    total_submissions = Submission.query.count()
+    if total_submissions > 0:
+        progress_rate = round((submitted_count / total_submissions) * 100)
+    else:
+        progress_rate = 0
 
-    # (3) 提出済み件数 (SUBMIT_FLAG が True のもの)
-    submitted_count = TaskSubmission.query.filter_by(submit_flag=True).count()
-
-    # (4) 未提出件数 (仮の計算式：全配信数 - 提出済数 など)
-    # ※本来は (受講生数 * 課題数) ですが、まずは固定値または簡易計算で実装
-    unsubmitted_count = 8 # 必要に応じてロジックを追加
-
-    # (5) 今週の締切課題数
-    today = datetime.now()
-    one_week_later = today + timedelta(days=7)
-    # STREAMED_LIMIT が今日から1週間以内のものをカウント
-    weekly_deadline_count = TaskStreamed.query.filter(
-        TaskStreamed.streamed_limit.between(today, one_week_later)
-    ).count()
-
-    # 5. テンプレートへすべてのデータを渡してレンダリング
+    # 画面(HTML)にデータを渡す
     return render_template(
         'dashboard/dashboard.html',
-        admin=admin_data,
-        groups=groups,
+        group_data=group_data,
         streamed_count=streamed_count,
         unchecked_count=unchecked_count,
         submitted_count=submitted_count,
         unsubmitted_count=unsubmitted_count,
-        weekly_deadline_count=weekly_deadline_count
+        progress_rate=progress_rate
     )

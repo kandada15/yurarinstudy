@@ -1,7 +1,6 @@
 from flask import Flask
 # extensions から db と csrf を読み込む
 from apps.extensions import db, csrf
-from apps.auth.views import auth_bp
 
 # アプリケーションの作成
 app = Flask(__name__)
@@ -28,9 +27,3 @@ app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
 
 from apps.writing.views import writing_bp
 app.register_blueprint(writing_bp, url_prefix='/writing')
-
-def create_app():
-    app = Flask(__name__)
-    app.register_blueprint(auth_bp, url_prefix='/auth') 
-    
-    return app

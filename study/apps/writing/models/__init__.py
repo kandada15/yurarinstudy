@@ -1,1 +1,0 @@
-from apps.writing.models.model_progress import Progress
