@@ -119,9 +119,9 @@ class SubmissionDao:
         existing_sql = "SELECT submission_id, submit_flag FROM submission WHERE streamed_id=%s AND student_id=%s LIMIT 1"
 
         sql = """
-        INSERT INTO submission
-          (streamed_id, student_id, answer_text, submit_flag)
-        VALUES
+            INSERT INTO submission
+            (streamed_id, student_id, answer_text, submit_flag)
+            VALUES
           (%s, %s, %s, 1)
     """
 
