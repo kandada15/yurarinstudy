@@ -15,7 +15,7 @@ class AdminDao:
     def _get_connection(self) -> MySQLConnection:
         return mysql.connector.connect(**self.config)
 
-    # 全件を取得
+    # 全件取得
     def find_all(self) -> list[Admin]:
         """ 
         adminテーブルの全レコードを取得
