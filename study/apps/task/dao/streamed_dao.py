@@ -3,7 +3,7 @@ from mysql.connector import MySQLConnection
 from typing import List, Text
 from datetime import datetime
 from apps.task.models.model_streamed import Streamed
-from apps.task.models.model_task import Task
+from apps.task.models.model_streamed import Streamed, StreamedForStudent
 from apps.config.db_config import DB_CONFIG
 
 # MySQLに直接アクセスするDAOクラス※steamedテーブル専用
@@ -91,8 +91,9 @@ class StreamedDao:
       cursor.close()
       conn.close()
 
+
   # 受講者『課題一覧画面』用の情報取得
-  def find_all_for_student(self) -> list[Streamed]:
+  def find_all_for_student(self) -> list[StreamedForStudent]:
     """
     課題名/配信者/提出期限を表示する
     →groupのcreated_by_admin_nameを持って来る
@@ -100,13 +101,17 @@ class StreamedDao:
     """
     sql = """
         SELECT
-            streamed_id,
-            streamed_name,
-            streamed_limit,
-            created_by_admin_name,
-            sent_at
-        FROM streamed
-        ORDER BY created_at DESC
+            s.streamed_id,
+            s.streamed_name,
+            s.streamed_limit,
+            admin.admin_name,
+            s.sent_at
+        FROM streamed AS s
+        LEFT OUTER JOIN `group` AS g
+          ON s.group_id = g.group_id
+        LEFT OUTER JOIN admin 
+          ON g.created_by_admin_id = admin.admin_id
+        ORDER BY s.sent_at DESC
     """
     # クラス内部の_get_connection()を使ってMySQL接続を取得
     # 結果を辞書形式で取得
@@ -116,13 +121,13 @@ class StreamedDao:
       cursor.execute(sql)
       rows = cursor.fetchall()
 
-      streamed: list[Streamed] = []
+      streamed: list[StreamedForStudent] = []
       for row in rows:
-        stream = Streamed(
+        stream = StreamedForStudent(
           streamed_id=row["streamed_id"],
           streamed_name=row["streamed_name"],
           streamed_limit=row["streamed_limit"],
-          created_by_admin_name=row["created_by_admin_name"],
+          admin_name=row["admin_name"],
           sent_at=row["sent_at"]
         )
         streamed.append(stream)

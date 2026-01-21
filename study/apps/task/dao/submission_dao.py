@@ -108,27 +108,29 @@ class SubmissionDao:
             conn.close()
 
     # submission新規登録
-    def insert_submission(self, task_id, student_id, answer_text) -> int | None:
+    def insert(self, streamed_id, student_id, answer_text):
         """
         insert文にて提出物を追加
         再提出禁止のため、既に submit_flag=1 の提出物が存在する(既存)場合は None を返す
         既存でなければsqlを実行してinsert
         """
-        # 提出済かチェック(submit_flag)
-        existing_sql = "SELECT submission_id, submit_flag FROM submission WHERE task_id=%s AND student_id=%s LIMIT 1"
-        sql = """
-            INSERT INTO submission
-            (answer_text, q_t, submit_flag, submitted_at, checked_flag, returned_flag, task_id, student_id)
-            VALUES
-            (%s, NULL, 1, NOW(), 0, 0, %s, %s)
-        """
 
-        # クラス内部の_get_connection()を使ってMySQL接続を取得
-        # 結果を辞書形式で取得
+        # 提出済かチェック(submit_flag)
+        existing_sql = "SELECT submission_id, submit_flag FROM submission WHERE streamed_id=%s AND student_id=%s LIMIT 1"
+
+        sql = """
+        INSERT INTO submission
+          (streamed_id, student_id, answer_text, submit_flag)
+        VALUES
+          (%s, %s, %s, 1)
+    """
+
         conn = self._get_connection()
         try:
             cursor = conn.cursor(dictionary=True)
-            cursor.execute(existing_sql, (answer_text, task_id, student_id))
+
+            # sqlの実行
+            cursor.execute(existing_sql, (streamed_id, student_id, answer_text))
             existing = cursor.fetchone()
             
             # 提出物登録済 → 再提出不可
@@ -141,7 +143,7 @@ class SubmissionDao:
             """
             # 実行＆コミット
             cursor = conn.cursor()
-            cursor.execute(sql, (answer_text, task_id, student_id))
+            cursor.execute(sql, (answer_text, student_id))
             conn.commit()
             return cursor.lastrowid
         
