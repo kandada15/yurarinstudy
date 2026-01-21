@@ -4,6 +4,7 @@ from typing import Optional
 from apps.task.models.model_submission import Submission
 from apps.config.db_config import DB_CONFIG
 
+
 # MySQLに直接アクセスするDAOクラス※submissionテーブル専用
 class SubmissionDao:
 
@@ -122,8 +123,8 @@ class SubmissionDao:
             INSERT INTO submission
             (streamed_id, student_id, answer_text, submit_flag)
             VALUES
-          (%s, %s, %s, 1)
-    """
+            (%s, %s, %s, 1)
+        """
 
         conn = self._get_connection()
         try:
@@ -132,7 +133,7 @@ class SubmissionDao:
             # sqlの実行
             cursor.execute(existing_sql, (streamed_id, student_id, answer_text))
             existing = cursor.fetchone()
-            
+
             # 提出物登録済 → 再提出不可
             if existing and existing.get("submit_flag"):
                 return None
@@ -146,7 +147,7 @@ class SubmissionDao:
             cursor.execute(sql, (answer_text, student_id))
             conn.commit()
             return cursor.lastrowid
-        
+
         finally:
             cursor.close()
             conn.close()
