@@ -5,7 +5,7 @@ from mysql.connector import MySQLConnection
 from typing import List, Text
 from datetime import datetime
 
-from apps.task.models.model_streamed import Streamed
+from apps.task.models.model_streamed import Streamed, StreamedForStudent
 from apps.task.models.model_task import Task
 from apps.config.db_config import DB_CONFIG
 
@@ -103,16 +103,20 @@ class StreamedDao:
       cursor.close()
       conn.close()
 
-  def find_all_for_student(self) -> list[Streamed]:
+  def find_all_for_student(self) -> list[StreamedForStudent]:
     sql = """
         SELECT
-            streamed_id,
-            streamed_name,
-            streamed_limit,
-            created_by_admin_name,
-            sent_at
-        FROM streamed
-        ORDER BY created_at DESC
+            s.streamed_id,
+            s.streamed_name,
+            s.streamed_limit,
+            admin.admin_name,
+            s.sent_at
+        FROM streamed AS s
+        LEFT OUTER JOIN `group` AS g
+          ON s.group_id = g.group_id
+        LEFT OUTER JOIN admin 
+          ON g.created_by_admin_id = admin.admin_id
+        ORDER BY s.sent_at DESC
     """
     conn = self._get_connection()
     try:
@@ -126,13 +130,13 @@ class StreamedDao:
       # 全行を取得
       rows = cursor.fetchall()
 
-      streamed: list[Streamed] = []
+      streamed: list[StreamedForStudent] = []
       for row in rows:
-        stream = Streamed(
+        stream = StreamedForStudent(
           streamed_id=row["streamed_id"],
           streamed_name=row["streamed_name"],
           streamed_limit=row["streamed_limit"],
-          created_by_admin_name=row["created_by_admin_name"],
+          admin_name=row["admin_name"],
           sent_at=row["sent_at"]
         )
         streamed.append(stream)

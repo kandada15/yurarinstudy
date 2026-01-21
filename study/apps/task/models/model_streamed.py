@@ -1,4 +1,6 @@
 from apps.extensions import db
+from datetime import datetime
+from dataclasses import dataclass
 
 class Streamed(db.Model):
     __tablename__ = "streamed"
@@ -10,3 +12,11 @@ class Streamed(db.Model):
     streamed_limit = db.Column(db.DateTime)
     # グループID(外部キー)
     group_id = db.Column(db.Integer, db.ForeignKey('group.group_id'))
+@dataclass
+class StreamedForStudent:
+    __tablename__ = "streamedforstudent"
+    streamed_id : int
+    streamed_name: str
+    streamed_limit: datetime  
+    sent_at: datetime
+    admin_name: str | None
