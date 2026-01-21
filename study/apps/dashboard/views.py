@@ -2,20 +2,21 @@ from flask import Blueprint, render_template, session, redirect, url_for
 from apps.extensions import db
 from apps.task.models.model_streamed import Streamed
 from apps.task.models.model_submission import Submission
-# 管理者(Admin)とグループ(Group)のモデルをインポート
-# ※ファイル名はご自身の環境に合わせて調整してください
 from apps.crud.models.model_admin import Admin
 from apps.crud.models.model_group import Group
 from datetime import datetime, timedelta
 
-# ブループリントの設定
+# Blueprintの作成
 dashboard_bp = Blueprint(
     'dashboard', 
     __name__, 
+    # 使用するテンプレートフォルダ
     template_folder='templates',
+    # 専用の静的ファイル(CSS,JS,画像など)を置くフォルダ
     static_folder='static'
 )
 
+# ルーティングの定義
 @dashboard_bp.route('/')
 def index():
     """管理者ダッシュボード画面"""
