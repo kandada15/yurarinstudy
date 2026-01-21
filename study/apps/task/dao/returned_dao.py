@@ -54,7 +54,7 @@ class ReturnedDao:
           answer_text=row["answer_text"],
           q_t=row["q_t"],
           submit_flag=row["submit_flag"],
-          submit_date=row["submit_date"],
+          submitted_at=row["submitted_at"],
           checked_flag=row["checked_flag"],
           returned_flag=row["returned_flag"],
           task_id=row["task_id"],

@@ -1,8 +1,9 @@
 from apps.extensions import db
 
-# DBの「return」テーブル
+#  Returned テーブルモデル作成
 class Returned(db.Model):
       __tablename__ = "returned"
+      
       # 課題返却ID(主キー)
       returned_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
       # 添削文
