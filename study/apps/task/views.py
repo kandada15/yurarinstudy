@@ -105,20 +105,12 @@ streamedDBによりデータを取得後、画面へ表示
 ログインした学生の配信済みデータを取得する。←動作確認をした後で、コードの追加を行う※ログイン機能が未実装のため
 配信済み課題を課題一覧に表示し、学生は選択した課題を行う。
 """
-
-""" 課題一覧の表示 """
-@task_bp.route("/student/tasks", methods=["GET"])
-# @login_required
-def student_task_list():
-  tasks = streamed_dao.find_all_for_student()
-  """ 現在ログインしている学生の配信済み課題の情報を取得 """
   # student_id = current_user.student_id
   # # current_userのグループIDの取得
   # group_id = current_user.group_id
 
   # current_userに配信されている課題一覧、配信済みテーブルより取得
   ## 「group_id = 」にて指定したcurrent_userより入手したgroup_idと関連付ける
-  """ 管理者を取ってくるものが記入されていない。＝配信者を持ってこれない """
   # tasks = streamed_dao.find_by_group(group_id)
 
   # 各課題の提出状況の取得、task_id,task_name,task_text
@@ -136,6 +128,14 @@ def student_task_list():
   #     "streamed_date": dict_task.get("streamed_date")
   #     # "creator": dict_task.get("creator_name", "-") 
   #   })
+
+""" 課題一覧の表示 """
+@task_bp.route("/student/tasks", methods=["GET"])
+# @login_required
+def student_task_list():
+  tasks = streamed_dao.find_all_for_student()
+  """ 現在ログインしている学生の配信済み課題の情報を取得 """
+  """ 管理者を取ってくるものが記入されていない。＝配信者を持ってこれない """
   
   return render_template("task_stu/task_list.html", tasks=tasks, mode="send")
 
@@ -143,26 +143,37 @@ def student_task_list():
 stream_list_dataのdetailを取り出したい。
 
 """
-@task_bp.route("student/tasks/<int:streamed_id>", methods=["POST"])
+@task_bp.route("/student/tasks/<int:streamed_id>", methods=["GET"])
 # @login_required
 def student_task_detail(streamed_id):
   task = streamed_dao.find_by_id(streamed_id)
-  streamed_data = streamed_dao.find_all()
-  stream_list_data = {
-    "streamed_name": request.form.get("streamed_name"), 
-    "streamed_text": request.form.get("streamed_text"),
-    "streamed_limit": request.form.get("streamed_limit"),
-    "admin_name": request.form.get("admin_name")
-  }
+  # streamed_data = streamed_dao.find_all()
+  # stream_list_data = {
+  #   "streamed_name": request.form.get("streamed_name"), 
+  #   "streamed_text": request.form.get("streamed_text"),
+  #   "streamed_limit": request.form.get("streamed_limit"),
+  #   "admin_name": request.form.get("admin_name")
+  # }
   return render_template("task_stu/task_list.html", task=task, mode="detail")
 
-@task_bp.route("student/tasks/<int:streamed_id>/inq")
+@task_bp.route("/student/tasks/<int:streamed_id>/inq", methods=["GET"])
 # @login_required
 def task_submit(streamed_id):
   task = streamed_dao.find_by_id(streamed_id)
-
   return render_template("task_stu/task_inq.html", task=task, mode="submit")
 
+@task_bp.route("/student/tasks/<int:streamed_id>/submit", methods=["POST"])
+def task_submit_post(streamed_id):
+  answer_text = request.form.get["answer_text"]
+  student_id = current_user.student_id
+
+  submission_dao.insert(
+    streamed_id=streamed_id,
+    student_id=student_id,
+    answer_text=answer_text
+  )
+
+  return redirect(url_for("task.student_task_list"))
 # @task_bp.route("student/tasks")
 # # @login_required
 # def task_submit():

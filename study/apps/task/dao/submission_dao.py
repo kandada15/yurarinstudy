@@ -115,7 +115,7 @@ class SubmissionDao:
             cursor.close()
             conn.close()
 
-    def insert_submission(self, task_id, student_id, answer_text) -> int | None:
+    def insert(self, streamed_id, student_id, answer_text):
         """
         insert文にて新規の提出を挿入する。
         再提出禁止のため、既に submit_flag=1 の提出が存在する場合は None を返す（失敗）。
@@ -123,13 +123,13 @@ class SubmissionDao:
         """
 
         # 既に提出済みかチェック
-        existing_sql = "SELECT submission_id, submit_flag FROM submission WHERE task_id=%s AND student_id=%s LIMIT 1"
+        existing_sql = "SELECT submission_id, submit_flag FROM submission WHERE streamed_id=%s AND student_id=%s LIMIT 1"
 
         sql = """
         INSERT INTO submission
-          (answer_text, q_t, submit_flag, submit_date, checked_flag, returned_flag, task_id, student_id)
+          (streamed_id, student_id, answer_text, submit_flag)
         VALUES
-          (%s, NULL, 1, NOW(), 0, 0, %s, %s)
+          (%s, %s, %s, 1)
     """
 
         conn = self._get_connection()
@@ -137,7 +137,7 @@ class SubmissionDao:
             cursor = conn.cursor(dictionary=True)
 
             # sqlの実行
-            cursor.execute(existing_sql, (answer_text, task_id, student_id))
+            cursor.execute(existing_sql, (streamed_id, student_id, answer_text))
             existing = cursor.fetchone()
             if existing and existing.get("submit_flag"):
                 # 既に提出済み → 再提出不可
