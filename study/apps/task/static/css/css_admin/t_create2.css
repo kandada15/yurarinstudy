@@ -1,0 +1,503 @@
+.hidden { display: none; }
+
+/* ボタン風 label */
+.btn {
+  display: inline-block;
+  padding: 10px 18px;
+  margin-right: 8px;
+  background: #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* 選択中のボタン */
+.btn.active {
+  background: #4CAF50;
+  color: #fff;
+}
+
+
+
+.form {
+  margin-top: 14px;
+}
+
+/* とりあえずのｃｓｓ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f5f5;
+  padding: 20px;
+}
+
+/* 原稿用紙風の背景 */
+.app-container {
+  position: relative;
+  max-width: 1100px;
+  /* ヘッダー引いた分の高さ指定 */
+  height: 600px;
+  margin: 0 auto;
+  margin-top: 60px;
+  background: #fffef9;
+  /* 40pxの方眼模様 */
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px);
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(139, 115, 85, 0.2);
+  overflow: hidden;
+
+}
+/* コンテンツラッパー */
+.content-wrapper {
+  height: 600px;
+  max-width: 1100px;
+  background: rgba(255, 254, 249, 0.95);
+  padding: 30px;
+  position: relative;
+  border: 1px solid #000; /*わかりやすくボーダーをひく*/
+  overflow-y: scroll; /*縦方向にスクロール*/
+  -ms-overflow-style: none; /* Edge / IE */
+  scrollbar-width: none;    /* Firefox */
+}
+/* Chrome / Safari */
+.content-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+/* アニメーション（本をめくる効果） */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
+h2 {
+  font-size: 24px;
+  color: #5a4a3a;
+  font-weight: bold;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #8b7355;
+  padding-bottom: 15px;
+}
+
+/* ボタン風 labelいらない */
+/* .selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  justify-content: center;
+} */
+
+
+/* .choice-input {
+  display: none;
+} */
+
+/* .btn {
+  display: inline-block;
+  padding: 12px 30px;
+  background: #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s;
+  font-weight: 500;
+} */
+
+/* .btn:hover {
+  background: #ccc;
+}
+
+.btn.active {
+  background: #4CAF50;
+  color: #fff;
+} */
+
+/* フォームスタイル */
+
+.hidden {
+  display: none;
+}
+
+.form>div {
+  margin-bottom: 20px;
+}
+
+.form>div>div {
+  display: flex;
+  gap: 15px;
+}
+
+.form>div>div>div {
+  flex: 1;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+  font-weight: 500;
+}
+
+input[type="text"]
+input[type="date"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+button,
+input[type="submit"] {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 32px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: inherit;
+  background: #8b7355;
+  color: #fffef9;
+  box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+  width: 240px;
+  height: 50px;
+  margin-top: 40px;
+  text-align: center;
+  align-self: flex-end;
+}
+
+.btn-primary:hover {
+  background: #6d5a44;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(139, 115, 85, 0.4);
+}
+
+.btn-secondary {
+  background: #666;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #555;
+}
+
+.btn-back {
+  background: #999;
+  color: white;
+}
+
+.btn-back:hover {
+  background: #888;
+}
+
+/* フォームスタイル */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.form > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ラベル */
+label {
+  color: #5d4e37;
+  font-size: 15px;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 8px;
+}
+
+label span {
+  color: #d32f2f;
+  margin-left: 4px;
+}
+
+/* 入力フィールド共通 */
+input[type="text"],
+input[type="date"],
+textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #d4c5b0;
+  border-radius: 6px;
+  font-size: 15px;
+  color: #333;
+  background-color: #faf8f5;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: #a89168;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(168, 145, 104, 0.1);
+}
+
+input[type="text"]::placeholder,
+textarea::placeholder {
+  color: #999;
+}
+
+/* テキストエリア */
+textarea {
+  resize: vertical;
+  min-height: 120px;
+  font-family: inherit;
+  line-height: 1.6;
+}
+
+/* 日付入力 */
+input[type="date"] {
+  cursor: pointer;
+}
+
+/* エラーメッセージ */
+.error-message {
+  color: #d32f2f;
+  font-size: 13px;
+  min-height: 18px;
+  margin-top: 4px;
+}
+
+/* ボタン */
+.btn-primary {
+  background-color: #8b7355;
+  color: #ffffff;
+  border: none;
+  border-radius: 25px;
+  padding: 14px 40px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+  align-self: center;
+  min-width: 200px;
+}
+
+.btn-primary:hover {
+  background-color: #6d5a43;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-back {
+  background-color: #e8dcc8;
+  color: #5d4e37;
+  border: 1px solid #d4c5b0;
+  border-radius: 25px;
+  padding: 14px 40px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+}
+
+.btn-back:hover {
+  background-color: #d4c5b0;
+}
+
+.button-group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+/* 確認画面 */
+.confirm-section {
+  background-color: #faf8f5;
+  border-radius: 8px;
+  padding: 30px;
+  margin: 20px 0;
+}
+
+.confirm-section h3 {
+  color: #5d4e37;
+  font-size: 18px;
+  margin: 0 0 20px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #d4c5b0;
+}
+
+.confirm-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 20px;
+  padding: 15px 0;
+  border-bottom: 1px solid #f0ebe5;
+}
+
+.confirm-row:last-child {
+  border-bottom: none;
+}
+
+.confirm-label {
+  color: #8b7355;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.confirm-value {
+  color: #333;
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 完了画面 */
+#completeScreen h2 {
+  color: #4CAF50;
+  text-align: center;
+  font-size: 28px;
+  border-bottom: none;
+}
+
+.return_button {
+  display: inline-block;
+  background-color: #8b7355;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 25px;
+  padding: 14px 40px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.return_button:hover {
+  background-color: #6d5a43;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+}
+
+/* レスポンシブ修正（画面幅が狭い時） */
+/* @media (max-width: 1024px) {
+  .app-container {
+    width: 95%;
+    height: 85vh;
+  }
+  .content-wrapper {
+    width: 95%;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    margin-top: 20px;
+    height: 85vh;
+  }
+
+  .content-wrapper {
+    padding: 15px;
+  }
+
+  .selector {
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    width: 100%;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  .confirm-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .form > div > div {
+    flex-direction: column;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn-primary,
+  .btn-back,
+  .return_button {
+    width: 100%;
+  }
+} */
