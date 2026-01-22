@@ -1,101 +1,97 @@
-from flask import Blueprint, render_template, request, session
-from apps.app import db
-from apps.writing.models import Progress
+from flask import Blueprint, render_template, request, session, jsonify
+from apps.app import db 
+from apps.writing.models import Progress 
 
 # Blueprintの作成
 writing_bp = Blueprint(
-    "writing",
+    'writing',
     __name__,
     # 使用するテンプレートフォルダ
-    template_folder="templates",
+    template_folder='templates',
     # 専用の静的ファイル(CSS,JS,画像など)を置くフォルダ
-    static_folder="static",
+    static_folder='static'
 )
 
 # ルーティングの定義
-@writing_bp.route("/")
+@writing_bp.route('/')
 def index():
-    """ライティングトップ / カテゴリ一覧ページ"""
+    """カテゴリ選択画面"""
     static_categories = [
-        {"task_id": 1, "task_name": "小論文"},
-        {"task_id": 2, "task_name": "ビジネス文書"},
-        {"task_id": 3, "task_name": "レポート"},
-        {"task_id": 4, "task_name": "表現トレーニング"},
+        {'task_id': 'essay', 'task_name': '小論文'},
+        {'task_id': 'business', 'task_name': 'ビジネス文書'},
+        {'task_id': 'report', 'task_name': 'レポート'},
+        {'task_id': 'training', 'task_name': '表現トレーニング'}
     ]
     data = {
         "page_title": "ライティング課題",
         "select_message": "学習したいコンテンツを選択してください",
         "categories": static_categories,
     }
+    return render_template('writing/writing_top.html', data=data)
 
-    return render_template("writing/writing_top.html", data=data)
 
-
-@writing_bp.route("/step_list")
+@writing_bp.route('/step_list')
 def step_list():
-    category_id = request.args.get("category_id")
-    student_id = session.get("user_id")
-    category_names = {
-        "1": "小論文",
-        "2": "ビジネス文書",
-        "3": "レポート",
-        "4": "表現トレーニング",
-    }
-    data = {
-        "name": category_names.get(category_id, "不明なカテゴリー"),
-        "id": category_id,
-    }
+    """ステージ一覧画面"""
+    category_id = request.args.get('category_id', 'essay')
+    # DBの student_id カラムに合わせて文字列に変換
+    student_id = str(session.get('user_id', '')) 
 
-    completed_stages = (
-        db.session.query(Progress.phase_name)
-        .filter_by(student_id=student_id, stage_flag=True)
-        .all()
-    )
+    # DBから完了済みのレコードを取得（stage_flagはBoolean）
+    completed_records = Progress.query.filter_by(
+        student_id=student_id,
+        stage_flag=True
+    ).all()
+    
+    # 完了済みの phase_name リストを作成
+    completed_list = [r.phase_name for r in completed_records]
 
-    completed_list = [p.phase_name for p in completed_stages]
+    category_names = {'essay': '小論文', 'business': 'ビジネス文書'}
+    data = {'name': category_names.get(category_id, 'ライティング')}
 
-    return render_template(
-        "writing/step_list.html",
-        data=data,
-        category_id=category_id,
-        completed_list=completed_list,
-    )
+    return render_template('writing/step_list.html', 
+                            category_id=category_id, 
+                            data=data,
+                            completed_list=completed_list)
 
-
-@writing_bp.route("/step_learning")
+@writing_bp.route('/step_learning')
 def step_learning():
-    """ステップ学習ページ"""
-    category_id = request.args.get("category_id")
-    stage_no = request.args.get("stage_no")
+    """学習画面"""
+    category_id = request.args.get('category_id')
+    stage_no = request.args.get('stage_no')
+    return render_template('writing/step_learning.html', 
+                            category_id=category_id, 
+                            stage_no=stage_no)
 
-    # 2. テンプレートにそれらの値を渡す
-    return render_template(
-        "writing/step_learning.html", category_id=category_id, stage_no=stage_no
-    )
-
-
-@writing_bp.route("/update_progress", methods=["POST"])
+@writing_bp.route('/update_progress', methods=['POST'])
 def update_progress():
-    data = request.get_json()
-    category_id = data.get("category_id")
-    stage_no = data.get("stage_no")
+    """進捗更新"""
+    data = request.get_json(force=True, silent=True)
+    stage_val = data.get('stage_no')
+    student_id = str(session.get('user_id', ''))
 
-    # ログイン中のユーザーIDをセッションから取得（例）
-    student_id = session.get("user_id")
-
-    if not student_id:
-        return jsonify({"status": "error", "message": "Unauthorized"}), 401
-
-    # --- DB更新ロジック ---
-    # progressテーブルの stage_flag を 1 (True) に更新する
-    # ※phase_name を stage_no から特定するか、stage_no 自体を管理に使う
+    if not student_id or not stage_val:
+        return jsonify({'status': 'error', 'message': 'データ不足'}), 400
 
     try:
-        # SQL実行例:
-        # UPDATE progress SET stage_flag = 1
-        # WHERE student_id = %s AND phase_name = %s
+        # DBのカラム名 phase_name で検索
+        progress = Progress.query.filter_by(
+            student_id=student_id, 
+            phase_name=stage_val
+        ).first()
 
-        # ※ もしレコードがなければ INSERT、あれば UPDATE する処理が必要
-        return jsonify({"status": "success"})
+        if progress:
+            progress.stage_flag = True # 完了(True)に更新
+        else:
+            new_progress = Progress(
+                student_id=student_id,
+                phase_name=stage_val, # DBのカラム名に合わせる
+                stage_flag=True
+            )
+            db.session.add(new_progress)
+        
+        db.session.commit()
+        return jsonify({'status': 'success'})
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+        db.session.rollback()
+        return jsonify({'status': 'error', 'message': str(e)}), 500
