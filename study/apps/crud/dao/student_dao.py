@@ -11,7 +11,7 @@ class StudentDao:
     def __init__(self, config: dict | None = None) -> None:
         self.config = config or DB_CONFIG
 
-    # DB接続処理
+    # DB接続作成処理
     def _get_connection(self) -> MySQLConnection:
         return mysql.connector.connect(**self.config)
 
@@ -164,5 +164,6 @@ class StudentDao:
                 students.append(student)
             return students
         finally:
+            # 例外の有無に関わらず、最後に必ずクローズする
             cursor.close()
             conn.close()

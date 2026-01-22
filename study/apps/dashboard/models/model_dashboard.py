@@ -16,7 +16,3 @@ class Dashboard:
         self.task_id = task_id
         # 学習進捗ID（外部キー）
         self.progress_id = progress_id
-        
-    # デバッグ時に見やすい文字列表現
-    def __repr__(self) -> str:
-        return f"Lesson(dashboard_id={self.dashboard_id}, admin_id={self.admin_id!r}, group_id={self.group_id}, submission_id={self.submission_id},task_id={self.task_id}, progress_id={self.progress_id})"

@@ -1,6 +1,6 @@
 import mysql.connector
 from mysql.connector import MySQLConnection
-from typing import List, Text
+from typing import Text
 from datetime import datetime
 from apps.task.models.model_streamed import Streamed
 from apps.task.models.model_streamed import Streamed, StreamedForStudent
@@ -9,11 +9,11 @@ from apps.config.db_config import DB_CONFIG
 # MySQLに直接アクセスするDAOクラス※steamedテーブル専用
 class StreamedDao:
   
-  # 初期化処理(DB接続設定)
+  # 初期化処理
   def __init__(self, config: dict | None = None) -> None:
     self.config = config or DB_CONFIG
 
-  # DB接続メソッド(共通処理)
+  # DB接続作成処理
   def _get_connection(self) -> MySQLConnection:
     return mysql.connector.connect(**self.config)
   
@@ -121,6 +121,7 @@ class StreamedDao:
       cursor.execute(sql)
       rows = cursor.fetchall()
 
+      # StreamedForStudentオブジェクトに変換
       streamed: list[StreamedForStudent] = []
       for row in rows:
         stream = StreamedForStudent(
@@ -134,6 +135,7 @@ class StreamedDao:
 
       return streamed
     finally:
+      # 例外の有無に関わらず、最後に必ずクローズする
       cursor.close()
       conn.close()
 

@@ -7,11 +7,11 @@ from apps.config.db_config import DB_CONFIG
 # MySQLに直接アクセスするDAOクラス※adminテーブル専用
 class AdminDao:
 
-    # 初期化処理(DB接続設定)
+    # 初期化処理
     def __init__(self, config: dict | None = None) -> None:
         self.config = config or DB_CONFIG
 
-    # DB接続メソッド(共通処理)
+    # DB接続作成処理
     def _get_connection(self) -> MySQLConnection:
         return mysql.connector.connect(**self.config)
 
@@ -112,5 +112,6 @@ class AdminDao:
             return admin_id
         
         finally:
+            # 例外の有無に関わらず、最後に必ずクローズする
             cursor.close()
             conn.close()
