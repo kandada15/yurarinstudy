@@ -3,3 +3,4 @@
 from .model_admin import Admin
 from .model_student import Student
 from .model_group import Group
+from .model_task import TaskStreamed
