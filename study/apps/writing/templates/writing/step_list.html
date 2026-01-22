@@ -44,7 +44,7 @@
 
     {# メインコンテンツ #}
     <main class="main-content">
-        <h1 class="title"> ＜ {{ data.name }} ＞ </h1>
+        <h1 class="title"> ＜ <span id="category-name">{{ data.name }}</span> ＞ </h1>
 
         <label class="choice-message">学習したいステージを選択してください。</label>
 
@@ -52,40 +52,25 @@
             <thead>
                 <tr>
                     <th>ステージ</th>
-                    <th>フェーズ</th>
+                    <th>状況</th> <th>フェーズ</th>
                     <th>学習内容</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                {# views.pyからのデータをループで表示（ロジック維持） #}
-                {% for step in data.steps %}
-                <tr>
-                    <td>{{ step.no }}</td>
-                    <td>{{ step.phase }}</td>
-                    <td>{{ step.content }}</td>
-                    <td>
-                        <button type="button" class="start-button" 
-                                onclick="location.href='{{ url_for('writing.step_learning', category_id=data.id, stage_no=step.no) }}'">
-                            スタート
-                        </button>
-                    </td>
-                </tr>
-                {% endfor %}
+                {# ここにJSで中身が入る #}
             </tbody>
         </table>
 
         <button type="button" class="btn-primary" onclick="location.href='{{ url_for('writing.index') }}'">
-            学習トップへ戻る
+            ライティング学習トップ
         </button>
     </main>
 
-    {# スクリプトの読み込み #}
     <script>
-    const currentCategoryId = "{{ category_id }}";
-    // PythonのリストをJSの配列として受け取る
-    const completedStages = {{ completed_list | tojson }};
-</script>
-<script src="{{ url_for('writing.static', filename='js/step_list.js') }}"></script>
+        const currentCategoryId = "{{ category_id }}";
+        const completedStages = {{ completed_list | tojson }};
+    </script>
+    <script src="{{ url_for('writing.static', filename='js/step_list.js') }}?v=1.1"></script>
 </body>
 </html>

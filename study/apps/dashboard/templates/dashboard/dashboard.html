@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='dashboard.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='header.css') }}">
+  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/dashboard.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
   <title>ダッシュボード - 文脈工房</title>
 </head>
 <body>
@@ -43,7 +43,7 @@
             </div>
             <div class="profile-item">
               <span class="profile-label">氏　　名</span>
-              <span class="profile-value">{{ admin.name }}</span>
+              <span class="profile-value">{{ admin.admin_name }}</span>
             </div>
           </div><br>
 
@@ -107,14 +107,14 @@
           </div>
 
           <div class="bottom-buttons">
-            <button type="button" class="big-btn" onclick="location.href='/progress/all'">学習進捗</button>
-            <button type="button" class="big-btn" onclick="location.href='/returned/list'">返却済課題</button>
+            <button type="button" class="big-btn" onclick="location.href='/returned/list'">返却済課題</button> 
+            <button type="button" class="big-btn" onclick="location.href='{{ url_for('task.returned_list') }}'">返却済課題</button>
           </div>   
         </div>
       </div>
     </div>
   </div>
 
-  <script src="{{ url_for('dashboard.static', filename='dashboard.js') }}"></script> 
+  <script src="{{ url_for('dashboard.static', filename='js/dashboard.js') }}"></script>
 </body>
 </html>

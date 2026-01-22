@@ -5,6 +5,7 @@ from mysql.connector import MySQLConnection
 from apps.task.models.model_task import Task
 from typing import Optional
 from apps.config.db_config import DB_CONFIG
+from apps.crud.models.model_task import TaskStreamed
 
 class TaskDao:
   """ TaskテーブルにアクセスするためのDAOクラス """

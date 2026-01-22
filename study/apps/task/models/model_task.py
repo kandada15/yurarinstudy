@@ -1,4 +1,6 @@
 from apps.extensions import db
+from datetime import datetime
+from apps.crud.models.model_task import TaskStreamed
 
 # DBの「task」テーブル
 class Task(db.Model):
