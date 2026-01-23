@@ -51,7 +51,8 @@
     <div class="container">
 
       <!-- 入力画面 -->
-      <form method="post" action="{{ url_for('task.task_submit_post', streamed_id=task.streamed_id) }}"></form>
+      <form id="taskForm" method="post" action="{{ url_for('task.task_submit_post', streamed_id=task.streamed_id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div id="inputScreen">
         <!--課題タイトル-->
         <!--データベースから持ってくる-->
@@ -78,6 +79,7 @@
           </div>
         </div>
       </div>
+      </form>
             
       <!-- 確認画面 -->
       <!--ここで提出ボタン押したらデータベースに登録するっていう処理-->
@@ -111,8 +113,5 @@
 <script src="{{ url_for('task.static', filename='js/js_stu/task_inq.js') }}"></script> 
 <!--Javascriptの読み込み（必ずこの位置）-->
 <script src="{{ url_for('task.static', filename='js/header.js') }}"></script> 
-<script>
-  const TASK_SUBMIT_URL = "{{ url_for('task.task_submit') }}"
-</script>
 </body>
 </html>

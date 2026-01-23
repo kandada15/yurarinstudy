@@ -1,66 +1,103 @@
-const modal = document.getElementById("detail-modal");
-const modalName = document.getElementById("modal-name");
-const modalAdmin = document.getElementById("modal-admin");
-const modalLimit = document.getElementById("modal-limit");
-const modalText = document.getElementById("modal-text");
+/**
+ * 課題一覧・詳細モーダル制御用JavaScript
+ * デバッグ用のログを追加し、確実に動作するように修正
+ */
 
+console.log("task_list.js has been loaded.");
+
+// 選択された課題IDを保持するグローバル変数
 let selectedTaskId = null;
 
-// function goDetail(taskId){
-//   window.location.href = `/task/student/tasks/${taskId}`;
-// }
+/**
+ * モーダルを開く関数
+ */
+function openModal(button) {
+    console.log("openModal called", button.dataset);
+    
+    try {
+        // 1. 必要な要素をすべて取得
+        const modal = document.getElementById("detail-modal");
+        const modalName = document.getElementById("modal-name");
+        const modalAdmin = document.getElementById("modal-admin");
+        const modalLimit = document.getElementById("modal-limit");
+        const modalText = document.getElementById("modal-text");
 
-// モーダルを開く
-// function openModal(taskId) {
-//   selectedTaskId = taskId;
-//   console.log("選択課題ID:", selectedTaskId);
-//   modal.style.display = "block";
-// }
+        if (!modal) {
+            console.error("Error: detail-modal element not found");
+            return;
+        }
 
-function openModal(button){
-  // // モーダルが存在しないページでは何もしない
-  // if (!modalName || !modalAdmin || !modalLimit || !modalText || !modal) {
-  //   console.error("モーダル要素が見つかりません");
-  //   return;
-  // }
-  selectedTaskId = button.dataset.id;
+        // 2. 選択された課題IDを保存
+        selectedTaskId = button.dataset.id;
 
-  modalName.textContent  = button.dataset.name;
-  modalAdmin.textContent = button.dataset.admin;
-  modalLimit.textContent = button.dataset.limit;
-  modalText.textContent  = button.dataset.text;
-  // document.getElementById("modal-name").textContent = button.dataset.name;
-  // document.getElementById("modal-admin").textContent = button.dataset.admin;
-  // document.getElementById("modal-limit").textContent = button.dataset.limit;
-  // document.getElementById("modal-text").textContent = button.dataset.text;
+        // 3. モーダルの各項目にデータをセット
+        if (modalName) modalName.textContent = button.dataset.name || "";
+        if (modalAdmin) modalAdmin.textContent = button.dataset.admin || "";
+        if (modalLimit) modalLimit.textContent = button.dataset.limit || "";
+        if (modalText) modalText.textContent = button.dataset.text || "";
 
-  modal.style.display = "block";
-};
+        // 4. モーダルを表示
+        modal.style.display = "block";
+        console.log("Modal should be visible now");
+        
+    } catch (error) {
+        console.error("An error occurred in openModal:", error);
+    }
+}
 
-// モーダルを閉じる
+/**
+ * モーダルを閉じる関数
+ */
 function closeModal() {
-  if(modal){
-    modal.style.display = "none";
-    // window.location.href = "/task/student/tasks";
-  }
-  
-};
+    console.log("closeModal called");
+    const modal = document.getElementById("detail-modal");
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
 
-// モーダルの外をクリックしたら閉じる
-window.addEventListener('click', function(e) {
-  if (e.target === modal) {
-    closeModal();
-    modal.style.display = "none";
-  }
-});
+/**
+ * 回答入力画面へ遷移する関数
+ */
+function submitAnswerForm() {
+    if (selectedTaskId) {
+        // HTML側で定義された BASE_INQ_URL があるか確認
+        // 無い場合はデフォルトのパスを使用
+        const baseUrl = typeof BASE_INQ_URL !== 'undefined' ? BASE_INQ_URL : '/student/tasks';
+        
+        // Flaskのルート定義に合わせてURLを組み立て
+        // /student/tasks/<id>/inq の形式にする
+        const url = `${baseUrl}/${selectedTaskId}/inq`;
+        
+        console.log("Redirecting to:", url);
+        window.location.href = url;
+    } else {
+        console.error("Error: selectedTaskId is null");
+    }
+}
 
 function nextToList() {
-  // 次ページ処理（仮）
-  console.log("nextToList clicked");
-};
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentPage = parseInt(urlParams.get('page')) || 1;
+    const baseUrl = typeof BASE_INQ_URL !== 'undefined' ? BASE_INQ_URL : window.location.pathname;
+    window.location.href = baseUrl + "?page=" + (currentPage + 1);
+}
 
+function backToList() {
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentPage = parseInt(urlParams.get('page')) || 1;
+    if (currentPage > 1) {
+        const baseUrl = typeof BASE_INQ_URL !== 'undefined' ? BASE_INQ_URL : window.location.pathname;
+        window.location.href = baseUrl + "?page=" + (currentPage - 1);
+    }
+}
 
-// 回答入力に飛ぶ
-function submitAnswerForm() {
-  window.location.href = `/student/tasks/${selectedTaskId}/inq`;
-};
+/**
+ * ウィンドウクリック時のイベントリスナー
+ */
+window.addEventListener('click', function(e) {
+    const modal = document.getElementById("detail-modal");
+    if (modal && e.target === modal) {
+        closeModal();
+    }
+});

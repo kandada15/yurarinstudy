@@ -131,20 +131,20 @@ class SubmissionDao:
             cursor = conn.cursor(dictionary=True)
 
             # sqlの実行
-            cursor.execute(existing_sql, (streamed_id, student_id, answer_text))
+            cursor.execute(existing_sql, (streamed_id, student_id))
             existing = cursor.fetchone()
+            cursor.close()
 
             # 提出物登録済 → 再提出不可
-            if existing and existing.get("submit_flag"):
+            if existing and existing.get("submit_flag") == 1:
                 return None
-            cursor.close()
             """
             新しくカーソルを立ち上げる。
             挿入時に通常のカーソル（辞書型は不使用）
             """
             # 実行＆コミット
             cursor = conn.cursor()
-            cursor.execute(sql, (answer_text, student_id))
+            cursor.execute(sql, (streamed_id, student_id, answer_text,))
             conn.commit()
             return cursor.lastrowid
 

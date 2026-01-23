@@ -103,6 +103,7 @@ class StreamedDao:
         SELECT
             s.streamed_id,
             s.streamed_name,
+            s.streamed_text,
             s.streamed_limit,
             admin.admin_name,
             s.sent_at
@@ -126,6 +127,7 @@ class StreamedDao:
         stream = StreamedForStudent(
           streamed_id=row["streamed_id"],
           streamed_name=row["streamed_name"],
+          streamed_text=row["streamed_text"],
           streamed_limit=row["streamed_limit"],
           admin_name=row["admin_name"],
           sent_at=row["sent_at"]

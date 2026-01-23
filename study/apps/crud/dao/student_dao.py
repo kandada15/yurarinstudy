@@ -26,10 +26,8 @@ class StudentDao:
                 student_id,
                 student_name,
                 password,
-                entry_year,
                 birthday,
-                entry_date,
-                is_alert,
+                alert,
                 group_id
             FROM student
             ORDER BY student_id ASC
@@ -49,10 +47,8 @@ class StudentDao:
                     student_id=row["student_id"],
                     student_name=row["student_name"],
                     password=row["password"],
-                    entry_year=row["entry_year"],
                     birthday=row["birthday"],
-                    entry_date=row["entry_date"],
-                    is_alert=bool(row["is_alert"]),
+                    alert=bool(row["alert"]),
                     group_id=row["group_id"]
                 )
                 students.append(student)

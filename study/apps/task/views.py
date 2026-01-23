@@ -1,8 +1,10 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from flask_login import login_required, current_user
 from .dao.streamed_dao import StreamedDao
 from .dao.submission_dao import SubmissionDao
+from apps.crud.dao.student_dao import StudentDao
 from apps.crud.dao.group_dao import GroupDao
+
 
 # Blueprintの作成
 task_bp = Blueprint(
@@ -20,6 +22,7 @@ task_bp = Blueprint(
 streamed_dao = StreamedDao()
 submission_dao = SubmissionDao()
 group_dao = GroupDao()
+student_dao = StudentDao()
 
 # ルーティングの定義
 """ 
@@ -134,25 +137,32 @@ def student_task_list():
   tasks = streamed_dao.find_all_for_student()
   """ 現在ログインしている学生の配信済み課題の情報を取得 """
   """ 管理者を取ってくるものが記入されていない。＝配信者を持ってこれない """
+  # ページネーションの設定
+  page = request.args.get('page', 1, type=int)
+  per_page = 4 # 1ページあたりの表示件数
+  offset = (page - 1) * per_page
+
+  # DAOにoffsetとlimitを渡して取得するように変更
+  all_tasks = streamed_dao.find_all_for_student()
+  # 簡易的なページネーション処理
+  tasks = all_tasks[offset : offset + per_page]
+
+  # 次のページがあるかどうかの判定
+  has_next = len(all_tasks) > offset + per_page
+  has_prev = page > 1
+
   
-  return render_template("task_stu/task_list.html", tasks=tasks, mode="send")
+  return render_template("task_stu/task_list.html", tasks=tasks, mode="send", page=page, has_next=has_next, has_prev=has_prev)
 
 """
 stream_list_dataのdetailを取り出したい。
 
 """
-@task_bp.route("/student/tasks/<int:streamed_id>", methods=["GET"])
-# @login_required
-def student_task_detail(streamed_id):
-  task = streamed_dao.find_by_id(streamed_id)
-  # streamed_data = streamed_dao.find_all()
-  # stream_list_data = {
-  #   "streamed_name": request.form.get("streamed_name"), 
-  #   "streamed_text": request.form.get("streamed_text"),
-  #   "streamed_limit": request.form.get("streamed_limit"),
-  #   "admin_name": request.form.get("admin_name")
-  # }
-  return render_template("task_stu/task_list.html", task=task, mode="detail")
+# @task_bp.route("/student/tasks/<int:streamed_id>", methods=["GET"])
+# # @login_required
+# def student_task_detail(streamed_id):
+#   task = streamed_dao.find_by_id(streamed_id)
+#   return render_template("task_stu/task_list.html", task=task, mode="detail")
 
 @task_bp.route("/student/tasks/<int:streamed_id>/inq", methods=["GET"])
 # @login_required
@@ -162,8 +172,9 @@ def task_submit(streamed_id):
 
 @task_bp.route("/student/tasks/<int:streamed_id>/submit", methods=["POST"])
 def task_submit_post(streamed_id):
-  answer_text = request.form.get["answer_text"]
-  student_id = current_user.student_id
+  answer_text = request.form.get("answer_text")
+  # student_id = current_user.student_id
+  # student_id = session.get("student_id")
 
   submission_dao.insert(
     streamed_id=streamed_id,
