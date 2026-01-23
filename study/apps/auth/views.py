@@ -4,10 +4,17 @@ from apps.crud.models.model_admin import Admin
 from apps.crud.models.model_student import Student 
 from apps.writing.models.model_progress import Progress
 
-# Blueprintの設定
-# template_folder='templates' を指定することで apps/auth/templates を参照します
-auth_bp = Blueprint('auth', __name__, template_folder='templates', static_folder='static')
+# Blueprintの作成
+auth_bp = Blueprint(
+    'auth',
+    __name__,
+    # 使用するテンプレートフォルダ
+    template_folder='templates',
+    # 専用の静的ファイル(CSS,JS,画像など)を置くフォルダ
+    static_folder='static'
+    )
 
+# ルーティングの定義
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     # エラーメッセージの初期化

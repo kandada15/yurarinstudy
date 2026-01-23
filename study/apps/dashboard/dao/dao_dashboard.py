@@ -55,10 +55,10 @@ class Dashboard_DAO:
                 -- 返却済課題(遷移するだけ)
 
             FROM DASHBOARD d
-            JOIN ADMIN a ON d.ADMIN_ID = a.ADMIN_ID
-            JOIN GROUP g ON d.GROUP_ID = g.GROUP_ID
-            JOIN PROGRESS p ON d.PROGRESS_ID = p.PROGRESS_ID
-            JOIN TASK t ON d.TASK_ID = t.TASK_ID
+            INNER JOIN ADMIN a ON d.ADMIN_ID = a.ADMIN_ID
+            INNER JOIN GROUP g ON d.GROUP_ID = g.GROUP_ID
+            INNER JOIN PROGRESS p ON d.PROGRESS_ID = p.PROGRESS_ID
+            INNER JOIN TASK t ON d.TASK_ID = t.TASK_ID
             OIN SUBMISSION s ON d.SUBMISSION_ID = s.SUBMISSION_ID;
         """
 

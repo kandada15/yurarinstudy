@@ -1,4 +1,4 @@
-from apps.app import db 
+from apps.extensions import db
 
 # Progress テーブルモデル作成
 class Progress(db.Model):

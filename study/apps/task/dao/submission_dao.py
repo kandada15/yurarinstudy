@@ -152,3 +152,34 @@ class SubmissionDao:
             # 例外の有無に関わらず、最後に必ずクローズする
             cursor.close()
             conn.close()
+
+import mysql.connector
+from apps.config.db_config import DB_CONFIG
+
+class SubmissionDao:
+    def __init__(self, config=None):
+        self.config = config or DB_CONFIG
+
+    def _get_connection(self):
+        return mysql.connector.connect(**self.config)
+
+    def get_stats(self):
+        """提出済み数と未添削数を一気に取得"""
+        sql = """
+            SELECT 
+                COUNT(*) AS submitted_count,
+                SUM(CASE WHEN is_checked = 0 THEN 1 ELSE 0 END) AS unchecked_count
+            FROM submission
+        """
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute(sql)
+            row = cursor.fetchone()
+            return {
+                "submitted_count": row["submitted_count"] if row else 0,
+                "unchecked_count": row["unchecked_count"] if row else 0
+            }
+        finally:
+            cursor.close()
+            conn.close()
