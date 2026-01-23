@@ -1,15 +1,16 @@
 from apps.extensions import db
-from datetime import datetime
 
 # Admin テーブルモデル作成
 class Admin(db.Model):
     __tablename__ = "admin"
 
     # 管理者ID（主キー）
-    admin_id = db.Column("admin_id", db.String(10), primary_key=True)
+    admin_id = db.Column(db.String(10), primary_key=True)
     # 管理者名
-    admin_name = db.Column("admin_name", db.String(50), nullable=False)
+    admin_name = db.Column(db.String(50), nullable=False)
     # パスワード
-    password = db.Column("password", db.String(255), nullable=False)
-    #生年月日
-    birthday = db.Column("birthday", db.Date, nullable=False)
+    password = db.Column(db.String(12), nullable=False)
+    # 生年月日
+    birthday = db.Column(db.Date, nullable=False)
+    # 登録日時
+    created_at = db.Column(db.DateTime, nullable=True)

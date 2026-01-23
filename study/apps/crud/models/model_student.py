@@ -1,19 +1,20 @@
 from apps.extensions import db
-from datetime import datetime
 
 # Student テーブルモデル作成
 class Student(db.Model):
     __tablename__ = 'student'
     
     # 受講者ID（主キー）
-    student_id = db.Column("student_id", db.String(10), primary_key=True)
+    student_id = db.Column(db.String(10), primary_key=True)
     # 受講者名
-    student_name = db.Column("student_name", db.String(50), nullable=False)
+    student_name = db.Column(db.String(50), nullable=False)
     # パスワード
-    password = db.Column("password", db.String(12)) 
+    password = db.Column(db.String(12)) 
     # 生年月日
-    birthday = db.Column("birthday", db.Date, nullable=False)
+    birthday = db.Column(db.Date, nullable=False)
+    # 登録日時
+    created_at = db.Column(db.Datetime, nullable=True)
     # 通知フラグ
-    alert = db.Column("alert", db.Boolean, nullable=False, default=False)
+    alert = db.Column(db.Boolean, nullable=False, default=False)
     # グループID（外部キー）
-    group_id = db.Column("group_id", db.Integer, db.ForeignKey('group.group_id'))
+    group_id = db.Column(db.Integer, db.ForeignKey('group.group_id'))
