@@ -1,20 +1,19 @@
 import mysql.connector
 from mysql.connector import MySQLConnection
-from typing import Text
+from typing import List, Text
 from datetime import datetime
-
-
-from apps.task.models.model_streamed import Streamed, StreamedForStudent, StreamedForStudentDetail
+from apps.task.models.model_streamed import Streamed
+from apps.task.models.model_streamed import Streamed, StreamedForStudent
 from apps.config.db_config import DB_CONFIG
 
 # MySQLに直接アクセスするDAOクラス※steamedテーブル専用
 class StreamedDao:
   
-  # 初期化処理
+  # 初期化処理(DB接続設定)
   def __init__(self, config: dict | None = None) -> None:
     self.config = config or DB_CONFIG
 
-  # DB接続作成処理
+  # DB接続メソッド(共通処理)
   def _get_connection(self) -> MySQLConnection:
     return mysql.connector.connect(**self.config)
   
@@ -122,7 +121,6 @@ class StreamedDao:
       cursor.execute(sql)
       rows = cursor.fetchall()
 
-      # StreamedForStudentオブジェクトに変換
       streamed: list[StreamedForStudent] = []
       for row in rows:
         stream = StreamedForStudent(
@@ -136,11 +134,11 @@ class StreamedDao:
 
       return streamed
     finally:
-      # 例外の有無に関わらず、最後に必ずクローズする
       cursor.close()
       conn.close()
 
-  def find_by_id(self, streamed_id: int) -> StreamedForStudentDetail | None:
+  # streamed ID検索
+  def find_by_id(self, streamed_id):
     sql = """
         SELECT
             streamed_id,
@@ -185,38 +183,3 @@ class StreamedDao:
       finally:
           cursor.close()
           conn.close()
-=======
-            s.streamed_id,
-            s.streamed_name,
-            s.streamed_text,
-            s.streamed_limit,
-            admin.admin_name
-        FROM streamed AS s
-        LEFT OUTER JOIN `group` AS g
-          ON s.group_id = g.group_id
-        LEFT OUTER JOIN admin 
-          ON g.created_by_admin_id = admin.admin_id
-        WHERE s.streamed_id = %s
-    """
-    conn = self._get_connection()
-    try:
-      # cursor(dictionary=True) にし、SELECT文の結果を辞書型で受け取る
-      # row[""],row[""]でアクセス可能
-      cursor = conn.cursor(dictionary=True)
-
-      # sqlの実行
-      cursor.execute(sql, (streamed_id,))
-
-      # 全行を取得
-      row = cursor.fetchone()
-      return StreamedForStudentDetail(
-        streamed_id=row["streamed_id"],
-        streamed_name=row["streamed_name"],
-        streamed_text=row["streamed_text"],
-        streamed_limit=row["streamed_limit"],
-        admin_name=row["admin_name"]
-      )
-    finally:
-      # 例外処理なしで、カーソルと接続を閉じる
-      cursor.close()
-      conn.close()
