@@ -5,8 +5,7 @@ from mysql.connector import MySQLConnection
 from typing import List, Text
 from datetime import datetime
 
-from apps.task.models.model_streamed import Streamed, StreamedForStudent
-from apps.task.models.model_task import Task
+from apps.task.models.model_streamed import Streamed, StreamedForStudent, StreamedForStudentDetail
 from apps.config.db_config import DB_CONFIG
 
 class StreamedDao:
@@ -147,17 +146,43 @@ class StreamedDao:
       cursor.close()
       conn.close()
 
-  def find_by_id(self, streamed_id):
+  def find_by_id(self, streamed_id: int) -> StreamedForStudentDetail | None:
     sql = """
         SELECT
-            streamed_id,
-            streamed_name,
-            streamed_text,
-            streamed_limit,
-            created_by_admin_name
-        FROM streamed
-        WHERE streamed_id = %s
+            s.streamed_id,
+            s.streamed_name,
+            s.streamed_text,
+            s.streamed_limit,
+            admin.admin_name
+        FROM streamed AS s
+        LEFT OUTER JOIN `group` AS g
+          ON s.group_id = g.group_id
+        LEFT OUTER JOIN admin 
+          ON g.created_by_admin_id = admin.admin_id
+        WHERE s.streamed_id = %s
     """
+    conn = self._get_connection()
+    try:
+      # cursor(dictionary=True) にし、SELECT文の結果を辞書型で受け取る
+      # row[""],row[""]でアクセス可能
+      cursor = conn.cursor(dictionary=True)
+
+      # sqlの実行
+      cursor.execute(sql, (streamed_id,))
+
+      # 全行を取得
+      row = cursor.fetchone()
+      return StreamedForStudentDetail(
+        streamed_id=row["streamed_id"],
+        streamed_name=row["streamed_name"],
+        streamed_text=row["streamed_text"],
+        streamed_limit=row["streamed_limit"],
+        admin_name=row["admin_name"]
+      )
+    finally:
+      # 例外処理なしで、カーソルと接続を閉じる
+      cursor.close()
+      conn.close()
     
 
   """ 関数より持ってきたい情報を明確にしてください """

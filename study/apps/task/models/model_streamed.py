@@ -20,3 +20,12 @@ class StreamedForStudent:
     streamed_limit: datetime  
     sent_at: datetime
     admin_name: str | None
+
+@dataclass
+class StreamedForStudentDetail:
+    __tablename__ = "streamedforstudent"
+    streamed_id : int
+    streamed_name: str
+    streamed_text: str
+    streamed_limit: datetime  
+    admin_name: str | None

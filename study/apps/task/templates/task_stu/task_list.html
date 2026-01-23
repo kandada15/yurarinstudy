@@ -48,17 +48,27 @@
 
   <div class="app-container">
     <div class="content-wrapper">
-      <form method="get" action="{% if mode == 'detail' %}
-                                    {{ url_for('task.student_task_submit') }}
-                                  {% endif %}">
-      {% if mode != "detail" and mode != "submit" %}
+      <!-- <form method="get" action="{% if mode == 'detail' %}
+                                    {{ url_for('task.task_submit', streamed_id=task.streamed_id) }}
+                                  {% endif %}"> -->
+      <!-- {% if mode != "detail" and mode != "submit" %} -->
         <h1>課題一覧</h1>
 
         <!--Flaskで繰り返し表示する用に変える必要-->
         {% if tasks %}
           <div class="task-grid">
             {% for task in tasks %}
-              <button type="button" class="task-card" onclick="openModal(this.id)" id="{{ task.streamed_id }}">
+              <button 
+              type="button" 
+              class="task-card" 
+              onclick="openModal(this)" 
+              data-id="{{ task.streamed_id }}"
+              data-name="{{ task.streamed_name }}"
+              data-admin="{{ task.admin_name }}"
+              data-limit="{{ task.streamed_limit }}"
+              data-text="{{ task.streamed_text }}"
+              >
+
                 <div class="grou_content">
                 <!--データベースから持ってくる。下の例文のようにしたら文字と一緒にひょじできる-->
                 <!--例文：配信日{{データベースから持ってくる構文みたいな}}-->
@@ -86,65 +96,46 @@
      </div>
 
      <!--課題内容表示 以下よりformタグ？-->
-      {% elif mode == "detail" %}
-     <div id="detail-modal" class="modal">
-      <div class="modal-content">
-      <button class="modal-close" onclick="closeModal()">×</button>
-      <div class="modal-header">
-       <h1>課題詳細</h1>
-      </div>
-      <div class="modal-header">
-        <!--データベースから持ってくる{}-->
-        <h2 class="modal-title">{{ task.streamed_name }}</h2>
-        <div class="modal-meta">
-          <div class="modal-meta-item">
-            <span class="modal-meta-label">配信者:</span>
-            <!--データベースから持ってくる{}-->
-            <span>{{ task.admin_name }}</span>
+      <!-- {% elif mode == "detail" %} -->
+      <div id="detail-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+          <button class="modal-close" onclick="closeModal()">×</button>
+          <div class="modal-header">
+            <h1>課題詳細</h1>
           </div>
-          <div class="modal-meta-item">
-            <span class="modal-meta-label">提出期限:</span>
+          <div class="modal-header">
             <!--データベースから持ってくる{}-->
-            <span>{{ task.streamed_limit }}</span>
+            <h2 id="modal-name" class="modal-title"></h2>
+            <div class="modal-meta">
+            <div class="modal-meta-item">
+              <span class="modal-meta-label">配信者:</span>
+              <!--データベースから持ってくる{}-->
+              <span id="modal-admin"></span>
+            </div>
+            <div class="modal-meta-item">
+              <span class="modal-meta-label"> 提出期限:</span>
+              <!--データベースから持ってくる{}-->
+              <span id="modal-limit"></span>
+              <!-- <span>{{ task.streamed_limit }}</span> -->
+            </div>
           </div>
+         </div>
         </div>
-      </div>
-      <div class="modal-body">
-        <label class="modal-body-label">問題文</label>
-        <div class="modal-text">
+        <div class="modal-body">
+          <label class="modal-body-label">問題文</label>
+          <div id="modal-text" class="modal-text">
           <!--データベースから持ってくる{}-->
-          {{ task.streamed_text }}
+          <!-- {{ task.streamed_text }} -->
         </div>
+        <button type="button" class="btn-answer" onclick="submitAnswerForm()">回答する</button>
       </div>
       <!--jsにリンクあり、FLASK仕様変更求-->
-      <a href="{{ url_for('task.task_submit', streamed_id=task.streamed_id) }}"><button type="button" class="btn-answer">回答する</button></a>
-
-      <script>
-        const modal = document.getElementById("detail-modal");
-        // let selectedTaskId = null;
-        // モーダルを開く
-        function openModal() {
-        // selectedTaskId = taskId;
-        modal.style.display = "block";
-        }
-
-        // モーダルを閉じる
-        function closeModal() {
-        modal.style.display = "none";
-        }
-
-        // モーダルの外をクリックしたら閉じる
-        window.addEventListener('click', function(e) {
-          if (e.target === modal) {
-          modal.style.display = "none";
-        }
-        });
-      </script>
+      <!-- <a href="{{ url_for('task.task_submit', streamed_id=task.streamed_id) }}"><button type="button" class="btn-answer">回答する</button></a> -->
     </div>
-    {% endif %}
+    <!-- {% endif %} -->
   </div>
   
-</form>
+<!-- </form> -->
 
 <!--Javascriptの読み込み（必ずこの位置）-->
 <script src="{{ url_for('task.static', filename='js/js_stu/task_list.js') }}"></script> 
