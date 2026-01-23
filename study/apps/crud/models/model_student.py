@@ -13,7 +13,7 @@ class Student(db.Model):
     # 生年月日
     birthday = db.Column(db.Date, nullable=False)
     # 登録日時
-    created_at = db.Column(db.Datetime, nullable=True)
+    created_at = db.Column(db.DateTime, nullable=True)
     # 通知フラグ
     alert = db.Column(db.Boolean, nullable=False, default=False)
     # グループID（外部キー）
