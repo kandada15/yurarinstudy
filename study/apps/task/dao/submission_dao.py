@@ -8,12 +8,12 @@ from apps.config.db_config import DB_CONFIG
 # MySQLに直接アクセスするDAOクラス※submissionテーブル専用
 class SubmissionDao:
 
-    # 初期化処理(DB接続設定)
+    # 初期化処理
     def __init__(self, config: dict | None = None) -> None:
         # 接続情報を保持（渡されなければ config.DB_CONFIG を使う）
         self.config = config or DB_CONFIG
 
-    # DB接続メソッド(共通処理)
+    # DB接続作成処理
     def _get_connection(self) -> MySQLConnection:
         return mysql.connector.connect(**self.config)
 
@@ -149,6 +149,7 @@ class SubmissionDao:
             return cursor.lastrowid
 
         finally:
+            # 例外の有無に関わらず、最後に必ずクローズする
             cursor.close()
             conn.close()
 

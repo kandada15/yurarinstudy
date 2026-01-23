@@ -1,29 +1,28 @@
-# Returned モデルを MySQL (returned テーブル) とやり取りする DAO クラス
-
 import mysql.connector
 from mysql.connector import MySQLConnection
 from apps.task.models.model_returned import Returned
 from apps.config.db_config import DB_CONFIG
 
+# MySQLに直接アクセスするDAOクラス※returnedテーブル専用
 class ReturnedDao:
-  """ Returned テーブルにアクセスするためのDAOクラス """
   
+  # 初期化処理
   def __init__(self, config: dict | None = None) -> None:
     # 接続情報を保持（渡されなければ config.DB_CONFIG を使う）
     self.config = config or DB_CONFIG
 
+  # DB接続作成処理
   def _get_connection(self) -> MySQLConnection:
     """ MySQLとの接続を新しく作成し、返す。 """
     return mysql.connector.connect(**self.config)
   
-  # Taskテーブルの利用方法的に違う可能性が高いので、サンプルとして一旦の配置
+  # 全件取得
   def find_all(self) -> list[Returned]:
     """ 
     returned テーブルの全レコードを取得
     Returned オブジェクトのリストとして返す。
+    返却済課題情報を返却済課題ID順で取得
     """
-
-    # ここに取得したいSQL文（SELECT）
     sql = """
         SELECT
             returned_id,
@@ -35,18 +34,15 @@ class ReturnedDao:
         ORDER BY returned_id ASC
     """
 
+    # クラス内部の_get_connection()を使ってMySQL接続を取得
+    # 結果を辞書形式で取得
     conn = self._get_connection()
     try:
-      # cursor(dictionary=True) にし、SELECT文の結果を辞書型で受け取る
-      # row[""],row[""]でアクセス可能
       cursor = conn.cursor(dictionary=True)
-
-      # sqlの実行
       cursor.execute(sql)
-
-      # 全行を取得
       rows = cursor.fetchall()
 
+      # Returnedオブジェクトに変換
       returned: list[Returned] = []
       for row in rows:
         one_return = Returned(
@@ -64,9 +60,6 @@ class ReturnedDao:
 
       return returned
     finally:
-      # 例外処理なしで、カーソルと接続を閉じる
+      # 例外の有無に関わらず、最後に必ずクローズする
       cursor.close()
       conn.close()
-          
-        
-        

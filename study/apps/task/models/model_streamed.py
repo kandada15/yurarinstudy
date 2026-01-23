@@ -18,13 +18,17 @@ class Streamed(db.Model):
 @dataclass
 class StreamedForStudent:
     __tablename__ = "streamedforstudent"
-    # 配信済課題ID
     streamed_id : int
-    # 課題名
     streamed_name: str
-    # 課題提出期限
     streamed_limit: datetime  
-    # 提出日時
     sent_at: datetime
-    # 管理者名
+    admin_name: str | None
+
+@dataclass
+class StreamedForStudentDetail:
+    __tablename__ = "streamedforstudentdetail"
+    streamed_id : int
+    streamed_name: str
+    streamed_text: str
+    streamed_limit: datetime  
     admin_name: str | None

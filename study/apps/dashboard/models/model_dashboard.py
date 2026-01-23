@@ -1,22 +1,20 @@
-# models/model_dashboard.py
-# dashboard テーブル1行分を表現するモデルクラス
+from apps.extensions import db
 
 # Dashboard テーブルモデル作成
-class Dashboard:
-    def __init__(self, dashboard_id: int, admin_id: str, group_id: int, submission_id: int, task_id: int, progress_id: int):
-        # ダッシュボードID（主キー）
-        self.dashboard_id = dashboard_id
-        # 管理者ID（外部キー）
-        self.admin_id = admin_id
-        # グループID（外部キー）
-        self.group_id = group_id
-        # 提出物ID（外部キー）
-        self.submission_id = submission_id
-        # 課題ID（外部キー）
-        self.task_id = task_id
-        # 学習進捗ID（外部キー）
-        self.progress_id = progress_id
-        
-    # デバッグ時に見やすい文字列表現
-    def __repr__(self) -> str:
-        return f"Lesson(dashboard_id={self.dashboard_id}, admin_id={self.admin_id!r}, group_id={self.group_id}, submission_id={self.submission_id},task_id={self.task_id}, progress_id={self.progress_id})"
+class Dashboard(db.Model):
+    __tablename__ = "dashboard"
+
+    # ダッシュボードID（主キー）
+    dashboard_id = db.Column(db.Integer(10), primary_key=True)
+    # 管理者ID（外部キー）
+    admin_id = db.Column(db.String(10), db.ForeignKey('admin.admin_id'))
+    # グループID（外部キー）
+    group_id = db.Column(db.Integer(10), db.ForeignKey('group.group_id'))
+    # 配信済課題ID（外部キー）
+    streamed_id = db.Column(db.Integer(10), db.ForeignKey('streamed.streamed_id'))
+    # 提出物ID（外部キー）
+    submission_id = db.Column(db.Integer(10), db.ForeignKey('submission.submission_id'))
+    # 学習進捗ID（外部キー）
+    progress_id = db.Column(db.Integer(10), db.ForeignKey('progress.progress_id'))
+    # 返却済課題ID（外部キー）
+    returned_id = db.Column(db.Integer(10), db.ForeignKey('returned.returned_id'))
