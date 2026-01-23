@@ -149,3 +149,37 @@ class StreamedDao:
         FROM streamed
         WHERE streamed_id = %s
     """
+  def get_streamed_count(self, admin_id: str) -> int:
+        """管理者が配信した課題の総数をカウント"""
+        sql = """
+            SELECT COUNT(*) AS count 
+            FROM streamed AS s
+            JOIN `group` AS g ON s.group_id = g.group_id
+            WHERE g.created_by_admin_id = %s
+        """
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute(sql, (admin_id,))
+            row = cursor.fetchone()
+            return row["count"] if row else 0
+        finally:
+            cursor.close()
+            conn.close()
+
+  def get_weekly_deadline_count(self) -> int:
+      """今日から1週間以内に締切が来る課題の数をカウント"""
+      sql = """
+          SELECT COUNT(*) AS count 
+          FROM streamed 
+          WHERE streamed_limit BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 7 DAY)
+      """
+      conn = self._get_connection()
+      try:
+          cursor = conn.cursor(dictionary=True)
+          cursor.execute(sql)
+          row = cursor.fetchone()
+          return row["count"] if row else 0
+      finally:
+          cursor.close()
+          conn.close()
