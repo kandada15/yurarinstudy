@@ -48,55 +48,46 @@
 
   <div class="app-container">
     <div class="content-wrapper">
-      <!-- <form method="get" action="{% if mode == 'detail' %}
-                                    {{ url_for('task.task_submit', streamed_id=task.streamed_id) }}
-                                  {% endif %}"> -->
-      <!-- {% if mode != "detail" and mode != "submit" %} -->
-        <h1>課題一覧</h1>
+      <h1>課題一覧</h1>
 
-        <!--Flaskで繰り返し表示する用に変える必要-->
-        {% if tasks %}
-          <div class="task-grid">
-            {% for task in tasks %}
-              <button 
-              type="button" 
-              class="task-card" 
-              onclick="openModal(this)" 
-              data-id="{{ task.streamed_id }}"
-              data-name="{{ task.streamed_name }}"
-              data-admin="{{ task.admin_name }}"
-              data-limit="{{ task.streamed_limit }}"
-              data-text="{{ task.streamed_text }}"
-              >
+      <!--Flaskで繰り返し表示する用に変える必要-->
+      {% if tasks %}
+        <div class="task-grid">
+          {% for task in tasks %}
+            <button 
+            type="button" 
+            class="task-card" 
+            onclick="openModal(this)" 
+            data-id="{{ task.streamed_id }}"
+            data-name="{{ task.streamed_name }}"
+            data-admin="{{ task.admin_name }}"
+            data-limit="{{ task.streamed_limit }}"
+            data-text="{{ task.streamed_text }}"
+            >
 
-                <div class="grou_content">
+              <div class="grou_content">
                 <!--データベースから持ってくる。下の例文のようにしたら文字と一緒にひょじできる-->
                 <!--例文：配信日{{データベースから持ってくる構文みたいな}}-->
                 <label>配信日{{ task.sent_at }}</label>
-                <!--データベースから持ってくる{}-->
                 <p class="task_title">{{ task.streamed_name }}</p><br>
-                <!--データベースから持ってくる{}-->
-                <!-- 配信者に関してはDAOの問題があるので見直し -->
                 <p>配信者：{{ task.admin_name }}</p>
-                <!--データベースから持ってくる{}-->
                 <p>提出期限：{{ task.streamed_limit }}</p>
                 </div>
-              </button>
-            {% endfor %}
-          </div>
-        {% else %}
-          <p class="no_task">現在課題はありません</p>
-        {% endif %}
-      
-        <div class="pagination">
-          <button type="button" class="btn-back" onclick="backToList()"></button>
-          <button type="button" class="btn-next" onclick="nextToList()"></button>
+            </button>
+          {% endfor %}
         </div>
+      {% else %}
+        <p class="no_task">現在課題はありません</p>
+      {% endif %}
+        <!-- ページネーション -->
+      <div class="pagination">
+        <button type="button" class="btn-back" onclick="backToList()"></button>
+        <button type="button" class="btn-next" onclick="nextToList()"></button>
       </div>
-     </div>
+    </div>
+    
 
-     <!--課題内容表示 以下よりformタグ？-->
-      <!-- {% elif mode == "detail" %} -->
+     <!--課題内容表示-->
       <div id="detail-modal" class="modal" style="display: none;">
         <div class="modal-content">
           <button class="modal-close" onclick="closeModal()">×</button>
@@ -107,42 +98,47 @@
             <!--データベースから持ってくる{}-->
             <h2 id="modal-name" class="modal-title"></h2>
             <div class="modal-meta">
-            <div class="modal-meta-item">
-              <span class="modal-meta-label">配信者:</span>
-              <!--データベースから持ってくる{}-->
-              <span id="modal-admin"></span>
+              <div class="modal-meta-item">
+                <span class="modal-meta-label">配信者:</span>
+                <!--データベースから持ってくる{}-->
+                <span id="modal-admin"></span>
+              </div>
+              <div class="modal-meta-item">
+                <span class="modal-meta-label"> 提出期限:</span>
+                <!--データベースから持ってくる{}-->
+                <span id="modal-limit"></span>
+              </div>
             </div>
-            <div class="modal-meta-item">
-              <span class="modal-meta-label"> 提出期限:</span>
+            <div class="modal-body">
+              <label class="modal-body-label">問題文</label>
+              <div id="modal-text" class="modal-text">
               <!--データベースから持ってくる{}-->
-              <span id="modal-limit"></span>
-              <!-- <span>{{ task.streamed_limit }}</span> -->
             </div>
-          </div>
+            <button type="button" class="btn-answer" onclick="submitAnswerForm()">回答する</button>
          </div>
         </div>
-        <div class="modal-body">
-          <label class="modal-body-label">問題文</label>
-          <div id="modal-text" class="modal-text">
-          <!--データベースから持ってくる{}-->
-          <!-- {{ task.streamed_text }} -->
-        </div>
-        <button type="button" class="btn-answer" onclick="submitAnswerForm()">回答する</button>
       </div>
       <!--jsにリンクあり、FLASK仕様変更求-->
-      <!-- <a href="{{ url_for('task.task_submit', streamed_id=task.streamed_id) }}"><button type="button" class="btn-answer">回答する</button></a> -->
-    </div>
-    <!-- {% endif %} -->
+      
   </div>
-  
-<!-- </form> -->
 
 <!--Javascriptの読み込み（必ずこの位置）-->
 <script src="{{ url_for('task.static', filename='js/js_stu/task_list.js') }}"></script> 
 <!--Javascriptの読み込み（必ずこの位置）-->
 <script src="{{ url_for('task.static', filename='js/header.js') }}"></script> 
-<!-- <script>
-  const TASK_INQ_URL = `/student/tasks/${selectedTaskId}/inq`
-</script> -->
+<script>
+  /**
+   * FlaskのBlueprint環境下ではURLが動的に変わるため、
+   * HTML側で正しいベースURLを定義してJavaScriptに渡します。
+   */
+  // 回答画面へのベースURL（末尾のIDを除いた部分）
+  // /task/student/tasks/
+  const BASE_INQ_URL = "{{ url_for('task.student_task_list') }}"; 
+
+  // ページ遷移用の関数
+  function changePage(page) {
+    window.location.href = `${BASE_INQ_URL}?page=${page}`;
+  }
+</script>
 </body>
 </html>

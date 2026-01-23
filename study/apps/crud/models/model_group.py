@@ -9,4 +9,4 @@ class Group(db.Model):
     # グループ名
     group_name = db.Column("group_name", db.String(50), nullable=False)
     # 管理者ID（外部キー）
-    admin_id = db.Column("created_by_admin_id", db.String(10), db.ForeignKey('admin.admin_id'))
+    created_by_admin_id = db.Column("created_by_admin_id", db.String(10), db.ForeignKey('admin.admin_id'))
