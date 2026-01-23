@@ -9,12 +9,12 @@ from config.db_config import DB_CONFIG  # ★ これを追加
 # MySQLに直接アクセスするDAOクラス※progressテーブル専用
 class Dashboard_DAO:
     
-    # 初期化処理(DB接続設定)
+    # 初期化処理
     def __init__(self, config: dict | None = None) -> None:
         # DB接続情報を受け取る（指定がなければ DB_CONFIG を使う）
         self.config = config or DB_CONFIG
 
-    # DB接続メソッド(共通処理)
+    # DB接続作成処理
     def _get_connection(self) -> MySQLConnection:
         """MySQL への接続を新しく1つ作って返す"""
         return mysql.connector.connect(**self.config)

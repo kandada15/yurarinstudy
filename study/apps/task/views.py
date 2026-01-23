@@ -1,29 +1,27 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-# 以下、11/27作成
 from flask_login import login_required, current_user
-
-from .dao.task_dao import TaskDao
 from .dao.streamed_dao import StreamedDao
 from .dao.submission_dao import SubmissionDao
-# 以下、11/27作成時
 from apps.crud.dao.group_dao import GroupDao
 
-# アプリの作成
+# Blueprintの作成
 task_bp = Blueprint(
   "task",
   __name__,
+  # 使用するテンプレートフォルダ
   template_folder="templates",
+  # 専用の静的ファイル(CSS,JS,画像など)を置くフォルダ
   static_folder="static"
 )
 
 """ グループに関することは、後ほど作成！！ """
 
 # DAO-インスタンス化
-task_dao = TaskDao()
 streamed_dao = StreamedDao()
 submission_dao = SubmissionDao()
 group_dao = GroupDao()
 
+# ルーティングの定義
 """ 
 課題作成画面(入力フォーム) 
 入力項目: 課題名、問題文、提出期限、配信先グループ
