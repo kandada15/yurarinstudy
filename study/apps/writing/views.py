@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, session, jsonify
+from flask import Blueprint, render_template, request, session, jsonify, redirect, url_for
 from apps.app import db 
 from apps.writing.models import Progress 
 
@@ -12,6 +12,20 @@ writing_bp = Blueprint(
     static_folder='static'
 )
 
+# ============================================
+# ★ ログインチェックの共通処理
+# ============================================
+@writing_bp.before_request
+def before_request():
+    # セッションに user_id がない場合は、ログイン画面へ強制的に飛ばす
+    if 'user_id' not in session:
+        # 'auth.login' の部分は、実際のログイン画面のエンドポイント名に合わせてください
+        return redirect(url_for('auth.login'))
+
+# ============================================
+# 1. ライティングトップ
+# ============================================
+=======
 # ルーティングの定義
 @writing_bp.route('/')
 def index():

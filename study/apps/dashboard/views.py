@@ -1,55 +1,33 @@
 from flask import Blueprint, render_template, session, redirect, url_for
-from apps.extensions import db
-from apps.task.models.model_streamed import Streamed
-from apps.task.models.model_submission import Submission
-from apps.crud.models.model_admin import Admin
-from apps.crud.models.model_group import Group
-from apps.crud.models.model_task import TaskStreamed
+from apps.task.dao.streamed_dao import StreamedDao
+from apps.task.dao.submission_dao import SubmissionDao
 
-# Blueprintの作成
-dashboard_bp = Blueprint(
-    'dashboard', 
-    __name__, 
-    # 使用するテンプレートフォルダ
-    template_folder='templates',
-    # 専用の静的ファイル(CSS,JS,画像など)を置くフォルダ
-    static_folder='static'
-)
+dashboard_bp = Blueprint('dashboard', __name__, template_folder='templates', static_folder='static')
 
-# ルーティングの定義
 @dashboard_bp.route('/')
 def index():
-    # セッション確認
-    if 'user_id' not in session or session.get('user_type') != 'admin':
-        return redirect(url_for('auth.login'))
-
-    login_admin_id = session['user_id']
-    
-    # 1. 管理者情報の取得
-    admin = Admin.query.filter_by(admin_id=login_admin_id).first()
-    
-    # 2. 自分が担当するグループ一覧の取得
-    groups = Group.query.filter_by(admin_id=login_admin_id).all()
-
-    # 3. テンプレートに渡すデータ
-    # ※DBに実在するカラム名（admin_name等）に合わせます
-    return render_template(
-        'dashboard/dashboard.html', 
-        admin=admin, 
-        groups=groups,
-        streamed_count=10,    # 以下、まだロジックがないものは仮の数値
-        unchecked_count=5,
-        submitted_count=20,
-        unsubmitted_count=2,
-        weekly_deadline_count=1
-    )
-
-task_bp = Blueprint('task', __name__, template_folder='templates', static_folder='static')
-
-@task_bp.route('/list')
-def list():
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
-    tasks = TaskStreamed.query.order_by(TaskStreamed.streamed_date.desc()).all()
+        
+    admin_id = session.get('user_id')
+    
+    s_dao = StreamedDao()
+    sub_dao = SubmissionDao()
+    
+    streamed_count = s_dao.get_streamed_count(admin_id)
+    weekly_deadline = s_dao.get_weekly_deadline_count()
+    sub_stats = sub_dao.get_stats()
 
-    return render_template('task/deli_task_list.html', tasks=tasks)
+    # 未提出数の簡易計算（配信数 - 提出数）
+    unsubmitted_count = max(0, streamed_count - sub_stats["submitted_count"])
+
+    return render_template(
+        'dashboard/index.html',
+        admin={"admin_id": admin_id, "admin_name": session.get('user_name', '管理者')},
+        groups=[], # グループ一覧が必要なら別途 GroupDao を作成
+        streamed_count=streamed_count,
+        unchecked_count=sub_stats["unchecked_count"],
+        submitted_count=sub_stats["submitted_count"],
+        unsubmitted_count=unsubmitted_count,
+        weekly_deadline_count=weekly_deadline
+    )
