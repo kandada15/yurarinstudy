@@ -1,0 +1,212 @@
+<!--ユーザ情報一覧-->
+<!--名前のとこの一行クリックしたら照会ページに飛べるようにする-->
+<!--検索の部分の該当するユーザは見つかりませんでしたっていうエラー文何もしてない-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('crud.static', filename='css/info_list.css') }}">
+  <link rel="stylesheet" href="{{ url_for('crud.static', filename='css/header.css') }}">
+  <title>ユーザ情報一覧</title>
+</head>
+<body>
+<header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">管理者</span>
+      <!--ログアウト-->
+      <a href="{{ url_for( 'auth.logout' ) }}" class="logout-btn" >ログアウト</a>
+    </div>
+  </header>
+
+  <!-- 左側の穴 -->
+  <div class="holes-container">
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+  </div>
+
+  <!-- 右側のタブ -->
+  <div class="tabs-container">
+    <a href="{{ url_for('crud.user_manage') }}" class="tab active" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    <a href="{{ url_for('task.task_create_form') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    <a href="{{ url_for('dashboard.index') }}" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
+  </div>
+
+  <div class="app-container">
+    <div class="content-wrapper">
+
+      <h1>ユーザ管理</h1>
+
+      <div class="toolbar">
+        <div class="user-type-tabs">
+          <button type="button" id="showStudentBtn" class="active">受講者</button>
+          <button type="button" id="showAdminBtn">管理者</button>
+        </div>
+
+        <div class="toolbar-center">
+          <form id="searchbox" class="search-area">
+            <input id="search" type="text" placeholder="ID・氏名・所属グループで検索...">
+            <button type="submit">検索</button>
+          </form>
+        </div>
+
+        <div class="toolbar-right">
+          <button class="new-user-btn" onclick="goNewUser()">＋ 新規登録</button>
+        </div>
+      </div>
+
+      <!-- 受講者テーブル -->
+      <div id="studentsList">
+        <table>
+          <tr>
+            <!--１行目-->
+            <th>ID</th>
+            <th>氏名</th>
+            <th>所属年度</th>
+            <th>所属グループ</th>
+            <th>操作</th>
+          </tr>
+          <tr>
+            {% for student in all_students %}
+            <!--２行目-->
+            <td id="student_id">{{ student.student_id }}</td>
+            <td id="user_name" class="user-name">
+              <!-- <a href="user_info_inq.html">山田 太郎</a> -->
+              {{ student.student_name }}
+            </td>
+            <td class="group-cell">
+              <div class="group-tags" id="groups-1"></div>
+            </td>
+            <td>
+              <!--詳細ボタン-->
+              <button>
+                <a href="user_info_inq.html">詳細</a>
+              </button>
+              <!--リセットボタン-->
+              <button type="button" class="btn-reset" onclick="ShowPasswordreset('reset')">パスワードリセット</button>
+
+              <button type="button" class="btn-reset" onclick="ShowUserdelete('reset')">削除</button>
+
+            </td>
+            {% endfor %}
+          </tr>
+          
+        </table>
+        <div class="pagination">
+          <button type="button" id="btn-back">前のページ</button>
+          <button type="button" id="nextPage">次のページ</button>
+        </div>
+      </div>
+
+      <!-- 管理者テーブル -->
+      <div id="adminsList" style="display: none;">
+        <table>
+          <tr>
+            <!--１行目-->
+            <th>ID</th>
+            <th>氏名</th>
+            <th>担当場所</th>
+            <th>所属グループ</th>
+            <th>操作</th>
+          </tr>
+          <tr>
+            <!--２行目-->
+            <td></td>
+            <td class="user-name">
+              <a href="user_info_inq.html">猪口　慎一</a>
+            </td>
+            <td></td>
+            <td class="group-cell">
+              <div class="group-tags" id="groups-2"></div>
+            </td>
+            <td>
+              <!--詳細ボタン-->
+              <button>
+                <a href="user_info_inq.html">詳細</a>
+              </button>
+              <!--リセットボタン-->
+              <button type="button" class="btn-reset" onclick="ShowPasswordreset('reset')">パスワードリセット</button>
+              <button type="button" class="btn-reset" onclick="ShowUserdelete('delete')">削除</button>
+
+            </td>
+          </tr>
+        </table>
+        <div class="pagination">
+          <button type="button" id="prevPage">前のページ</button>
+          <button type="button" id="nextPage">次のページ</button>
+        </div>
+      </div>
+
+      <!--パスワードリセット-->
+      <div id="passeord_reset_modal" class="modal">
+        <h2>パスワードリセット確認</h2>
+        <label>{}さんのパスワードをリセットします。</label>
+        <label>よろしいですか？</label>
+        <div class="button-group">
+          <button type="button" class="btn-back" onclick="backToInput()">キャンセル</button>
+          <button type="button" class="action-btn btn-reset2" onclick="risetForm()">リセットする</button>
+        </div>
+      </div>
+
+      <!--ユーザ削除-->
+      <div id="user_delete_modal" class="modal">
+        <h2>削除処理確認</h2>
+        <label>{}さんの情報を削除します。よろしいですか？</label>
+        <label>※この操作は取り消せません。</label>
+        <div class="button-group">
+          <button type="button" class="btn-back" onclick="backToInput2()">キャンセル</button>
+          <!--ここ関数とか変更する-->
+          <button type="button" class="action-btn btn-reset2" onclick="deleteForm()">削除</button>
+        </div>
+      </div>
+
+
+
+    </div>
+  </div>
+
+  <!-- モーダルオーバーレイ -->
+  <div class="modal-overlay" id="modalOverlay"></div>
+
+<!--Flaskのリスト繰り返しの参考資料（テーブルだけどだいたいこんな感じ）-->
+      <!-- <table border="0" cellpadding="6" class="cart-table">
+        <tr><th>商品</th><th>単価</th><th>数量</th><th>小計</th><th></th></tr>
+        {% for it in cart_items %}
+          <tr>
+            <td><a href="{{ url_for('main.product_detail', code=it.code) }}" class="product-link">{{ it.name }}</a></td>
+            <td class="price">¥{{ it.price }}</td>
+            <td>
+              <form method="post" action="{{ url_for('main.update_cart') }}" class="qty-form">
+                <input type="hidden" name="code" value="{{ it.code }}">
+                <input type="number" name="qty" value="{{ it.qty }}" min="1" style="width:60px" class="qty-input">
+                <button type="submit" class="btn btn-update">更新</button>
+              </form>
+            </td>
+            <td class="price">¥{{ it.price * it.qty }}</td>
+            <td>
+              <form method="post" action="{{ url_for('main.remove_from_cart') }}">
+                <input type="hidden" name="code" value="{{ it.code }}">
+                <button type="submit" class="btn btn-remove">削除</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </table> -->
+
+
+
+<!--Javascriptの読み込み（必ずこの位置）-->
+<script src="{{ url_for('crud.static', filename='js/info_list.js') }}"></script> 
+<script src="{{ url_for('crud.static', filename='js/header.js') }}"></script> 
+</body>
+</html>

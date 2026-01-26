@@ -1,0 +1,104 @@
+<!--パスワード再設定（受講者）-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="pass_reset_stu.css">
+  <link rel="stylesheet" href="header.css">
+  <title></title>
+</head>
+<body>
+<header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">受講者</span>
+      <!--ここリンクをｊｓ管理してるけどアクション名？にしてログアウトできるように-->
+      <button class="logout-btn" onclick="gologout()">ログアウト</button>
+    </div>
+  </header>
+
+  <!-- 左側の穴 -->
+  <div class="holes-container">
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+
+    
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+  </div>
+
+  <!-- 右側のタブ -->
+  <div class="tabs-container">
+    <a href="learning_top.html" class="tab active" data-page="users" data-color="#e8dcc8">ライティング学習</a>
+    <a href="mypage.html" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
+    <a href="ass_list.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
+  </div>
+
+  <div class="app-container">
+    <div class="content-wrapper">
+      <h1>パスワード再設定</h1>
+      <form id="resetForm">
+        <div>
+          <label for="password">パスワード <span style="color: red;">*</span></label>
+          <input type="password" name="password" id="password" maxlength="10" placeholder="パスワードを入力（8～12文字）...">
+          <div id="password_error" class="error-message"></div>
+        </div>
+        <div>
+          <label for="password_confirm">確認用パスワード <span style="color: red;">*</span></label>
+          <input type="password" name="password_confirm" id="password_confirm" maxlength="10" placeholder="再度パスワードを入力...">
+          <div id="password_confirm_error" class="error-message"></div>
+        </div>
+        <input type="submit" name="送信" onclick="SubmitForm(event)">
+      </form>
+    </div>
+  </div>
+  <script>
+  // 削除実行
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("resetForm");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault(); 
+
+      showToast("パスワードを再設定しました。");
+
+      setTimeout(() => {
+        form.submit(); 
+        window.location.href = "mypage.html";  
+      }, 2000);
+    });
+  });
+
+
+  // トースト通知
+  function showToast(message) {
+    let toast = document.createElement("div");
+    toast.className = "toast";
+    toast.textContent = message;
+
+    document.body.appendChild(toast);
+
+    // アニメーションで表示
+    setTimeout(() => {
+      toast.classList.add("show");
+    }, 10);
+
+    // 3秒後に削除
+    setTimeout(() => {
+      toast.classList.remove("show");
+      setTimeout(() => toast.remove(), 400);
+    }, 3000);
+  }
+  </script>
+<!--Javascriptの読み込み（必ずこの位置）-->
+<script src="header.js"></script> 
+</body>
+</html>
