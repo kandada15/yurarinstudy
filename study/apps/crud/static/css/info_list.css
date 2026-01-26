@@ -1,0 +1,618 @@
+/*  
+<div class="app-container">
+    <div class="content-wrapper">
+
+ */
+
+/* ============================================ */
+/* リセット */
+/* ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Meiryo', sans-serif;
+  background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc8 100%);
+  max-height: 100vh;
+  padding: 20px;
+}
+
+/* ============================================ */
+/* 原稿用紙風の背景 */
+/* ============================================ */
+.app-container {
+  position: relative;
+  max-width: 1100px;
+  /* ヘッダー引いた分の高さ指定 */
+  height: 600px;
+  margin: 0 auto;
+  margin-top: 60px;
+  background: #fffef9;
+  /* 40pxの方眼模様 */
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px);
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(139, 115, 85, 0.2);
+  overflow: hidden;
+
+}
+
+/* ============================================ */
+/* コンテンツラッパー */
+/* ============================================ */
+.content-wrapper {
+  height: 600px;
+  max-width: 1100px;
+  background: rgba(255, 254, 249, 0.95);
+  padding: 30px;
+  position: relative;
+  border: 1px solid #000; /*わかりやすくボーダーをひく*/
+  overflow-y: scroll; /*縦方向にスクロール*/
+  -ms-overflow-style: none; /* Edge / IE */
+  scrollbar-width: none;    /* Firefox */
+}
+/* Chrome / Safari */
+.content-wrapper::-webkit-scrollbar {
+  display: none;
+}
+/* ============================================ */
+/* アニメーション（本をめくる効果） */
+/* ============================================ */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
+/* ユーザ情報一覧ページのスタイル */
+
+
+
+h1 {
+  font-size: 28px;
+  color: #5a4a3a;
+  text-align: center;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid #c9b896;
+  font-weight: 600;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.new-user-btn {
+  background-color: #a89371;
+  color: #fff;
+  border-radius: 999px; 
+  padding: 12px 20px;
+  font-weight: 700;
+}
+
+/* 新規ユーザ登録ボタン */
+.new-user-btn {
+  background-color: #a89371;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  height: 50px;
+  width: 150px;
+
+}
+
+.new-user-btn:hover {
+  background-color: #8f7d5e;
+}
+
+.new-user-btn a {
+  color: white;
+  text-decoration: none;
+}
+
+/* 受講者/管理者切り替えタブ */
+.user-type-tabs {
+  display: flex;
+  justify-content: center;
+  margin: 20px auto 20px;
+  max-width: 400px;
+}
+
+.user-type-tabs button {
+  flex: 1;
+  padding: 12px 20px;
+  border: 2px solid #a89371;
+  background-color: white;
+  color: #6b5d4f;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.user-type-tabs button:first-child {
+  border-radius: 8px 0 0 8px;
+  border-right: 1px solid #a89371;
+}
+
+.user-type-tabs button:last-child {
+  border-radius: 0 8px 8px 0;
+  border-left: 1px solid #a89371;
+}
+
+.user-type-tabs button.active {
+  background-color: #a89371;
+  color: white;
+}
+
+.user-type-tabs button:hover:not(.active) {
+  background-color: #f5f0e8;
+}
+
+/* .list-toolbar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 5px;
+  max-width: 1100px;
+  margin: 10px auto;
+} */
+
+.toolbar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 24px;
+  max-width: 1100px;
+  margin: 20px auto;
+}
+
+.toolbar-center {
+  display: flex;
+  justify-content: center;
+  margin-left: 20px
+}
+
+.toolbar-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.box {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  text-align: right;
+}
+
+
+
+/* 検索エリア */
+.search-area {
+  display: flex;
+  height: 50px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* 入力欄 */
+#search {
+  flex: 1;
+  padding: 12px 20px;
+  border: 2px solid #d4c5b0;
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  font-size: 14px;
+  background-color: white;
+  width: 350px;
+}
+
+/* フォーカス時 */
+#search:focus {
+  outline: none;
+  border-color: #a89371;
+}
+
+/* 検索ボタン */
+#searchbox button {
+  padding: 0 32px;
+  background-color: #a89371;
+  color: white;
+  border: 2px solid #a89371;
+  border-radius: 0 8px 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* hover */
+#searchbox button:hover {
+  background-color: #8f7d5e;
+}
+
+
+
+/* テーブルコンテナ */
+#studentsList,
+#adminsList {
+  max-width: 1100px;
+  margin: 10px auto;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+#studentsList h3,
+#adminsList h3 {
+  background-color: #a89371;
+  color: white;
+  padding: 20px;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* テーブル */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+table th {
+  background-color: #d4c5b0;
+  color: #4a4a4a;
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  border-bottom: 2px solid #a89371;
+  min-width: 100px;
+}
+
+table td {
+  padding: 16px;
+  border-bottom: 1px solid #e8dcc8;
+  color: #4a4a4a;
+  font-size: 14px;
+}
+
+table tr:last-child td {
+  border-bottom: none;
+}
+
+table tr:hover {
+  background-color: #f9f6f0;
+}
+
+/* 操作ボタン */
+table td button {
+  padding: 8px 16px;
+  border: 1px solid #a89371;
+  background-color: white;
+  color: #6b5d4f;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-right: 8px;
+  transition: all 0.3s ease;
+}
+
+table td button:hover {
+  background-color: #a89371;
+  color: white;
+}
+
+table td button a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.user-name a {
+  color: #5a4a3a;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.user-name a:hover {
+  text-decoration: underline;
+}
+
+.btn-reset {
+  background: #fff;
+  border: 1px solid #c89b9b;
+  color: #9a4a4a;
+}
+
+.btn-reset:hover {
+  background: #f3dede;
+}
+
+.btn-dell {
+  background: #fff;
+  border: 1px solid #c89b9b;
+  color: #9a4a4a;
+}
+
+.btn-dell:hover {
+  background: #f3dede;
+}
+
+
+/* ページネーション */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 30px auto;
+  max-width: 1200px;
+}
+
+.pagination button {
+  padding: 10px 24px;
+  background-color: white;
+  color: #6b5d4f;
+  border: 2px solid #a89371;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #a89371;
+  color: white;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* モーダル */
+.modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  min-width: 400px;
+  text-align: center;
+}
+
+.modal.show {
+  display: block;
+}
+
+.modal h2 {
+  color: #6b5d4f;
+  margin: 0 0 20px 0;
+  font-size: 20px;
+}
+
+.modal label {
+  display: block;
+  color: #4a4a4a;
+  margin: 10px 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* モーダルのボタングループ */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn-back {
+  padding: 12px 28px;
+  background-color: white;
+  color: #6b5d4f;
+  border: 2px solid #a89371;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+  background-color: #f5f0e8;
+}
+
+.btn-primary {
+  padding: 12px 28px;
+  background-color: #a89371;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #8f7d5e;
+}
+
+/* モーダル背景オーバーレイ */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.modal-overlay.show {
+  display: block;
+}
+
+/* 完了モーダル */
+#pass_reset_con_modal {
+  padding: 50px;
+}
+
+#pass_reset_con_modal label {
+  font-size: 16px;
+  margin: 20px 0;
+}
+
+.reset-password-info {
+  background-color: #f9f6f0;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 15px 0;
+  font-family: monospace;
+  font-size: 14px;
+  color: #6b5d4f;
+}
+
+/* 管理者リスト */
+#adminsList ul {
+  list-style: none;
+  padding: 20px;
+  margin: 0;
+}
+
+#adminsList ul li {
+  padding: 15px;
+  border-bottom: 1px solid #e8dcc8;
+  color: #4a4a4a;
+}
+
+#adminsList ul li:last-child {
+  border-bottom: none;
+}
+
+.group-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.group-tag {
+  padding: 4px 8px;
+  border: 1px solid #a89371;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #6b5d4f;
+  background-color: #fff;
+  white-space: nowrap;
+}
+
+/* ===== 付箋風トースト通知 ===== */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #fff9c4;              /* やわらかい付箋色 */
+  border-left: 6px solid #ffcc33;   /* 付箋の綴じ色 */
+  padding: 18px 22px;
+  min-width: 240px;
+  font-size: 16px;
+  color: #6b5434;
+  border-radius: 4px;               /* 角は少しだけ丸く */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all .4s ease;
+  z-index: 9999;
+}
+
+/* 表示状態 */
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* 表示状態 */
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 成功（提出完了） */
+.toast-success {
+  background: #8b7355;   
+  color: #fffef9;
+}
+
+/* 警告 */
+.toast-warning {
+  background: #c27d3f;
+  color: white;
+}
+
+.toast-icon {
+  font-size: 20px;
+}
+
+.btn-reset2 {
+  background: #dc3545;
+  color: #fff;
+}
+
+.btn-reset2:hover {
+  background: #c82333;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}

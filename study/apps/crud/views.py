@@ -1,4 +1,6 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, session
+
+from apps.crud.dao.student_dao import StudentDao
 
 # Blueprintの作成
 crud_bp = Blueprint(
@@ -10,9 +12,12 @@ crud_bp = Blueprint(
     static_folder="static",
 )
 
+# DAO-インスタンス化
+student_dao = StudentDao()
 
 # ルーティングの定義
-@crud_bp.route("/")
-def index():
-    # templates/crud/index.htmlとなる
-    return render_template("crud/index.html")
+@crud_bp.route("/manage")
+def user_manage():
+    student_id = session.get('user_id')
+    # all_students = student_dao.find_all(student_id)
+    return render_template("crud/user_info_list.html")

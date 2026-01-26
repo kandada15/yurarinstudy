@@ -1,0 +1,230 @@
+/* ============================================ */
+/* リセット */
+/* ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Meiryo', sans-serif;
+  background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc8 100%);
+  max-height: 100vh;
+  padding: 20px;
+}
+
+/* ============================================ */
+/* 原稿用紙風の背景 */
+/* ============================================ */
+.app-container {
+  position: relative;
+  max-width: 1100px;
+  /* ヘッダー引いた分の高さ指定 */
+  height: 600px;
+  margin: 0 auto;
+  margin-top: 60px;
+  background: #fffef9;
+  /* 40pxの方眼模様 */
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px);
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(139, 115, 85, 0.2);
+  overflow: hidden;
+
+}
+
+/* ============================================ */
+/* コンテンツラッパー */
+/* ============================================ */
+.content-wrapper {
+  height: 600px;
+  max-width: 1100px;
+  background: rgba(255, 254, 249, 0.95);
+  padding: 30px;
+  position: relative;
+  border: 1px solid #000; /*わかりやすくボーダーをひく*/
+  overflow-y: scroll; /*縦方向にスクロール*/
+  -ms-overflow-style: none; /* Edge / IE */
+  scrollbar-width: none;    /* Firefox */
+}
+/* Chrome / Safari */
+.content-wrapper::-webkit-scrollbar {
+  display: none;
+}
+/* ============================================ */
+/* アニメーション（本をめくる効果） */
+/* ============================================ */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
+/* メインコンテナ */
+h1 {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 600;
+  color: #5a4a3a;
+  margin-bottom: 40px;
+  padding-bottom: 15px;
+  border-bottom: 3px solid #b8a081;
+}
+
+/* フォームスタイル */
+form {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #f5f0e8;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+form > div {
+  margin-bottom: 30px;
+}
+
+/* ラベルスタイル */
+label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: #5a4a3a;
+  margin-bottom: 8px;
+}
+
+label span {
+  color: #d32f2f;
+  font-size: 14px;
+}
+
+/* 入力フィールドスタイル */
+input[type="password"] {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 15px;
+  border: 2px solid #c9b896;
+  border-radius: 4px;
+  background-color: #fff;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+input[type="password"]:focus {
+  outline: none;
+  border-color: #a89168;
+  box-shadow: 0 0 0 3px rgba(168, 145, 104, 0.1);
+}
+
+input[type="password"]::placeholder {
+  color: #999;
+  font-size: 14px;
+}
+
+/* エラーメッセージ */
+.error-message {
+  color: #d32f2f;
+  font-size: 14px;
+  margin-top: 6px;
+  min-height: 20px;
+}
+
+/* 送信ボタン */
+input[type="submit"] {
+  width: 100%;
+  padding: 14px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #b8a081;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+}
+
+input[type="submit"]:hover {
+  background-color: #a89168;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(184, 160, 129, 0.3);
+}
+
+input[type="submit"]:active {
+  transform: translateY(0);
+}
+
+/* ===== 付箋風トースト通知 ===== */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #fff9c4;              /* やわらかい付箋色 */
+  border-left: 6px solid #ffcc33;   /* 付箋の綴じ色 */
+  padding: 18px 22px;
+  min-width: 240px;
+  font-size: 16px;
+  color: #6b5434;
+  border-radius: 4px;               /* 角は少しだけ丸く */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all .4s ease;
+  z-index: 9999;
+}
+
+/* 表示状態 */
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* 表示状態 */
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 成功 */
+.toast-success {
+  background: #8b7355;   
+  color: #fffef9;
+}
+
+/* 警告 */
+.toast-warning {
+  background: #c27d3f;
+  color: white;
+}
+
+.toast-icon {
+  font-size: 20px;
+}
