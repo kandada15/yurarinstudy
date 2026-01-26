@@ -3,7 +3,7 @@ from mysql.connector import MySQLConnection
 from typing import List, Text
 from datetime import datetime
 from apps.task.models.model_streamed import Streamed
-from apps.task.models.model_streamed import Streamed, StreamedForStudent
+from apps.task.models.model_streamed import Streamed, StreamedForStudent, StreamedForStudentSubmit
 from apps.config.db_config import DB_CONFIG
 
 # MySQLに直接アクセスするDAOクラス※steamedテーブル専用
@@ -139,18 +139,87 @@ class StreamedDao:
       cursor.close()
       conn.close()
 
-  # streamed ID検索
-  def find_by_id(self, streamed_id):
+  # streamed_dao.py
+  def find_unsubmitted_for_student(self, student_id: int) -> list[StreamedForStudent]:
+    """
+    学生が未提出の課題のみ取得する
+    """
     sql = """
         SELECT
-            streamed_id,
-            streamed_name,
-            streamed_text,
-            streamed_limit,
-            created_by_admin_name
-        FROM streamed
+            s.streamed_id,
+            s.streamed_name,
+            s.streamed_text,
+            s.streamed_limit,
+            admin.admin_name,
+            s.sent_at
+        FROM streamed AS s
+        LEFT JOIN submission sub
+          ON s.streamed_id = sub.streamed_id
+          AND sub.student_id = %s
+        LEFT JOIN `group` AS g
+          ON s.group_id = g.group_id
+        LEFT JOIN admin 
+          ON g.created_by_admin_id = admin.admin_id
+        WHERE sub.submission_id IS NULL
+        ORDER BY s.sent_at DESC
+    """
+
+    conn = self._get_connection()
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(sql, (student_id,))
+        rows = cursor.fetchall()
+
+        result = []
+        for row in rows:
+            result.append(StreamedForStudent(
+                streamed_id=row["streamed_id"],
+                streamed_name=row["streamed_name"],
+                streamed_text=row["streamed_text"],
+                streamed_limit=row["streamed_limit"],
+                admin_name=row["admin_name"],
+                sent_at=row["sent_at"]
+            ))
+        return result
+    finally:
+        cursor.close()
+        conn.close()
+
+
+  # streamed ID検索
+  def find_by_id(self, streamed_id: int) -> StreamedForStudentSubmit | None:
+    sql = """
+        SELECT
+            s.streamed_id,
+            s.streamed_name,
+            s.streamed_text,
+            s.streamed_limit,
+            admin.admin_name
+        FROM streamed AS s
+        LEFT OUTER JOIN `group` AS g
+          ON s.group_id = g.group_id
+        LEFT OUTER JOIN admin 
+          ON g.created_by_admin_id = admin.admin_id
         WHERE streamed_id = %s
     """
+
+    conn = self._get_connection()
+    try:
+      cursor = conn.cursor(dictionary=True)
+      cursor.execute(sql, (streamed_id,))
+      row = cursor.fetchone()
+
+      return StreamedForStudentSubmit(
+          streamed_id=row["streamed_id"],
+          streamed_name=row["streamed_name"],
+          streamed_text=row["streamed_text"],
+          streamed_limit=row["streamed_limit"],
+          admin_name=row["admin_name"]
+        )
+    finally:
+      cursor.close()
+      conn.close()
+
   def get_streamed_count(self, admin_id: str) -> int:
         """管理者が配信した課題の総数をカウント"""
         sql = """

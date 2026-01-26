@@ -6,13 +6,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- cssの読み込み -->
   <link rel="stylesheet" href="{{ url_for('task.static', filename='css/css_admin/t_create.css') }}">
-  <!--bace.htmlしたらこの一行消す-->
   <link rel="stylesheet" href="{{ url_for('task.static', filename='css/header.css') }}">
   <title>新規課題作成</title>
 </head>
 <body>
-<!--ここからbace.htmlから引っ張れる-->
+<!-- 共通部分 -->
 <header class="top-header">
     <div class="logo-section">
       <div class="logo-img">文</div>
@@ -20,8 +20,8 @@
     </div>
     <div class="user-section"><caption></caption>
       <span class="user-badge">管理者</span>
-      <!--ここリンクをｊｓ管理してるけどアクション名？にしてログアウトできるように-->
-      <button class="logout-btn" onclick="gologout()">ログアウト</button>
+      <!-- ログアウト -->
+      <a href="{{ url_for( 'auth.logout' ) }}" class="logout-btn" >ログアウト</a>
     </div>
   </header>
 

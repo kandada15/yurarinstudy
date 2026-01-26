@@ -1,7 +1,7 @@
 <!--課題入力-->
 <!--登録画面の一覧に戻るボタンを追加-->
 <!--CSSは改良予定-->
-<!--表示する課題をデータベースからとってくるときに未回答のものを指定して持ってくるようにしたらいい感じになると思う。そこまでてがまわらないのでよろしくです-->
+<!--表示する課題をデータベースより、未提出課題のみを表示するようにする-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -12,7 +12,7 @@
   <title>解答入力</title>
 </head>
 <body>
-<!--ここからbace.htmlから引っ張れる-->
+<!-- 共通部分 -->
 <header class="top-header">
     <div class="logo-section">
       <div class="logo-img">文</div>
@@ -20,8 +20,8 @@
     </div>
     <div class="user-section">
       <span class="user-badge">受講者</span>
-      <!--ここリンクをｊｓ管理してるけどアクション名？にしてログアウトできるように-->
-      <button class="logout-btn" onclick="gologout()">ログアウト</button>
+      <!--ログアウト-->
+      <a href="{{ url_for( 'auth.logout' ) }}" class="logout-btn" >ログアウト</a>
     </div>
   </header>
 
@@ -46,6 +46,7 @@
     <a href="mypage.html" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
   </div>
 <!--ここまで-->
+
 <div class="app-container">
   <div class="content-wrapper">
     <div class="container">
@@ -69,17 +70,16 @@
           </div>
           <!-- preタグで改行を保持 -->
           <!--<pre id="question"></pre>-->
-          <!--回答-->
-          <label for="answer_text">回答<span style="color: red;">*</span></label>
-          <textarea id="answer_text" name="answer_text" rows="15" cols="50" placeholder="回答を入力..."></textarea>
+          <!--解答-->
+          <label for="answer_text">解答<span style="color: red;">*</span></label>
+          <textarea id="answer_text" name="answer_text" rows="15" cols="50" placeholder="解答を入力..."></textarea>
           <div id="answer_text_error" class="error-message"></div>
           <!--確認画面へ飛ぶ-->
           <div class="button-group">
-            <button type="submit" class="btn-primary">確認画面へ</button>
+            <button type="button" class="btn-primary" onclick="showConfirmScreen()">確認画面へ</button>
           </div>
         </div>
       </div>
-      </form>
             
       <!-- 確認画面 -->
       <!--ここで提出ボタン押したらデータベースに登録するっていう処理-->
@@ -95,16 +95,17 @@
               </div>
 
               <div class="confirm-row">
-                <div class="confirm-label">回答</div>
-                <div class="confirm-value" style="white-space: pre-wrap;">{{ task.answer_text }}</div>
+                <div class="confirm-label">解答</div>
+                <div id="confirm-answer" class="confirm-value" style="white-space: pre-wrap;"></div>
               </div>
           </div>
         </div>
         <div class="button-group">
           <button type="button" class="btn-primary" onclick="backToInput()">戻る</button>
-          <button type="button" class="btn-primary" onclick="submitForm()">提出</button>
+          <button type="submit" class="btn-primary">提出</button>
         </div>
       </div>
+      </form>
     </div>
   </div>
 </div>
