@@ -40,11 +40,12 @@ function backToInput() {
 
 // 提出処理（POST）
 function submitForm() {
-  showToast("課題を提出しました");
+  document.getElementById("taskForm").submit();
+  // showToast("課題を提出しました");
 
-  setTimeout(() => {
-    document.getElementById("taskForm").submit(); // ← ここが核
-  }, 2000);
+  // setTimeout(() => {
+  //   document.getElementById("taskForm").submit(); // ← ここが核
+  // }, 2000);
 }
 
 // トースト通知

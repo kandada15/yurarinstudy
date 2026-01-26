@@ -1,6 +1,5 @@
 <!--TASK_LIST.HTML-->
 <!--課題一覧と課題詳細表示-->
-<!--課題が増えた時の動作確認してない-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -11,7 +10,7 @@
   <title>課題一覧</title>
 </head>
 <body>
-<!--ここからbace.htmlから引っ張れる-->
+<!-- 共通部分 -->
 <header class="top-header">
     <div class="logo-section">
       <div class="logo-img">文</div>
@@ -20,7 +19,7 @@
     <div class="user-section">
       <span class="user-badge">管理者</span>
       <!--ここリンクをｊｓ管理してるけどアクション名？にしてログアウトできるように-->
-      <button class="logout-btn" onclick="gologout()">ログアウト</button>
+      <a href="{{ url_for( 'auth.logout' ) }}" class="logout-btn" >ログアウト</a>
     </div>
   </header>
 
@@ -41,7 +40,7 @@
   <!-- 右側のタブ -->
   <div class="tabs-container">
     <a href="learning_top.html" class="tab active" data-page="users" data-color="#e8dcc8">ライティング学習</a>
-    <a href="ass_list.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
+    <a href="{{ url_for('task.student_task_list') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
     <a href="mypage.html" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
   </div>
 <!--ここまで-->
@@ -50,7 +49,7 @@
     <div class="content-wrapper">
       <h1>課題一覧</h1>
 
-      <!--Flaskで繰り返し表示する用に変える必要-->
+      <!--繰り返し表示にて表示-->
       {% if tasks %}
         <div class="task-grid">
           {% for task in tasks %}
@@ -66,8 +65,8 @@
             >
 
               <div class="grou_content">
-                <!--データベースから持ってくる。下の例文のようにしたら文字と一緒にひょじできる-->
-                <!--例文：配信日{{データベースから持ってくる構文みたいな}}-->
+                <!--データベースから持ってくる。下の例文のようにしたら文字と一緒に表示できる-->
+                <!--例: 配信日: flask側指定名.カラム名-->
                 <label>配信日{{ task.sent_at }}</label>
                 <p class="task_title">{{ task.streamed_name }}</p><br>
                 <p>配信者：{{ task.admin_name }}</p>
@@ -118,7 +117,6 @@
          </div>
         </div>
       </div>
-      <!--jsにリンクあり、FLASK仕様変更求-->
       
   </div>
 
@@ -126,12 +124,9 @@
 <script src="{{ url_for('task.static', filename='js/js_stu/task_list.js') }}"></script> 
 <!--Javascriptの読み込み（必ずこの位置）-->
 <script src="{{ url_for('task.static', filename='js/header.js') }}"></script> 
+
 <script>
-  /**
-   * FlaskのBlueprint環境下ではURLが動的に変わるため、
-   * HTML側で正しいベースURLを定義してJavaScriptに渡します。
-   */
-  // 回答画面へのベースURL（末尾のIDを除いた部分）
+  // 回答画面へのベースURLを保持する役割（末尾のIDを除いた部分）
   // /task/student/tasks/
   const BASE_INQ_URL = "{{ url_for('task.student_task_list') }}"; 
 
@@ -140,5 +135,6 @@
     window.location.href = `${BASE_INQ_URL}?page=${page}`;
   }
 </script>
+
 </body>
 </html>

@@ -26,8 +26,8 @@ class StreamedForStudent:
     admin_name: str | None
 
 @dataclass
-class StreamedForStudentDetail:
-    __tablename__ = "streamedforstudentdetail"
+class StreamedForStudentSubmit:
+    __tablename__ = "streamedforstudentsubmit"
     streamed_id : int
     streamed_name: str
     streamed_text: str
