@@ -50,15 +50,9 @@ body {
   background: rgba(255, 254, 249, 0.95);
   padding: 30px;
   position: relative;
-  border: 1px solid #000; /*わかりやすくボーダーをひく*/
-  overflow-y: scroll; /*縦方向にスクロール*/
-  -ms-overflow-style: none; /* Edge / IE */
-  scrollbar-width: none;    /* Firefox */
+  /* border: 1px solid #000; わかりやすくボーダーをひく */
 }
-/* Chrome / Safari */
-.content-wrapper::-webkit-scrollbar {
-  display: none;
-}
+
 /* ============================================ */
 /* アニメーション（本をめくる効果） */
 /* ============================================ */
@@ -93,16 +87,6 @@ body {
 }
 
 
-.container {
-  max-width: 1400px;
-  margin: 0 auto;
-  height: calc(100vh - 40px);
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-  padding: 30px;
-  overflow: hidden;
-}
 
 /* ページタイトル */
 .page-title {
@@ -127,7 +111,6 @@ body {
   background-color: #e8ddd0;
   border: 2px solid #b5a490;
   padding: 20px;
-  /* margin-bottom: 15px; */
   display: flex;
   flex-direction: column;
 }
@@ -175,48 +158,99 @@ body {
 }
 
 /* グループテーブル */
-.group-table {
-  width: 100%;
-  border-collapse: collapse;
+.group-header{
+  border-bottom: 2px solid #b5a490;
+  padding-bottom: 8px;
 }
 
-.group-table th,
-.group-table td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #c4b5a0;
-}
-
-.group-table th {
-  background-color: #d4c4b0;
+.group-title{
+  font-size: 18px;
   color: #4a4035;
-  font-weight: bold;
+  flex-shrink: 0;
 }
 
-.group-table tr:last-child td {
-  border-bottom: none;
+.group-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 120px;
+  padding-right: 6px;
+  overflow-y: scroll;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-.group-table tbody tr:hover {
-  background-color: #d4c4b0;
+/* Chrome / Safari */
+.group-list::-webkit-scrollbar {
+  width: 6px;
+  display: none;
+}
+
+.group-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #d8cbb2,
+    #bda988
+  );
+}
+
+.group-button {
+  background-color: #8d7a65;
+  color: white;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
   transition: background-color 0.3s;
 }
 
-/* 配信済課題ボックス */
-.tasks-box {
-  flex: 1;
-  margin-bottom: 0;
+.group-button :hover {
+  background-color: #6a5a45;
 }
 
-/* .tasks-box .box-title {
-  margin-bottom: 15px;
-} */
+.group-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+}
 
+.folder-icon {
+  font-size: 23px;
+}
+
+.group-info {
+  flex: 1;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.group-name {
+  font-weight: bold;
+  font-size: 10px;
+}
+
+.group-description {
+  color: #666;
+  font-size: 9px;
+}
+
+.group-members {
+  color: #666;
+  font-size: 8px;
+  white-space: nowrap;
+}
+
+/* 配信済課題ボックス */
 .tasks-box .box-title ~ .task-item {
   display: inline-block;
   width: calc(50% - 10px);
-  /* margin-bottom: 15px;
-  padding-bottom: 15px; */
   padding-right: 10px;
   border-bottom: none;
   border-right: 1px solid #c4b5a0;
@@ -229,12 +263,9 @@ body {
   padding-left: 10px;
 }
 
-.task-item:last-of-type {
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
 
-.task-header {
+.task-header,
+.group-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -268,21 +299,6 @@ body {
   color: #4a4035;
   text-align: center;
   margin-top: 8px;
-}
-
-/* 課題提出管理ボックス */
-.submission-content {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.submission-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid #c4b5a0;
 }
 
 .submission-label {

@@ -68,9 +68,10 @@
     </main>
 
     <script>
-        const currentCategoryId = "{{ category_id }}";
-        const completedStages = {{ completed_list | tojson }};
-    </script>
-    <script src="{{ url_for('writing.static', filename='js/step_list.js') }}?v=1.1"></script>
+    const currentCategoryId = "{{ category_id }}";
+    const completedStages = {{ completed_list | tojson }};
+    const learningData = {{ learning_data | tojson }};
+</script>
+<script src="{{ url_for('writing.static', filename='js/step_list.js') }}"></script>
 </body>
 </html>

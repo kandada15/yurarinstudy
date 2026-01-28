@@ -4,11 +4,15 @@ let userAnswers = { quizzes: {}, essay: "" };
 
 document.addEventListener('DOMContentLoaded', async function() {
     try {
+        // JSONファイルの取得パス
         const response = await fetch('/writing/static/json/steps_data.json');
         const allData = await response.json();
         const phaseData = allData[String(currentStageNo)];
-        if (phaseData) { allSteps = phaseData.steps; showStep(0); }
-    } catch (e) { console.error(e); }
+        if (phaseData) { 
+            allSteps = phaseData.steps; 
+            showStep(0); 
+        }
+    } catch (e) { console.error('JSON読み込み失敗:', e); }
     initEssayObserver();
 });
 
@@ -27,17 +31,14 @@ function showStep(index) {
     if (target) target.style.display = 'block';
 }
 
-// ★学習完了時のDB更新処理
 function completeSteps() {
     const csrfMeta = document.querySelector('meta[name="csrf-token"]');
     const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : null;
 
+    // 非同期での進捗更新
     fetch('/writing/update_progress', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken
-        },
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
         body: JSON.stringify({ stage_no: currentStageNo })
     })
     .then(res => res.json())
@@ -46,11 +47,10 @@ function completeSteps() {
             hideAllScreens();
             document.getElementById('complete-screen').style.display = 'flex';
         }
-    })
-    .catch(e => console.error('通信失敗:', e));
+    });
 }
 
-// 補助関数群 (省略なし)
+// 補助関数群
 function nextStep() { if (currentStepIndex < allSteps.length - 1) showStep(currentStepIndex + 1); else completeSteps(); }
 function prevStep() { if (currentStepIndex > 0) showStep(currentStepIndex - 1); }
 function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val || ''; }
@@ -106,4 +106,6 @@ function showExampleAnswer() {
 }
 function hideAllScreens() { document.querySelectorAll('.content-wrapper').forEach(s => s.style.display = 'none'); }
 function initEssayObserver() { const el = document.getElementById('essay-textarea'); if (el) el.oninput = (e) => userAnswers.essay = e.target.value; }
-function returnToList() { window.location.href = `/writing/step_list?category_id=${currentCategoryId}`; }
+
+// --- 修正: Flaskのルート形式に合わせる ---
+function returnToList() { window.location.href = `/writing/step_list/${currentCategoryId}`; }

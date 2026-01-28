@@ -156,7 +156,7 @@ class SubmissionDao:
 import mysql.connector
 from apps.config.db_config import DB_CONFIG
 
-class SubmissionDao:
+class SubmissionDao2:
     def __init__(self, config=None):
         self.config = config or DB_CONFIG
 
@@ -168,7 +168,7 @@ class SubmissionDao:
         sql = """
             SELECT 
                 COUNT(*) AS submitted_count,
-                SUM(CASE WHEN is_checked = 0 THEN 1 ELSE 0 END) AS unchecked_count
+                SUM(CASE WHEN check_flag = 0 THEN 1 ELSE 0 END) AS unchecked_count
             FROM submission
         """
         conn = self._get_connection()
