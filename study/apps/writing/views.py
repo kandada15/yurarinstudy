@@ -1,120 +1,72 @@
-from flask import Blueprint, render_template, request, session, jsonify, redirect, url_for
-from apps.app import db 
-from apps.writing.models import Progress 
+import json
+import os
+from flask import Blueprint, render_template, request, session, redirect, url_for, jsonify, current_app
+from apps.task.dao.writing_dao import WritingDao
 
-# Blueprintの作成
-writing_bp = Blueprint(
-    'writing',
-    __name__,
-    # 使用するテンプレートフォルダ
-    template_folder='templates',
-    # 専用の静的ファイル(CSS,JS,画像など)を置くフォルダ
-    static_folder='static'
-)
+writing_bp = Blueprint('writing', __name__, template_folder='templates', static_folder='static')
+w_dao = WritingDao()
 
-# ============================================
-# ★ ログインチェックの共通処理
-# ============================================
-@writing_bp.before_request
-def before_request():
-    # セッションに user_id がない場合は、ログイン画面へ強制的に飛ばす
-    if 'user_id' not in session:
-        # 'auth.login' の部分は、実際のログイン画面のエンドポイント名に合わせてください
-        return redirect(url_for('auth.login'))
+def load_learning_data():
+    """別ファイルのJSONを読み込む補助関数"""
+    json_path = os.path.join(current_app.root_path, 'writing', 'static', 'json', 'steps_data.json')
+    try:
+        with open(json_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return {}
 
-# ============================================
-# 1. ライティングトップ
-# ============================================
-# ルーティングの定義
+# --- 1. トップ画面 ---
 @writing_bp.route('/')
 def index():
-    """カテゴリ選択画面"""
-    static_categories = [
-        {'task_id': 'essay', 'task_name': '小論文'},
-        {'task_id': 'business', 'task_name': 'ビジネス文書'},
-        {'task_id': 'report', 'task_name': 'レポート'},
-        {'task_id': 'training', 'task_name': '表現トレーニング'}
-    ]
-    data = {
-        "page_title": "ライティング課題",
-        "select_message": "学習したいコンテンツを選択してください",
-        "categories": static_categories,
-    }
+    if 'user_id' not in session:
+        return redirect(url_for('auth.login'))
+    data = {'page_title': 'ライティング学習', 'select_message': 'コンテンツを選択してください。'}
     return render_template('writing/writing_top.html', data=data)
 
-@writing_bp.route('/step_list')
-def step_list():
-    """ステージ一覧画面"""
-    category_id = request.args.get('category_id', 'essay')
-    student_id = str(session.get('user_id', '')) 
-    # 履修済ステージをDBから取得(stage_flag=1)
-    completed_records = Progress.query.filter_by(
-        student_id=student_id,
-        stage_flag=True
-    ).all()
-
-    # 履修済ステージだけのリスト作成
-    completed_list = [r.phase_name for r in completed_records]
-
-    # カテゴリ名
-    category_names = {'essay': '小論文', 'business': 'ビジネス文書'}
-    data = {'name': category_names.get(category_id, 'ライティング')}
-
-    # データを画面に渡す処理
-    return render_template(
-        'writing/step_list.html', 
-        category_id=category_id, 
-        data=data,
-        completed_list=completed_list
-    )
-
-@writing_bp.route('/step_learning')
-def step_learning():
-    """学習画面"""
-    category_id = request.args.get('category_id')
-    stage_no = request.args.get('stage_no')
+# --- 2. ステップ一覧画面 (TypeError 対策済み) ---
+@writing_bp.route('/step_list/<int:category_id>')
+def step_list(category_id):
+    if 'user_id' not in session:
+        return redirect(url_for('auth.login'))
     
-    # データを画面に渡す処理
-    return render_template(
-        'writing/step_learning.html', 
-        category_id=category_id, 
-        stage_no=stage_no
-    )
+    student_id = session.get('user_id')
+    progress_data = w_dao.get_user_progress(student_id, category_id)
+    completed_list = [row['phase_name'] for row in progress_data if row['stage_flag']]
+    
+    data = {'name': w_dao.get_category_name(category_id), 'category_id': category_id}
+    
+    # JSONファイルを読み込んで渡すことで TypeError を回避します
+    learning_data = load_learning_data()
+    
+    return render_template('writing/step_list.html', 
+                            data=data, 
+                            category_id=category_id, 
+                            completed_list=completed_list,
+                            learning_data=learning_data)
 
+# --- 3. 学習画面 (UndefinedError 対策済み) ---
+@writing_bp.route('/step_learning')
+def learning_page():
+    if 'user_id' not in session:
+        return redirect(url_for('auth.login'))
+
+    phase_name = request.args.get('stage_no')
+    category_id = request.args.get('category_id', '1')
+
+    # テンプレート内の {{ data.page_title }} 等に対応
+    data = {
+        'name': phase_name,
+        'page_title': '学習中',
+        'category_id': category_id
+    }
+    
+    return render_template('writing/step_learning.html', data=data)
+
+# --- 4. 進捗更新処理 ---
 @writing_bp.route('/update_progress', methods=['POST'])
 def update_progress():
-    """進捗更新"""
-    data = request.get_json(force=True, silent=True)
-    stage_val = data.get('stage_no')
-    student_id = str(session.get('user_id', ''))
-
-    # 必須データのチェック(student_id,stage_val)
-    if not student_id or not stage_val:
-        return jsonify({'status': 'error', 'message': 'データ不足'}), 400
-
-    # 進捗データをDBから条件検索
-    try:
-        progress = Progress.query.filter_by(
-            student_id=student_id, 
-            phase_name=stage_val
-        ).first()
-
-        # 既存レコードがあれば更新、無ければ新規作成
-        if progress:
-            progress.stage_flag = True
-        else:
-            new_progress = Progress(
-                student_id=student_id,
-                phase_name=stage_val,
-                stage_flag=True
-            )
-            db.session.add(new_progress)
-        
-        # DBに反映
-        db.session.commit()
-        return jsonify({'status': 'success'})
-    
-    # 例外処理
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'status': 'error', 'message': str(e)}), 500
+    if 'user_id' not in session: return jsonify({'status': 'error'}), 401
+    req_data = request.get_json()
+    phase_name = req_data.get('stage_no')
+    w_dao.update_stage_progress(session.get('user_id'), phase_name)
+    return jsonify({'status': 'success'})
