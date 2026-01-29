@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ data.page_title }} - 文脈工房</title>
-    
+
     {# CSSの読み込み先を step_l.css に修正 #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
     <link rel="stylesheet" href="{{ url_for('writing.static', filename='css/step_l.css') }}">
-    
+
     <style>
         /* JSで切り替えるため、初期状態でコンテンツを非表示にする設定 */
-        .content-wrapper { display: none; }
+        .content-wrapper {
+            display: none;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="app-container">
-        
+
         {# --- ステップ1: 導入画面 (lecture) --- #}
         <div id="step1" class="content-wrapper fade-in">
             <header class="step-header">
@@ -125,20 +129,25 @@
         </div>
 
         {# --- 完了メッセージ --- #}
-        <div id="complete-screen" class="complete-screen" style="display: none;">
-            <h2 class="complete-title">お疲れ様でした！</h2>
-            <button class="btn-primary" onclick="returnToList()">一覧に戻る</button>
+        <div id="complete-screen" class="content-wrapper complete-screen" style="display: none;">
+            <h2 class="complete-title">ステップ学習完了</h2>
+            <p class="complete-message">ステップ学習が終了しました。</p>
+            <p class="complete-message">次回も頑張りましょう。</p>
+            <div class="button-group">
+                <button type="button" class="btn-primary" onclick="returnToList()">
+                    一覧に戻る
+                </button>
+            </div>
         </div>
 
-    </div>
+        <script>
+            // JSが参照するグローバル変数
+            const currentStageNo = "{{ data.name }}";
+            const currentCategoryId = "{{ data.category_id }}";
+        </script>
 
-    <script>
-        // JSが参照するグローバル変数
-        const currentStageNo = "{{ data.name }}"; 
-        const currentCategoryId = "{{ data.category_id }}";
-    </script>
-    
-    {# JSの読み込み先を step_l.js に修正 #}
-    <script src="{{ url_for('writing.static', filename='js/step_l.js') }}"></script>
+        {# JSの読み込み先を step_l.js に修正 #}
+        <script src="{{ url_for('writing.static', filename='js/step_l.js') }}"></script>
 </body>
+
 </html>
