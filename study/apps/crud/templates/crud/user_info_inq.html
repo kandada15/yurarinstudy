@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link rel="stylesheet" href="info_inq.css">
-  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="{{ url_for('crud.static', filename='css/info_inq.css') }}">
+  <link rel="stylesheet" href="{{ url_for('crud.static', filename='css/header.css') }}">
   <title>ユーザー詳細</title>
 </head>
 <body>
@@ -15,8 +15,8 @@
     </div>
     <div class="user-section">
       <span class="user-badge">管理者</span>
-      <!--ここリンクをｊｓ管理してるけどアクション名？にしてログアウトできるように-->
-      <button class="logout-btn" onclick="gologout()">ログアウト</button>
+      <!--ログアウト-->
+      <a href="{{ url_for( 'auth.logout' ) }}" class="logout-btn" >ログアウト</a>
     </div>
   </header>
 
@@ -33,7 +33,6 @@
   </div>
 
   <!-- 右側のタブ -->
-  <!--ここのリンク{{}}処理必要-->
   <div class="tabs-container">
     <a href="user_info_list.html" class="tab active" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
     <a href="task_create.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
