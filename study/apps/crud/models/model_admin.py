@@ -1,4 +1,7 @@
 from apps.extensions import db
+from datetime import date
+
+from dataclasses import dataclass
 
 # Admin テーブルモデル作成
 class Admin(db.Model):
@@ -14,3 +17,14 @@ class Admin(db.Model):
     birthday = db.Column(db.Date, nullable=False)
     # 登録日時
     created_at = db.Column(db.DateTime, nullable=True)
+
+@dataclass
+class AdminToGroupname:
+    __tablename__ = "admintogroupname"
+    admin_id: int
+    admin_name:str
+    password: str
+    birthday: date
+    group_id: int
+    group_name: str
+    created_by_admin_id: int

@@ -1,4 +1,6 @@
 from apps.extensions import db
+from dataclasses import dataclass
+from datetime import date, datetime
 
 # Student テーブルモデル作成
 class Student(db.Model):
@@ -18,3 +20,17 @@ class Student(db.Model):
     alert = db.Column(db.Boolean, nullable=False, default=False)
     # グループID（外部キー）
     group_id = db.Column(db.Integer, db.ForeignKey('group.group_id'))
+
+@dataclass
+class StudentToGroupname:
+    __tablename__ = "studenttogroupname"
+    student_id: int
+    student_name: str
+    password: str 
+    # 生年月日
+    birthday: date
+    # 通知フラグ
+    alert: bool
+    # グループID（外部キー）
+    group_id: int
+    group_name: str
