@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, current_app,  json, jsonify, request,  session
 
-from study.apps.crud.dao.dao_student import StudentDao
-from study.apps.crud.dao.dao_admin import AdminDao
+from apps.crud.dao.dao_student import StudentDao
+from apps.crud.dao.dao_admin import AdminDao
 
 # Blueprintの作成
 crud_bp = Blueprint(

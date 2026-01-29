@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_required, current_user
 from .dao.dao_streamed import StreamedDao
 from .dao.dao_submission import SubmissionDao
-from study.apps.crud.dao.dao_student import StudentDao
-from study.apps.crud.dao.dao_group import GroupDao
+from apps.crud.dao.dao_student import StudentDao
+from apps.crud.dao.dao_group import GroupDao
 
 
 # Blueprintの作成
