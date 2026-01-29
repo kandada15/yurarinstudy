@@ -1,0 +1,226 @@
+<!--マイページ-->
+<!--各情報はデータベースから-->
+<!--表示するものを変更する予定あり-->
+<!--※機能削除に伴う変更なので許して-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('mypage.static', filename='css/mypage.css') }}">
+  <link rel="stylesheet" href="{{ url_for('mypage.static', filename='css/header.css') }}">
+  <title></title>
+</head>
+<body>
+  <header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">受講者</span>
+      <!--ログアウト-->
+      <a href="{{ url_for( 'auth.logout' ) }}" class="logout-btn" >ログアウト</a>
+    </div>
+  </header>
+
+  <!-- 左側の穴 -->
+  <div class="holes-container">
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+
+    
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+  </div>
+
+  <!-- 右側のタブ -->
+  <div class="tabs-container">
+    <a href="learning_top.html" class="tab active" data-page="users" data-color="#e8dcc8">ライティング学習</a>
+    <a href="mypage.html" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
+    <a href="ass_list.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
+  </div>
+  <div class="app-container">
+    <div class="content-wrapper">
+      <div class="header-row">
+        <div class="header-left"></div>
+
+
+        <h1>MYPAGE</h1>
+        <div class="header-right">
+          <button class="btn-password" onclick="goPassReset()">パスワード再設定
+          </button>
+        </div>
+      </div>
+      
+      <div class="content-wrapper2">
+        <!-- 左カラム -->
+        <div class="left-column">
+          <!-- プロフィール情報 -->
+          <div class="section">
+            <h3>プロフィール情報</h3>
+            <div class="profile-grid">
+              <div class="profile-row">
+                <div class="profile-item">
+                  <span class="profile-label">受講者ID</span>
+                  <span class="profile-value">＊＊＊＊</span>
+                </div>
+                <div class="profile-divider">|</div>
+                <div class="profile-item">
+                  <span class="profile-label">氏　　名</span>
+                  <span class="profile-value">＊＊＊＊</span>
+                </div>
+              </div>
+              <div class="profile-row">
+                <div class="profile-item">
+                  <span class="profile-label">学生番号</span>
+                  <span class="profile-value">＊＊＊＊</span>
+                </div>
+                <div class="profile-divider">|</div>
+                <div class="profile-item">
+                  <span class="profile-label">入学年度</span>
+                  <span class="profile-value">＊＊＊＊</span>
+                </div>
+              </div>
+              <div class="profile-row">
+                <div class="profile-item">
+                  <span class="profile-label">クラス</span>
+                  <span class="profile-value">＊＊＊＊</span>
+                </div>
+                <div class="profile-divider">|</div>
+                <div class="profile-item">
+                  <span class="profile-label">生年月日</span>
+                  <span class="profile-value">＊月＊日</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 所属グループ -->
+          <div class="section">
+            <h3>所属グループ</h3>
+            <div class="group-list">
+              <div class="group-item">
+                <span class="folder-icon">📁</span>
+                <div class="group-info">
+                  <span class="group-name">グループ1</span>
+                  <span class="group-description">プログラミング実習</span>
+                </div>
+                <span class="group-members">メンバー： ○人</span>
+              </div>
+              <div class="group-item">
+                <span class="folder-icon">📁</span>
+                <div class="group-info">
+                  <span class="group-name">グループ2</span>
+                  <span class="group-description">情報1</span>
+                </div>
+                <span class="group-members">メンバー： ○人</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右カラム -->
+        <div class="right-column">
+          <!-- 学習状況 -->
+          <div class="section progress-section">
+            <h3>学習状況</h3>
+            <button type="button" class="btn-detail" onclick="goLearningDetail()">詳細</button>
+            <div class="progress-content">
+              <div class="progress-chart">
+                <svg width="110" height="110" viewBox="0 0 150 150">
+                  <circle cx="75" cy="75" r="40"></circle>
+                </svg>
+                <div class="chart-label">40%</div>
+              </div>
+              <div class="progress-info">
+                <div class="progress-item">
+                  <label>完了ステージ</label>
+                  <span>5　コ</span>
+                </div>
+                <div class="progress-item">
+                  <label>未完了ステージ</label>
+                  <span>15　コ</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="task-two-column">
+
+            <!-- 左：次にやる課題 -->
+            <div class="task-box next-task">
+              <h3>次にやる課題</h3>
+
+              <div class="status-item status-pending">
+                <div class="status-icon">⏳</div>
+                <div class="status-label">未提出</div>
+                <div class="status-count">1件</div>
+              </div>
+
+              <div class="button-top">
+                <button class="status-detail-btn" onclick="submitTask()">
+                  課題に取り組む
+                </button>
+              </div>
+            </div>
+
+            <!-- 右：過去課題 -->
+            <div class="task-box past-task">
+              <h3>過去課題</h3>
+
+              <div class="status-grid">
+                <div class="status-item status-submitted">
+                  <div class="status-icon">📄</div>
+                  <div class="status-label">提出済</div>
+                  <div class="status-count">3件</div>
+                </div>
+
+                <div class="status-item status-returned">
+                  <div class="status-icon">📦</div>
+                  <div class="status-label">返却済</div>
+                  <div class="status-count">2件</div>
+                </div>
+              </div>
+
+              <div class="button-top">
+                <button class="status-detail-btn" onclick="goAsscon()">
+                  これまでの課題
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+
+  function goLearningDetail() {
+    window.location.href = `/mypage/detail`;
+  }
+
+  /*過去課題に飛ぶリンク*/
+  function goAsscon() {
+    window.location.href = 'past_ass_sab_list.html';
+  }
+
+  /*未提出課題に飛ぶリンク*/
+  function submitTask() {
+    window.location.href = 'task_list.html';
+  }
+
+  function goPassReset() {
+    window.location.href = 'pass_reset_stu.html';
+  }
+
+  </script>
+
+<!--Javascriptの読み込み（必ずこの位置）-->
+<script src="{{ url_for('task.static', filename='js/header.js') }}"></script> 
+</body>
+</html>

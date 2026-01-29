@@ -2,6 +2,7 @@ from flask import Flask
 from apps.extensions import db, csrf
 from apps.auth.views import auth_bp
 from apps.crud.views import crud_bp 
+from apps.mypage.views import mypage_bp
 from apps.task.views import task_bp
 from apps.dashboard.views import dashboard_bp 
 from apps.writing.views import writing_bp
@@ -21,10 +22,11 @@ def create_app():
 
     # Blueprint登録
     app.register_blueprint(auth_bp, url_prefix='/auth') 
-    app.register_blueprint(writing_bp, url_prefix='/writing')
     app.register_blueprint(crud_bp, url_prefix='/crud')
+    app.register_blueprint(mypage_bp, url_prefix='/mypage')
     app.register_blueprint(task_bp, url_prefix='/task')
     app.register_blueprint(dashboard_bp, url_prefix='/dashboard') 
+    app.register_blueprint(writing_bp, url_prefix='/writing')
 
     return app
 
