@@ -75,7 +75,7 @@ class StudentDao:
                 g.group_name
             FROM student AS stu
             LEFT JOIN `group` AS g
-              ON stu.group_id = g.group_id
+            ON stu.group_id = g.group_id
             ORDER BY student_id ASC
         """
 

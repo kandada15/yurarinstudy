@@ -74,7 +74,7 @@ class AdminDao:
                 g.created_by_admin_id
             FROM admin
             LEFT OUTER JOIN `group` AS g
-              ON g.created_by_admin_id = admin.admin_id
+            ON g.created_by_admin_id = admin.admin_id
             ORDER BY admin_id ASC
         """
 

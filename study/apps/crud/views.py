@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, current_app,  json, jsonify, request,  session
 
-from apps.crud.dao.student_dao import StudentDao
-from apps.crud.dao.admin_dao import AdminDao
+from study.apps.crud.dao.dao_student import StudentDao
+from study.apps.crud.dao.dao_admin import AdminDao
 
 # Blueprintの作成
 crud_bp = Blueprint(
@@ -27,9 +27,10 @@ def user_manage():
     all_students = student_dao.find_all_groupname()
     all_admins = admin_dao.find_all_groupname()
 
-    return render_template("crud/user_info_list.html",
-                           all_students=all_students,
-                           all_admins=all_admins
+    return render_template(
+        "crud/user_info_list.html",
+        all_students=all_students,
+        all_admins=all_admins
     )
 
 @crud_bp.route("/detail")

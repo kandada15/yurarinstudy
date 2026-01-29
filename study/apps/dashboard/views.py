@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, session, redirect, url_for
-from apps.task.dao.streamed_dao import StreamedDao
-from apps.task.dao.submission_dao import SubmissionDao2
-from apps.crud.dao.group_dao import GroupDao  # 修正したDaoをインポート
+from study.apps.task.dao.dao_streamed import StreamedDao
+from study.apps.task.dao.dao_submission import SubmissionDao2
+from study.apps.crud.dao.dao_group import GroupDao  # 修正したDaoをインポート
 
 dashboard_bp = Blueprint('dashboard', __name__, template_folder='templates', static_folder='static')
 
