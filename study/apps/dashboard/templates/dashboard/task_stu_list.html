@@ -1,0 +1,176 @@
+<!--task_stu_list.html-->
+<!--課題別受講者一覧-->
+<!--データベースから持ってくる情報だからｊｓで繰り返し表を表示させるようにするよりもFLaakのほうがいいと思うのでそっちでお願いしたい一番下にコメントアウトでこんな感じってコード載せとく-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/task_stu_list.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+  <title>課題別受講者一覧</title>
+</head>
+<body>
+<!--ここからbace.htmlから引っ張れる-->
+  <header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">管理者</span>
+      <!--ここリンクをｊｓ管理してるけどアクション名？にしてログアウトできるように-->
+      <button class="logout-btn" onclick="gologout()">ログアウト</button>
+    </div>
+  </header>
+
+  <!-- 左側の穴 -->
+  <div class="holes-container">
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+  </div>
+
+  <!-- 右側のタブ -->
+  <div class="tabs-container">
+    <a href="user_info_list.html" class="tab active" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    <a href="task_create.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    <a href="dashboard.html" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
+  </div>o
+<!--ここまで-->
+
+  <div class="app-container">
+    <div class="content-wrapper">
+      <!--ここ名前何にしたらいいか迷走中-->
+      <h1>{{ streamed_name }}</h1>
+      <!-- 検索バーと受講者一覧のセクション -->
+       <form method="get">
+        <div class="search-section">
+          <input type="text" name="keyword" class="search-input" placeholder="検索したいユーザの氏名を入力..." value="{{ request.args.get('keyword', '') }}">
+          <button type="submit" class="search-btn">検索</button>
+        </div>
+       </form>
+      
+
+      <div class="table-section">
+        <div class="table-header">
+          <button class="return-btn"onclick="goreturn()">⇦　課題一覧へ戻る</button>
+          <button class="return-btn" onclick="returnToList()">添削済を返却</button>
+        </div>
+        
+        <div class="table-scroll-wrapper">
+          <table class="user-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>氏名</th>
+                <th>状況</th>
+                <th>添削開始</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for sd_s in streamed_student %}
+                <tr>
+                  <td>{{ sd_s.student_id }}</td>
+                  <td>{{ sd_s.student_name }}</td>
+                  <td><span class="status-badge status-uncorrected">{{ sd_s.status }}</span></td>
+                  <td><button class="start-btn">添削開始</button></td>
+                </tr>
+              {% endfor %}
+              <!-- <tr>
+                <td>STU11111</td>
+                <td>小鳥遊　うらら</td>
+                <td><span class="status-badge status-uncorrected">未添削</span></td>
+                <td><button class="start-btn">添削開始</button></td>
+              </tr>
+              <tr>
+                <td>STU12345</td>
+                <td>西園寺　愛桜</td>
+                <td><span class="status-badge status-completed">添削済み</span></td>
+                <td><button class="start-btn">添削開始</button></td>
+              </tr><tr>
+                <td>STU12345</td>
+                <td>雷堂　颯真</td>
+                <td><span class="status-badge status-uncorrected">未添削</span></td>
+                <td><button class="start-btn">添削開始</button></td>
+              </tr><tr>
+                <td>STU12345</td>
+                <td>星野　湊</td>
+                <td><span class="status-badge status-unsubmitted">未提出</span></td>
+                <td><button class="start-btn">添削開始</button></td>
+              </tr><tr>
+                <td>STU12345</td>
+                <td>風間　ゆな</td>
+                <td><span class="status-badge status-uncorrected">未添削</span></td>
+                <td><button class="start-btn">添削開始</button></td>
+              </tr><tr>
+                <td>STU12345</td>
+                <td>月森　莉亜</td>
+                <td><span class="status-badge status-uncorrected">未添削</span></td>
+                <td><button class="start-btn">添削開始</button></td>
+              </tr><tr>
+                <td>STU12345</td>
+                <td>水無月　陽翔</td>
+                <td><span class="status-badge status-uncorrected">未添削</span></td>
+                <td><button class="start-btn">添削開始</button></td>
+              </tr><tr>
+                <td>STU12345</td>
+                <td>花岡　光</td>
+                <td><span class="status-badge status-uncorrected">未添削</span></td>
+                <td><button class="start-btn">添削開始</button></td>
+              </tr> -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function goreturn() {
+      window.location.href = '/dashboard/streamed';
+    }
+
+  </script>
+  
+
+<!--Javascriptの読み込み（必ずこの位置）-->
+<script src="{{ url_for('static', filename='js/header.js') }}"></script> 
+</body>
+</html>
+
+<!--バックエンドさんへ-->
+<!--
+あ、これちゃっぴーに書いてもらったやつ、
+調べる時間減ればいいと思って動かなかったらごめんぴ
+
+flask側
+
+from flask import Flask, render_template
+import sqlite3
+
+app = Flask(__name__)
+
+def get_tasks():
+    conn = sqlite3.connect("app.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, title, sender, deadline FROM tasks")
+    tasks = cursor.fetchall()
+    conn.close()
+    return tasks
+
+
+@app.route("/tasks")
+def task_list():
+    tasks = get_tasks()  # ← DBから取得
+    return render_template("task_list.html", tasks=tasks)
+
+HTML側
+
+
+-->
+

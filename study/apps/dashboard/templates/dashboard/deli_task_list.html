@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{{ url_for('task.static', filename='css/deli_task_list.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/deli_task_list.css') }}">
+  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/header.css') }}">
   <title>配信済課題一覧 - 文脈工房</title>
 </head>
 <body>
@@ -25,7 +25,7 @@
 
   <div class="tabs-container">
     <a href="#" class="tab" data-page="users">ユーザ管理</a>
-    <a href="#" class="tab" data-page="tasks">課題配信</a>
+    <a href="{{ url_for('task.task_create_form') }}" class="tab" data-page="tasks">課題配信</a>
     <a href="{{ url_for('dashboard.index') }}" class="tab active" data-page="dashboard">ダッシュボード</a>
   </div>
 
@@ -35,12 +35,12 @@
 
       <div class="task-grid">
         {% for task in tasks %}
-        <button class="task-card" onclick="goStuList('{{ task.task_id }}')">
+        <button class="task-card" onclick="goStuList('{{ task.streamed_id }}')">
           <div class="grou_content">
-            <label>配信日：{{ task.streamed_date.strftime('%m月%d日') if task.streamed_date else '未設定' }}</label>
+            <label>配信日：{{ task.sent_at.strftime('%m月%d日') if task.sent_at else '未設定' }}</label>
             <p>{{ task.task_name }}</p><br>
-            <p>配信者：{{ task.admin.admin_name }}</p>
-            <p>提出期限：{{ task.due_date.strftime('%m月%d日') if task.due_date else 'なし' }}</p>
+            <p>配信者：{{ task.admin_name }}</p>
+            <p>提出期限：{{ task.streamed_limit.strftime('%m月%d日') if task.streamed_limit else 'なし' }}</p>
           </div>
         </button>
         {% else %}
@@ -50,13 +50,23 @@
         {% endfor %}
       </div>
 
-      <div class="pagination">
+       <div class="pagination">
           <button type="button" class="btn-back" onclick="backToList()"></button>
           <button type="button" class="btn-next" onclick="nextToList()"></button>
       </div>
     </div>
   </div>
 
-  <script src="{{ url_for('task.static', filename='js/deli_task_list.js') }}"></script> 
+  <script src="{{ url_for('dashboard.static', filename='js/deli_task_list.js') }}"></script> 
+  <script>
+  // 回答画面へのベースURLを保持する役割（末尾のIDを除いた部分）
+  // /task/student/tasks/
+  const BASE_INQ_URL = "{{ url_for('dashboard.streamed_list') }}"; 
+
+  // ページ遷移用の関数
+  function changePage(page) {
+    window.location.href = `${BASE_INQ_URL}?page=${page}`;
+  }
+  </script>
 </body>
 </html>

@@ -80,14 +80,14 @@
               <div class="task-item">
                 <div class="task-header">
                   <label class="task-label">累計課題配信数</label>
-                  <button type="button" class="btn-detail">詳細</button>
+                  <a href="{{ url_for('dashboard.streamed_list') }}"><button type="button" class="btn-detail">詳細</button></a>
                 </div>
                 <p class="task-num">{{ streamed_count }}コ</p>
               </div>
               <div class="task-item">
                 <div class="task-header">
                   <label class="task-label">未添削課題</label>
-                  <button type="button" class="btn-detail">詳細</button>
+                  <a href="{{ url_for('dashboard.streamed_list') }}"><button type="button" class="btn-detail">詳細</button></a>
                 </div>
                 <p class="task-num">{{ unchecked_count }}件</p>
               </div>

@@ -3,8 +3,8 @@
 
 import mysql.connector
 from mysql.connector import MySQLConnection
-from models.model_dashboard import Dashboard
-from config.db_config import DB_CONFIG  # ★ これを追加
+from apps.dashboard.models.model_dashboard import Dashboard, StreamedStudent
+from apps.config.db_config import DB_CONFIG  # ★ これを追加
 
 # MySQLに直接アクセスするDAOクラス※progressテーブル専用
 class Dashboard_DAO:
@@ -87,3 +87,76 @@ class Dashboard_DAO:
             # 例外の有無に関わらず、最後に必ずクローズする
             cursor.close()
             conn.close()
+
+    def find_students_status_by_streamed_id(self, streamed_id: int, admin_id: int, keyword: str | None) -> list[StreamedStudent]:
+        """
+        指定された課題（streamed_id）について、
+        配信された学生と提出・添削状況を取得する（管理者用）
+        """
+        sql = """
+             SELECT
+                 stu.student_id,
+                 stu.student_name,
+                 sub.submit_flag,
+                 sub.check_flag
+             FROM streamed AS s
+             INNER JOIN `group` AS g
+               ON g.group_id = s.group_id
+             INNER JOIN student AS stu
+               ON stu.group_id = g.group_id
+             LEFT JOIN submission AS sub
+               ON sub.student_id = stu.student_id
+               AND sub.streamed_id = s.streamed_id
+             WHERE s.streamed_id = %s AND g.created_by_admin_id = %s 
+               AND(
+                 %s IS NULL 
+                 OR stu.student_name LIKE CONCAT('%', %s, '%')
+               )
+             ORDER BY stu.student_id ASC
+        """
+
+        conn = self._get_connection()
+        try:
+          cursor = conn.cursor(dictionary=True)
+          cursor.execute(sql, (streamed_id, admin_id, keyword, keyword))
+          rows = cursor.fetchall()
+
+          result = []
+          for row in rows:
+             # 状況判定（要件どおり）
+             if row["submit_flag"] is None or row["submit_flag"] == 0:
+               status = "未提出"
+             elif row["submit_flag"] == 1 and row["check_flag"] == 0:
+               status = "未添削"
+             else:
+               status = "添削済み"
+             result.append(
+                StreamedStudent(
+                    student_id=row["student_id"],
+                    student_name=row["student_name"],
+                    status=status
+                )
+             )
+            
+          return result
+        finally:
+          cursor.close()
+          conn.close()
+
+    def find_streamed_name_by_id(self, streamed_id: int):
+       sql = """
+            SELECT 
+                streamed_name
+            FROM streamed
+            WHERE streamed_id = %s
+        """
+       conn = self._get_connection()
+       try:
+          cursor = conn.cursor(dictionary=True)
+          cursor.execute(sql, (streamed_id,))
+          row = cursor.fetchone()
+
+          return row
+       finally:
+          cursor.close()
+          conn.close()
