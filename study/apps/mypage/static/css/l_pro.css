@@ -1,0 +1,278 @@
+/*  ヘッダーCSS */
+
+/* リセット */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Meiryo', sans-serif;
+  background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc8 100%);
+  max-height: 100vh;
+  padding: 20px;
+}
+
+/* 原稿用紙風の背景 */
+.app-container {
+  position: relative;
+  max-width: 1100px;
+  /* ヘッダー引いた分の高さ指定 */
+  height: 600px;
+  margin: 0 auto;
+  margin-top: 60px;
+  background: #fffef9;
+  /* 40pxの方眼模様 */
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px);
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(139, 115, 85, 0.2);
+  overflow: hidden;
+
+}
+
+/* コンテンツラッパー */
+.content-wrapper {
+  height: 600px;
+  max-width: 1100px;
+  background: rgba(255, 254, 249, 0.95);
+  padding: 30px;
+  position: relative;
+  border: 1px solid #000;
+  /*わかりやすくボーダーをひく*/
+  /* overflow-y: scroll; */
+  /*縦方向にスクロール*/
+  /* -ms-overflow-style: none; */
+  /* Edge / IE */
+  /* scrollbar-width: none; */
+  /* Firefox */
+}
+
+/* Chrome / Safari */
+/* .content-wrapper::-webkit-scrollbar {
+  display: none;
+} */
+
+/* アニメーション（本をめくる効果） */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
+/* 学習状況タイトル */
+h1 {
+  font-size: 28px;
+  color: #5a4a3a;
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 3px solid #c9b896;
+  font-weight: 600;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.stats-section-wrapper {
+  margin-bottom: 30px;
+}
+
+.table-section {
+  width: 100%;
+}
+
+/* タブスタイル */
+.tabs {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 0;
+  border-bottom: 2px solid #c9b89a;
+}
+
+.tab2 {
+  padding: 12px 24px;
+  background-color: #e0d5c7;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  font-size: 14px;
+  color: #4a4a4a;
+  transition: all 0.3s;
+  font-weight: 500;
+}
+
+.tab2:hover {
+  background-color: #d4c4b0;
+}
+
+.tab2.active {
+  background-color: #c9b89a;
+  color: #4a4a4a;
+  font-weight: 600;
+  border-bottom: 2px solid #c9b89a;
+  margin-bottom: -2px;
+}
+
+.tab-content {
+  display: none;
+  animation: fadeIn 0.3s;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border: 1px solid #c9b89a;
+  margin-top: -1px;
+}
+
+thead {
+  background-color: #c9b89a;
+}
+
+th {
+  padding: 12px 10px;
+  text-align: left;
+  font-weight: 600;
+  color: #4a4a4a;
+  border: 1px solid #b8a686;
+  font-size: 14px;
+}
+
+td {
+  padding: 12px 10px;
+  border: 1px solid #e0d5c7;
+  color: #4a4a4a;
+  font-size: 13px;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #faf8f5;
+}
+
+tbody tr:hover {
+  background-color: #f0ebe3;
+}
+
+.stats-section {
+  display: flex;
+  gap: 50px;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  padding: 25px 50px;
+  border-radius: 8px;
+  border: 1px solid #c9b89a;
+  height: 120px;
+}
+
+.chart-container {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.chart-wrapper {
+  position: relative;
+}
+
+.stats-grid {
+  display: flex;
+  gap: 60px;
+  flex: 1;
+  justify-content: center;
+}
+
+svg {
+  width: 100px;
+  height: 100px;
+}
+
+circle {
+  fill: #e8aeb7;
+  stroke: #c9b89a;
+  stroke-width: 2;
+}
+
+.percentage-info {
+  text-align: left;
+}
+
+.percentage {
+  font-size: 40px;
+  font-weight: bold;
+  color: #e8aeb7;
+  line-height: 1;
+}
+
+.percentage-label {
+  font-size: 13px;
+  color: #7a7a7a;
+  margin-top: 8px;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 0;
+  border: none;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #7a7a7a;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 36px;
+  font-weight: bold;
+  color: #4a4a4a;
+  line-height: 1;
+}
