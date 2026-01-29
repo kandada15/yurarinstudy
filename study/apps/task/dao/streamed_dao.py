@@ -58,8 +58,8 @@ class StreamedDao:
           group_id=row["group_id"]
         )
         streamed.append(stream)
-
       return streamed
+    
     finally:
       cursor.close()
       conn.close()
@@ -88,6 +88,7 @@ class StreamedDao:
       return cursor.lastrowid
     
     finally:
+      # 例外の有無に関わらず、最後に必ずクローズする
       cursor.close()
       conn.close()
 
@@ -122,6 +123,7 @@ class StreamedDao:
       cursor.execute(sql)
       rows = cursor.fetchall()
 
+      # StreamedForStudentオブジェクトに変換
       streamed: list[StreamedForStudent] = []
       for row in rows:
         stream = StreamedForStudent(
@@ -133,16 +135,19 @@ class StreamedDao:
           sent_at=row["sent_at"]
         )
         streamed.append(stream)
-
       return streamed
+    
     finally:
+      # 例外の有無に関わらず、最後に必ずクローズする
       cursor.close()
       conn.close()
 
-  # streamed_dao.py
+  # 特定の学生が未提出の課題のみ取得する
   def find_unsubmitted_for_student(self, student_id: int) -> list[StreamedForStudent]:
     """
-    学生が未提出の課題のみ取得する
+    streamed と submissionを結び付ける
+    submissionテーブルにレコードが存在しない=未提出の課題だけを抽出
+    group と adminも結び付けて課題情報+作成者の名前を取得
     """
     sql = """
         SELECT
@@ -153,17 +158,19 @@ class StreamedDao:
             admin.admin_name,
             s.sent_at
         FROM streamed AS s
-        LEFT JOIN submission sub
+        LEFT OUTER JOIN submission sub
           ON s.streamed_id = sub.streamed_id
           AND sub.student_id = %s
-        LEFT JOIN `group` AS g
+        LEFT OUTER JOIN `group` AS g
           ON s.group_id = g.group_id
-        LEFT JOIN admin 
+        LEFT OUTER JOIN admin 
           ON g.created_by_admin_id = admin.admin_id
         WHERE sub.submission_id IS NULL
         ORDER BY s.sent_at DESC
     """
 
+    # クラス内部の_get_connection()を使ってMySQL接続を取得
+    # 結果を辞書形式で取得
     conn = self._get_connection()
     try:
         cursor = conn.cursor(dictionary=True)
