@@ -185,6 +185,48 @@ class StreamedDao:
         cursor.close()
         conn.close()
 
+  def find_streamed_for_student(self, admin_id: int) -> list[StreamedForStudent]:
+    """
+    管理者が学生に配信した課題一覧を取得する
+    """
+    sql = """
+        SELECT
+            s.streamed_id,
+            s.streamed_name,
+            s.streamed_text,
+            s.streamed_limit,
+            admin.admin_name,
+            s.sent_at
+        FROM streamed AS s
+        LEFT JOIN `group` AS g
+          ON s.group_id = g.group_id
+        LEFT JOIN admin 
+          ON g.created_by_admin_id = admin.admin_id
+        WHERE admin.admin_id = %s
+        ORDER BY s.sent_at DESC
+    """
+
+    conn = self._get_connection()
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(sql, (admin_id,))
+        rows = cursor.fetchall()
+
+        result = []
+        for row in rows:
+            result.append(StreamedForStudent(
+                streamed_id=row["streamed_id"],
+                streamed_name=row["streamed_name"],
+                streamed_text=row["streamed_text"],
+                streamed_limit=row["streamed_limit"],
+                admin_name=row["admin_name"],
+                sent_at=row["sent_at"]
+            ))
+        return result
+    finally:
+        cursor.close()
+        conn.close()
+
 
   # streamed ID検索
   def find_by_id(self, streamed_id: int) -> StreamedForStudentSubmit | None:
