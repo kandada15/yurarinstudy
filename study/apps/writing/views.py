@@ -1,7 +1,7 @@
 import json
 import os
 from flask import Blueprint, render_template, request, session, redirect, url_for, jsonify, current_app
-from apps.writing.dao.writing_dao import WritingDao
+from study.apps.writing.dao.dao_writing import WritingDao
 
 writing_bp = Blueprint('writing', __name__, template_folder='templates', static_folder='static')
 w_dao = WritingDao()
