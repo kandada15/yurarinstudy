@@ -63,8 +63,7 @@
               <div class="group-item">
                 <span class="folder-icon">📁</span>
                 <div class="group-info">
-                  <span class="group-name">{{ group.name }}</span>
-                  <span class="group-description">{{ group.description }}</span>
+                  <span class="group-name">{{ group.group_name }}</span>
                 </div>
                 <span class="group-members">メンバー： {{ group.member_count }}人</span>
               </div>
@@ -109,7 +108,7 @@
             </div>
           </div>
           <div class="bottom-buttons">
-            <button type="button" class="big-btn">学習進捗</button>
+            <button type="button" class="big-btn" onclick="location.href='{{ url_for('writing.progress') }}'">学習進捗</button>
             <button type="button" class="big-btn">返却済課題</button>
           </div>   
         </div>

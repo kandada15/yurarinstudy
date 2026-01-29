@@ -1,0 +1,23 @@
+{% extends "header.html" %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/l_pro_top.css') }}">
+<div class="app-container fade-in">
+    <div class="content-wrapper">
+        <h1>学習状況トップ</h1>
+        <p>学習状況を閲覧したい受講者が所属しているグループを選択してください。</p>
+        <div class="groups-container">
+            {% for g in groups %}
+            <div class="grou_content" onclick="goStulist('{{ g.id }}')">
+                <div class="group-icon">📁</div>
+                <div class="group-info">
+                    <p class="group-title">{{ g.name }}</p>
+                    <p class="group-subtitle">{{ g.subtitle }}</p>
+                </div>
+                <div class="group-members"><span>メンバー：{{ g.count }}人</span></div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('dashboard.static', filename='js/l_pro_top.js') }}"></script>
+{% endblock %}
