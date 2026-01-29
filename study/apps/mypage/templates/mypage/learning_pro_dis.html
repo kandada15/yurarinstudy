@@ -1,0 +1,186 @@
+<!--学習状況表示-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('mypage.static', filename='css/l_pro.css') }}">
+  <link rel="stylesheet" href="{{ url_for('mypage.static', filename='css/header.css') }}">
+  <title>学習状況表示</title>
+</head>
+<body>
+  <header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">受講者</span>
+      <!--ログアウト-->
+      <a href="{{ url_for( 'auth.logout' ) }}" class="logout-btn" >ログアウト</a>
+    </div>
+  </header>
+
+  <!-- 左側の穴 -->
+  <div class="holes-container">
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+
+    
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+  </div>
+
+  <!-- 右側のタブ -->
+  <div class="tabs-container">
+    <a href="learning_top.html" class="tab active" data-page="users" data-color="#e8dcc8">ライティング学習</a>
+    <a href="mypage.html" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
+    <a href="ass_list.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
+  </div>
+
+  <div class="app-container">
+    <div class="content-wrapper">
+      <h1>学習状況</h1>
+    
+      <!-- 統計情報（上部） -->
+      <div class="stats-section-wrapper">
+        <div class="stats-section">
+          <div class="chart-container">
+            <div class="chart-wrapper">
+              <svg viewBox="0 0 150 150">
+                <circle cx="75" cy="75" r="70"></circle>
+              </svg>
+            </div>
+            <div class="percentage-info">
+              <div class="percentage">40%</div>
+              <div class="percentage-label">完了率</div>
+            </div>
+          </div>
+          
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-label">全ステージ数</div>
+              <div class="stat-value">２０個</div>
+            </div>
+            
+            <div class="stat-item">
+              <div class="stat-label">完了ステージ数</div>
+              <div class="stat-value">５個</div>
+            </div>
+            
+            <div class="stat-item">
+              <div class="stat-label">未完了ステージ数</div>
+              <div class="stat-value">１５個</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- テーブル（下部） -->
+      <div class="table-section">
+          <!-- タブ -->
+          <div class="tabs">
+            <button class="tab2 active" onclick="switchTab(event, 'essay')">小論文</button>
+            <button class="tab2" onclick="switchTab(event, 'report')">レポート</button>
+            <button class="tab2" onclick="switchTab(event, 'business')">ビジネス文章</button>
+            <button class="tab2" onclick="switchTab(event, 'training')">表現トレーニング</button>
+          </div>
+
+          <!-- 小論文 -->
+          <div id="essay" class="tab-content active">
+            <table>
+              <thead>
+                <tr>
+                  <th>ステージ</th>
+                  <th>フェーズ</th>
+                  <th>学習内容</th>
+                  <th>進捗</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>理解</td><td>小論文とは／目的と特徴</td><td>未学習</td></tr>
+                <tr><td>2</td><td>構成</td><td>序論・本論・結論の作り方</td><td>未学習</td></tr>
+                <tr><td>3</td><td>思考</td><td>問題把握／主張の立て方／論理展開</td><td>未学習</td></tr>
+                <tr><td>4</td><td>表現</td><td>文体／語彙／文章／接続詞</td><td>未学習</td></tr>
+                <tr><td>5</td><td>実践</td><td>添削／推敲／課題用例／評価基準の理解</td><td>未学習</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- レポート -->
+          <div id="report" class="tab-content">
+            <table>
+              <thead>
+                <tr>
+                  <th>ステージ</th>
+                  <th>フェーズ</th>
+                  <th>学習内容</th>
+                  <th>進捗</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>理解</td><td>小論文とは／目的と特徴</td><td>未学習</td></tr>
+                <tr><td>2</td><td>構成</td><td>序論・本論・結論の作り方</td><td>未学習</td></tr>
+                <tr><td>3</td><td>思考</td><td>問題把握／主張の立て方／論理展開</td><td>未学習</td></tr>
+                <tr><td>4</td><td>表現</td><td>文体／語彙／文章／接続詞</td><td>未学習</td></tr>
+                <tr><td>5</td><td>実践</td><td>添削／推敲／課題用例／評価基準の理解</td><td>未学習</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- ビジネス文章 -->
+          <div id="business" class="tab-content">
+            <table>
+              <thead>
+                <tr>
+                  <th>ステージ</th>
+                  <th>フェーズ</th>
+                  <th>学習内容</th>
+                  <th>進捗</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>理解</td><td>小論文とは／目的と特徴</td><td>未学習</td></tr>
+                <tr><td>2</td><td>構成</td><td>序論・本論・結論の作り方</td><td>未学習</td></tr>
+                <tr><td>3</td><td>思考</td><td>問題把握／主張の立て方／論理展開</td><td>未学習</td></tr>
+                <tr><td>4</td><td>表現</td><td>文体／語彙／文章／接続詞</td><td>未学習</td></tr>
+                <tr><td>5</td><td>実践</td><td>添削／推敲／課題用例／評価基準の理解</td><td>未学習</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 表現トレーニング -->
+          <div id="training" class="tab-content">
+            <table>
+              <thead>
+                <tr>
+                  <th>ステージ</th>
+                  <th>フェーズ</th>
+                  <th>学習内容</th>
+                  <th>進捗</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>理解</td><td>小論文とは／目的と特徴</td><td>未学習</td></tr>
+                <tr><td>2</td><td>構成</td><td>序論・本論・結論の作り方</td><td>未学習</td></tr>
+                <tr><td>3</td><td>思考</td><td>問題把握／主張の立て方／論理展開</td><td>未学習</td></tr>
+                <tr><td>4</td><td>表現</td><td>文体／語彙／文章／接続詞</td><td>未学習</td></tr>
+                <tr><td>5</td><td>実践</td><td>添削／推敲／課題用例／評価基準の理解</td><td>未学習</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+<!--Javascriptの読み込み（必ずこの位置）-->
+<script src="{{ url_for('mypage.static', filename='js/l_pro.js') }}"></script> 
+<script src="{{ url_for('mypage.static', filename='js/header.js') }}"></script> 
+</body>
+</html>
