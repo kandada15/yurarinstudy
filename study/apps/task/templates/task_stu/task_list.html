@@ -1,0 +1,140 @@
+<!--TASK_LIST.HTML-->
+<!--課題一覧と課題詳細表示-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('task.static', filename='css/css_stu/task_list.css') }}">
+  <link rel="stylesheet" href="{{ url_for('task.static', filename='css/header.css') }}">
+  <title>課題一覧</title>
+</head>
+<body>
+<!-- 共通部分 -->
+<header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">管理者</span>
+      <!--ログアウト-->
+      <a href="{{ url_for( 'auth.logout' ) }}" class="logout-btn" >ログアウト</a>
+    </div>
+  </header>
+
+  <!-- 左側の穴 -->
+  <div class="holes-container">
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+
+    
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+  </div>
+
+  <!-- 右側のタブ -->
+  <div class="tabs-container">
+    <a href="learning_top.html" class="tab active" data-page="users" data-color="#e8dcc8">ライティング学習</a>
+    <a href="{{ url_for('task.student_task_list') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
+    <a href="mypage.html" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
+  </div>
+<!--ここまで-->
+
+  <div class="app-container">
+    <div class="content-wrapper">
+      <h1>課題一覧</h1>
+
+      <!--繰り返し表示にて表示-->
+      {% if tasks %}
+        <div class="task-grid">
+          {% for task in tasks %}
+            <button 
+            type="button" 
+            class="task-card" 
+            onclick="openModal(this)" 
+            data-id="{{ task.streamed_id }}"
+            data-name="{{ task.streamed_name }}"
+            data-admin="{{ task.admin_name }}"
+            data-limit="{{ task.streamed_limit }}"
+            data-text="{{ task.streamed_text }}"
+            >
+
+              <div class="grou_content">
+                <!--データベースから持ってくる。下の例文のようにしたら文字と一緒に表示できる-->
+                <!--例: 配信日: flask側指定名.カラム名-->
+                <label>配信日{{ task.sent_at }}</label>
+                <p class="task_title">{{ task.streamed_name }}</p><br>
+                <p>配信者：{{ task.admin_name }}</p>
+                <p>提出期限：{{ task.streamed_limit }}</p>
+                </div>
+            </button>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="no_task">現在課題はありません</p>
+      {% endif %}
+        <!-- ページネーション -->
+      <div class="pagination">
+        <button type="button" class="btn-back" onclick="backToList()"></button>
+        <button type="button" class="btn-next" onclick="nextToList()"></button>
+      </div>
+    </div>
+    
+
+     <!--課題内容表示-->
+      <div id="detail-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+          <button class="modal-close" onclick="closeModal()">×</button>
+          <div class="modal-header">
+            <h1>課題詳細</h1>
+          </div>
+          <div class="modal-header">
+            <!--データベースから持ってくる{}-->
+            <h2 id="modal-name" class="modal-title"></h2>
+            <div class="modal-meta">
+              <div class="modal-meta-item">
+                <span class="modal-meta-label">配信者:</span>
+                <!--データベースから持ってくる{}-->
+                <span id="modal-admin"></span>
+              </div>
+              <div class="modal-meta-item">
+                <span class="modal-meta-label"> 提出期限:</span>
+                <!--データベースから持ってくる{}-->
+                <span id="modal-limit"></span>
+              </div>
+            </div>
+            <div class="modal-body">
+              <label class="modal-body-label">問題文</label>
+              <div id="modal-text" class="modal-text">
+              <!--データベースから持ってくる{}-->
+            </div>
+            <button type="button" class="btn-answer" onclick="submitAnswerForm()">回答する</button>
+         </div>
+        </div>
+      </div>
+      
+  </div>
+
+<!--Javascriptの読み込み（必ずこの位置）-->
+<script src="{{ url_for('task.static', filename='js/js_stu/task_list.js') }}"></script> 
+<!--Javascriptの読み込み（必ずこの位置）-->
+<script src="{{ url_for('task.static', filename='js/header.js') }}"></script> 
+
+<script>
+  // 回答画面へのベースURLを保持する役割（末尾のIDを除いた部分）
+  // /task/student/tasks/
+  const BASE_INQ_URL = "{{ url_for('task.student_task_list') }}"; 
+
+  // ページ遷移用の関数
+  function changePage(page) {
+    window.location.href = `${BASE_INQ_URL}?page=${page}`;
+  }
+</script>
+
+</body>
+</html>

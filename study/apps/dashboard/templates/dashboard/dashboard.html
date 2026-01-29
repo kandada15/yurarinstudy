@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='dashboard.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='header.css') }}">
-  <title>ダッシュボード - 文脈工房</title>
+  {# 静的ファイルのパスも正しい形式に修正 #}
+  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/dashboard.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+  <title>ダッシュボード</title>
 </head>
 <body>
 <header class="top-header">
@@ -15,18 +16,23 @@
     </div>
     <div class="user-section">
       <span class="user-badge">管理者</span>
-      <button class="logout-btn" onclick="location.href='/auth/logout'">ログアウト</button>
+      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
     </div>
-</header>
+  </header>
 
   <div class="holes-container">
-    {% for i in range(8) %}<div class="hole"></div>{% endfor %}
+    <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+    <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
   </div>
 
   <div class="tabs-container">
-    <a href="#" class="tab" data-page="users">ユーザ管理</a>
-    <a href="#" class="tab" data-page="tasks">課題配信</a>
-    <a href="{{ url_for('dashboard.index') }}" class="tab active" data-page="dashboard">ダッシュボード</a>
+    {# ユーザ管理のブループリント名が不明な場合は一旦 '#' にするか、正しい名前に書き換えてください #}
+    <a href="#" class="tab" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    
+    {# 【修正箇所】'task.index' から 'writing.index' に変更 #}
+    <a href="{{ url_for('writing.index') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    
+    <a href="{{ url_for('dashboard.index') }}" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
   </div>
 
   <div class="app-container">
@@ -43,48 +49,45 @@
             </div>
             <div class="profile-item">
               <span class="profile-label">氏　　名</span>
-              <span class="profile-value">{{ admin.name }}</span>
+              <span class="profile-value">{{ admin.admin_name }}</span>
             </div>
           </div><br>
 
-          <div class="group-box box">
-            <h2 class="box-title">グループ</h2>
-            <table class="group-table">
-              <thead>
-                <tr>
-                  <th>グループ名</th>
-                  <th>管理者名</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for group in groups %}
-                <tr>
-                  <td>{{ group.name }}</td>
-                  <td>{{ group.admin_name }}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
+          <div class="section box">
+            <div class="group-header">
+              <h2 class="group-title">所属グループ</h2>
+              <button type="button" class="group-button" onclick="GoGroupManage()">グループ管理</button>
+            </div>
+            <div class="group-list">
+              {% for group in groups %}
+              <div class="group-item">
+                <span class="folder-icon">📁</span>
+                <div class="group-info">
+                  <span class="group-name">{{ group.name }}</span>
+                  <span class="group-description">{{ group.description }}</span>
+                </div>
+                <span class="group-members">メンバー： {{ group.member_count }}人</span>
+              </div>
+              {% endfor %}
+            </div>
           </div>
         </div>
 
         <div class="right-column">
           <div class="tasks-box box">
             <h2 class="box-title">配信済課題</h2>
-            
             <div class="submission-content">
               <div class="task-item">
                 <div class="task-header">
                   <label class="task-label">累計課題配信数</label>
-                  <button type="button" class="btn-detail" onclick="location.href='/task/list'">詳細</button>
+                  <button type="button" class="btn-detail">詳細</button>
                 </div>
                 <p class="task-num">{{ streamed_count }}コ</p>
               </div>
-
               <div class="task-item">
                 <div class="task-header">
                   <label class="task-label">未添削課題</label>
-                  <button type="button" class="btn-detail" onclick="location.href='/check/list'">詳細</button>
+                  <button type="button" class="btn-detail">詳細</button>
                 </div>
                 <p class="task-num">{{ unchecked_count }}件</p>
               </div>
@@ -101,20 +104,23 @@
                   <span class="submission-label">未提出</span>
                   <span class="submission-num">{{ unsubmitted_count }}件</span>
                 </div>
-                <p class="deadline-info">今週 {{ weekly_deadline_count }}件締切</p>
+                <p class="deadline-info">今週{{ weekly_deadline_count }}件締切</p>
               </div>
             </div>
           </div>
-
           <div class="bottom-buttons">
-            <button type="button" class="big-btn" onclick="location.href='/progress/all'">学習進捗</button>
-            <button type="button" class="big-btn" onclick="location.href='/returned/list'">返却済課題</button>
+            <button type="button" class="big-btn">学習進捗</button>
+            <button type="button" class="big-btn">返却済課題</button>
           </div>   
         </div>
       </div>
     </div>
   </div>
-
-  <script src="{{ url_for('dashboard.static', filename='dashboard.js') }}"></script> 
+  <script>
+    function GoGroupManage() {
+      window.location.href = "{{ url_for('dashboard.index') }}manage";
+    }
+  </script>
+  <script src="{{ url_for('static', filename='js/header.js') }}"></script> 
 </body>
 </html>

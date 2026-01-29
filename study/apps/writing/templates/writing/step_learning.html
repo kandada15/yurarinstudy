@@ -1,256 +1,144 @@
-{% extends "base.html" %}
-
-{% block title %}ステップ学習{% endblock %}
-
-{% block styles %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ data.page_title }} - 文脈工房</title>
+    
+    {# CSSの読み込み先を step_l.css に修正 #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
     <link rel="stylesheet" href="{{ url_for('writing.static', filename='css/step_l.css') }}">
-{% endblock %}
+    
+    <style>
+        /* JSで切り替えるため、初期状態でコンテンツを非表示にする設定 */
+        .content-wrapper { display: none; }
+    </style>
+</head>
+<body>
 
-{% block header %}
-    {# 受講者用共通パーツを読み込み #}
-    {% include "header_stu.html" %}
-{% endblock %}
-{% block content %}
-  <div class="app-container">
-    <!-- ステップ1: 導入画面 -->
-    <div id="step1" class="content-wrapper fade-in">
-      <div class="step-header">
-        <span class="phase-label" id="step1-phase">理解</span>
-        <h2 class="step-title" id="step1-title">小論文とは/目的と特徴</h2>
-      </div>
-      
-      <div class="step1-content">
-        <img src="https://via.placeholder.com/600x400/f5f1e8/8b7355?text=小論文について" alt="ステップ1イラスト" class="step1-image" id="step1-image">
-        <p class="step1-description" id="step1-description">小論文の基本的な概念と目的について学びます。</p>
-      </div>
+    <div class="app-container">
+        
+        {# --- ステップ1: 導入画面 (lecture) --- #}
+        <div id="step1" class="content-wrapper fade-in">
+            <header class="step-header">
+                <div class="side">
+                    <div>
+                        <span id="step1-phase" class="phase-label"></span>
+                        <h2 id="step1-title" class="step-title"></h2>
+                    </div>
+                </div>
+            </header>
+            <div class="step1-content">
+                <img id="step1-image" class="step1-image" src="" alt="講義資料">
+                <p id="step1-description" class="step1-description"></p>
+            </div>
+            <div class="button-group">
+                <button type="button" class="btn-secondary" onclick="returnToList()">戻る</button>
+                <button type="button" class="btn-primary" onclick="nextStep()">次へ</button>
+            </div>
+        </div>
 
-      <div class="button-group">
-        <button type="button" class="btn-primary" onclick="goToStep(2, 'question')">
-          次のステップへ
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-        </button>
-      </div>
+        {# --- ステップ2: 穴埋め問題画面 (quiz_cloze) --- #}
+        <div id="step2-question" class="content-wrapper fade-in">
+            <header class="step-header">
+                <div class="side">
+                    <div>
+                        <span id="step2-phase" class="phase-label"></span>
+                        <h2 id="step2-title" class="step-title"></h2>
+                    </div>
+                </div>
+            </header>
+            <div class="question-section">
+                <p id="step2-instruction" class="instruction"></p>
+                <div class="question-box">
+                    <h3>問題</h3>
+                    <p id="step2-question-text"></p>
+                </div>
+                <div class="answer-section">
+                    <h3>回答入力</h3>
+                    <table id="answer-table-input" class="answer-table"></table>
+                </div>
+            </div>
+            <div class="button-group">
+                <button type="button" class="btn-primary" onclick="gradeAnswers()">採点する</button>
+            </div>
+        </div>
 
-      <div class="step-container">
-        <div class="step active">1</div>
-        <div class="line">​</div>
-        <div class="step">2</div>
-        <div class="line">​</div>
-        <div class="step">3</div>
-      </div>
+        {# --- ステップ2: 採点結果画面 --- #}
+        <div id="step2-answer" class="content-wrapper fade-in">
+            <header class="step-header">
+                <div class="side">
+                    <h2 class="step-title">採点結果</h2>
+                    <div class="score-display">
+                        <span id="score-text"></span>
+                    </div>
+                </div>
+            </header>
+            <div class="answer-section">
+                <table id="answer-table-result" class="answer-table"></table>
+            </div>
+            <div class="button-group">
+                <button type="button" class="btn-primary" onclick="nextStep()">次へ</button>
+            </div>
+        </div>
+
+        {# --- ステップ3: 記述問題画面 (writing_practice) --- #}
+        <div id="step3-question" class="content-wrapper fade-in">
+            <header class="step-header">
+                <div class="side">
+                    <div>
+                        <span id="step3-phase" class="phase-label"></span>
+                        <h2 id="step3-title" class="step-title"></h2>
+                    </div>
+                </div>
+            </header>
+            <div class="question-section">
+                <p id="step3-instruction" class="instruction"></p>
+                <div class="question-box">
+                    <h3>課題</h3>
+                    <p id="step3-question-text"></p>
+                </div>
+                <textarea id="essay-textarea" class="essay-textarea" rows="10" placeholder="回答を入力してください"></textarea>
+            </div>
+            <div class="button-group">
+                <button type="button" class="btn-primary" onclick="showExampleAnswer()">完了</button>
+            </div>
+        </div>
+
+        {# --- ステップ3: 回答例確認画面 --- #}
+        <div id="step3-answer" class="content-wrapper fade-in">
+            <header class="step-header">
+                <h2 class="step-title">回答例確認</h2>
+            </header>
+            <div class="answer-section">
+                <h3>あなたの回答</h3>
+                <textarea id="essay-textarea-answer" class="essay-textarea" rows="5" readonly></textarea>
+                <div class="example-answer-section">
+                    <h3>回答例</h3>
+                    <div id="example-answer-text" class="example-answer-box"></div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button type="button" class="btn-primary" onclick="nextStep()">学習を完了する</button>
+            </div>
+        </div>
+
+        {# --- 完了メッセージ --- #}
+        <div id="complete-screen" class="complete-screen" style="display: none;">
+            <h2 class="complete-title">お疲れ様でした！</h2>
+            <button class="btn-primary" onclick="returnToList()">一覧に戻る</button>
+        </div>
+
     </div>
 
-    <!-- ステップ2: 穴埋め問題（回答入力） -->
-    <div id="step2-question" class="content-wrapper" style="display: none;">
-      <div class="step-header">
-        <span class="phase-label" id="step2-phase">理解</span>
-        <h2 class="step-title" id="step2-title">小論文とは/目的と特徴</h2>
-      </div>
-
-      <div class="question-section">
-        <p class="instruction" id="step2-instruction">次の（）に当てはまる文字を回答してください。</p>
-      
-          <div class="question-box">
-            <h3>問題文</h3>
-            <p id="step2-question-text">問題文がここに表示されます</p>
-          </div>
-
-          <!-- 回答テーブルを問題文の下に表示 -->
-          <div class="answer-section">
-            <h3>回答</h3>
-            <table class="answer-table" id="answer-table-input">
-              <!-- JavaScriptで動的に生成 -->
-            </table>
-          </div>
-      
-      </div>
-
-      <div class="button-group">
-        <button type="button" class="btn-secondary" onclick="goToStep(1, 'question')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-          戻る
-        </button>
-        <button type="button" class="btn-primary" onclick="gradeAnswers()">
-          採点する
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        </button>
-      </div>
-
-      <div class="step-container">
-        <div class="step active">1</div>
-        <div class="line active">​</div>
-        <div class="step active">2</div>
-        <div class="line">​</div>
-        <div class="step">3</div>
-      </div>
-    </div>
-
-    <!-- ステップ2: 穴埋め問題（自動採点） -->
-    <div id="step2-answer" class="content-wrapper" style="display: none;">
-      <div class="side">
-        <div class="step-header">
-          <span class="phase-label">理解</span>
-          <h2 class="step-title">小論文とは/目的と特徴</h2>
-        </div>
-        <!-- スコア表示 -->
-        <div class="score-display" id="score-display">
-          <span id="score-text">12問中10問正解</span>
-        </div>
-      </div>
-
-      <div class="question-section">
-        <div class="question-box">
-          <h3>問題文</h3>
-          <p id="step2-answer-question-text">問題文がここに表示されます</p>
-        </div>
-
-        <!-- 答え合わせテーブル -->
-        <div class="answer-section">
-          <h3>採点結果</h3>
-          <table class="answer-table" id="answer-table-result">
-            <!-- JavaScriptで動的に生成（色分け＋正解表示） -->
-          </table>
-        </div>
-      </div>
-
-      <div class="button-group">
-        <button type="button" class="btn-secondary" onclick="goToStep(2, 'question')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-          戻る
-        </button>
-        <button type="button" class="btn-primary" onclick="goToStep(3, 'question')">
-          次のステップへ
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-        </button>
-      </div>
-
-      <div class="step-container">
-        <div class="step active">1</div>
-        <div class="line active">​</div>
-        <div class="step active">2</div>
-        <div class="line">​</div>
-        <div class="step">3</div>
-      </div>
-    </div>
-
-    <!-- ステップ3: 記述問題（問題表示） -->
-    <div id="step3-question" class="content-wrapper" style="display: none;">
-      <div class="step-header">
-        <span class="phase-label" id="step3-phase">理解</span>
-        <h2 class="step-title" id="step3-title">小論文とは/目的と特徴</h2>
-      </div>
-
-      <div class="question-section">
-        <p class="instruction" id="step3-instruction">次の問題に対する回答を記述してください。</p>
-        <div class="question-box">
-          <h3>問題文</h3>
-          <p id="step3-question-text">問題文がここに表示されます</p>
-        </div>
-
-        <div class="answer-section">
-          <h3>あなたの回答</h3>
-          <textarea class="essay-textarea" id="essay-textarea" placeholder="ここに回答を記述してください..." rows="12"></textarea>
-        </div>
-      </div>
-
-      <div class="button-group">
-        <button type="button" class="btn-secondary" onclick="goToStep(2, 'answer')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-          戻る
-        </button>
-        <button type="button" class="btn-primary" onclick="goToStep(3, 'answer')">
-          回答例を表示
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-        </button>
-      </div>
-
-      <div class="step-container">
-        <div class="step active">1</div>
-        <div class="line active">​</div>
-        <div class="step active">2</div>
-        <div class="line active">​</div>
-        <div class="step active">3</div>
-      </div>
-    </div>
-
-    <!-- ステップ3: 記述問題（回答例表示） -->
-    <div id="step3-answer" class="content-wrapper" style="display: none;">
-      <div class="step-header">
-        <span class="phase-label">理解</span>
-        <h2 class="step-title">小論文とは/目的と特徴</h2>
-      </div>
-
-      <div class="question-section">
-        <p class="instruction">次の問題に対する回答を記述してください。</p>
-        <div class="question-box">
-          <h3>問題文</h3>
-          <p id="step3-answer-question-text">問題文がここに表示されます</p>
-        </div>
-
-        <div class="answer-section">
-          <h3>あなたの回答</h3>
-          <textarea class="essay-textarea" id="essay-textarea-answer" placeholder="ここに回答を記述してください..." rows="12"></textarea>
-        </div>
-
-        <div class="example-answer-section">
-          <h3>回答例</h3>
-          <div class="example-answer-box" id="example-answer-text">
-            回答例がここに表示されます
-          </div>
-        </div>
-      </div>
-
-      <div class="button-group">
-        <button type="button" class="btn-secondary" onclick="goToStep(3, 'question')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-          戻る
-        </button>
-        <button type="button" class="btn-primary" onclick="completeSteps()">
-          ステップ学習を終了
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-        </button>
-      </div>
-
-      <div class="step-container">
-        <div class="step active">1</div>
-        <div class="line active">​</div>
-        <div class="step active">2</div>
-        <div class="line active">​</div>
-        <div class="step active">3</div>
-      </div>
-    </div>
-
-    <!-- 完了画面 -->
-    <div id="complete-screen" class="content-wrapper complete-screen" style="display: none;">
-      <h2 class="complete-title">ステップ学習完了</h2>
-      <p class="complete-message">ステップ学習が終了しました。</p>
-      <p class="complete-message">次回も頑張りましょう。</p>
-      <div class="button-group">
-        <button type="button" class="btn-primary" onclick="returnToList()">
-          一覧に戻る
-        </button>
-      </div>
-    </div>
-  </div>
-{% endblock %}
-{% block scripts %}
+    <script>
+        // JSが参照するグローバル変数
+        const currentStageNo = "{{ data.name }}"; 
+        const currentCategoryId = "{{ data.category_id }}";
+    </script>
+    
+    {# JSの読み込み先を step_l.js に修正 #}
     <script src="{{ url_for('writing.static', filename='js/step_l.js') }}"></script>
-{% endblock %}
+</body>
+</html>

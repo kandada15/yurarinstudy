@@ -1,0 +1,431 @@
+/*  
+<div class="app-container">
+    <div class="content-wrapper">
+
+ */
+
+/* ============================================ */
+/* リセット */
+/* ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Meiryo', sans-serif;
+  background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc8 100%);
+  max-height: 100vh;
+  padding: 20px;
+}
+
+/* ============================================ */
+/* 原稿用紙風の背景 */
+/* ============================================ */
+.app-container {
+  position: relative;
+  max-width: 1100px;
+  /* ヘッダー引いた分の高さ指定 */
+  height: 600px;
+  margin: 0 auto;
+  margin-top: 60px;
+  background: #fffef9;
+  /* 40pxの方眼模様 */
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px);
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(139, 115, 85, 0.2);
+  overflow: hidden;
+
+}
+
+/* ============================================ */
+/* コンテンツラッパー */
+/* ============================================ */
+.content-wrapper {
+  height: 600px;
+  max-width: 1100px;
+  background: rgba(255, 254, 249, 0.95);
+  padding: 30px;
+  position: relative;
+  border: 1px solid #000; /*わかりやすくボーダーをひく*/
+  /* overflow-y: scroll; /*縦方向にスクロール*/
+  /* -ms-overflow-style: none; Edge / IE */
+  /* scrollbar-width: none;    Firefox */
+} */
+/* Chrome / Safari */
+/* .content-wrapper::-webkit-scrollbar {
+  display: none;
+} */
+
+/* ============================================ */
+/* アニメーション（本をめくる効果） */
+/* ============================================ */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
+/* 画面タイトル */
+h2 {
+  font-size: 24px;
+  color: #5a4a3a;
+  font-weight: bold;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #8b7355;
+  padding-bottom: 10px;
+}
+
+
+/* フォームスタイル */
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form>div>div {
+  display: flex;
+  margin-left: 8%;
+}
+
+.form>div>div>div {
+  flex: 1;
+}
+
+.left_po {
+  margin-left: 8%;
+}
+
+/* 表示しない */
+.hidden {
+  display: none;
+}
+
+
+.mode-toggle {
+    position: absolute;
+    top: 25px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.toggle-label {
+    font-size: 13px;
+    color: #6d4c3d;
+    font-weight: 500;
+}
+
+.toggle-switch {
+    position: relative;
+    width: 140px;
+    height: 36px;
+    background: #d4b5a0;
+    border-radius: 20px;
+    cursor: pointer;
+    border: 2px solid #8b5e3c;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch:hover {
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 66px;
+    height: 28px;
+    background: linear-gradient(145deg, #9d6b4f, #7d5540);
+    border-radius: 16px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #f5f0e8;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.toggle-switch.admin .toggle-slider {
+    transform: translateX(68px);
+}
+
+.toggle-text {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    font-weight: 600;
+    color: #6d4c3d;
+    transition: opacity 0.2s ease;
+}
+
+.toggle-text.student {
+    left: 14px;
+}
+
+.toggle-text.admin {
+    right: 14px;
+}
+
+.toggle-switch.admin .toggle-text.admin {
+    opacity: 0;
+}
+
+.toggle-switch:not(.admin) .toggle-text.student {
+    opacity: 0;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #6d4c3d;            
+  margin: 10px 0 10px;
+  padding-left: 14px;
+  position: relative;
+}
+
+/* 左アクセントライン */
+.section-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 60%;
+  background-color: #b08968;  
+  border-radius: 2px;
+}
+
+/* 受講者用 */
+.section-title.student::before {
+  background-color: #c4a484;
+}
+
+/* 管理者用 */
+.section-title.admin::before {
+  background-color: #8b5e3c;
+}
+
+
+/* 入力タイトル */
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+  font-weight: 500;
+  margin-top: 15px;
+}
+
+/* 入力必須項目アイコン */
+label span {
+  color: #d32f2f;
+  margin-left: 4px;
+}
+
+/* 入力欄 */
+input[type="text"],
+input[type="date"],
+input[type="number"],
+input[type="password"],
+textarea {
+  width: 80%;
+  padding: 12px 16px;
+  border: 1px solid #d4c5b0;
+  border-radius: 6px;
+  font-size: 15px;
+  background-color: #faf8f5;
+  transition: all 0.2s ease;
+}
+
+input[type="password"] {
+  width: 90%;
+}
+
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: #a89168;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(168, 145, 104, 0.1);
+}
+
+input[type="text"]::placeholder,
+textarea::placeholder {
+  color: #999;
+}
+
+/* ボタン系のCSS */
+.button-group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.btn-primary {
+  background-color: #8b7355;
+  color: #ffffff;
+  border: none;
+  border-radius: 25px;
+  padding: 14px 40px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: center;
+  min-width: 200px;
+}
+
+.btn-primary:hover {
+  background-color: #6d5a43;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-back {
+  background-color: #e8dcc8;
+  color: #5d4e37;
+  border: 1px solid #d4c5b0;
+  border-radius: 25px;
+  padding: 14px 40px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+}
+
+.btn-back:hover {
+  background-color: #d4c5b0;
+}
+
+/* 確認画面 */
+.confirm-section {
+  background-color: #faf8f5;
+  border-radius: 8px;
+  padding: 30px;
+  margin: 20px 0;
+}
+
+.confirm-section h3 {
+  color: #5d4e37;
+  font-size: 18px;
+  margin: 0 0 20px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #d4c5b0;
+}
+
+.confirm-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 15px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0ebe5;
+}
+
+.confirm-row:last-child {
+  border-bottom: none;
+}
+
+.confirm-label {
+  color: #8b7355;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.confirm-value {
+  color: #333;
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ===== 付箋風トースト通知 ===== */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #fff9c4;              /* やわらかい付箋色 */
+  border-left: 6px solid #ffcc33;   /* 付箋の綴じ色 */
+  padding: 18px 22px;
+  min-width: 240px;
+  font-size: 16px;
+  color: #6b5434;
+  border-radius: 4px;               /* 角は少しだけ丸く */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all .4s ease;
+  z-index: 9999;
+}
+
+/* 表示状態 */
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* 表示状態 */
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 成功（提出完了） */
+.toast-success {
+  background: #8b7355;   
+  color: #fffef9;
+}
+
+/* 警告 */
+.toast-warning {
+  background: #c27d3f;
+  color: white;
+}
+
+.toast-icon {
+  font-size: 20px;
+}
+

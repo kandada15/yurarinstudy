@@ -1,6 +1,4 @@
-/* ============================================ */
 /* リセット */
-/* ============================================ */
 * {
   margin: 0;
   padding: 0;
@@ -14,9 +12,7 @@ body {
   padding: 20px;
 }
 
-/* ============================================ */
 /* 原稿用紙風の背景 */
-/* ============================================ */
 .app-container {
   position: relative;
   max-width: 1100px;
@@ -35,9 +31,7 @@ body {
 
 }
 
-/* ============================================ */
 /* コンテンツラッパー */
-/* ============================================ */
 .content-wrapper {
   display: flex;
   flex-direction: column;
@@ -55,9 +49,8 @@ body {
 .content-wrapper::-webkit-scrollbar {
   display: none;
 }
-/* ============================================ */
+
 /* アニメーション（本をめくる効果） */
-/* ============================================ */
 .fade-in {
   animation: fadeIn 0.3s ease-in;
 }
@@ -104,53 +97,6 @@ body {
   color: #5a4a3a;
   margin-bottom: 20px;
   font-weight: bold;
-}
-
-/* ボタンCSS */
-/* 横並び */
-.side {
-  margin-top: 20px;
-  display: flex;          /* 横並びにする */
-  justify-content: space-between; /* 左右に分ける */
-  align-items: center;    /* 垂直中央揃え */
-  padding: 10px 30px;
-  gap: 60px;
-}
-/* 縦並び */
-.vert {
-  display: flex;               /* Flexboxを有効化 */
-  flex-direction: column;      /* 縦に並べる */
-  justify-content: space-between; /* 上下に分ける */
-  align-items: center;         /* 左右中央揃え */
-  padding: 10px 20px;
-}
-
-.btn-primary{
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 32px;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-family: inherit;
-  background: #8b7355;
-  color: #fffef9;
-  box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
-  width: 240px;
-  height: 50px;
-  margin-top: 40px;
-  text-align: center;
-  align-self: flex-end;
-}
-
-.btn-primary:hover {
-  background: #6d5a44;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(139, 115, 85, 0.4);
 }
 
 /* ステップリストテーブル */
@@ -241,4 +187,63 @@ body {
 .start-button:active {
   transform: translateY(0);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+td.check-cell {
+  text-align: center;
+  vertical-align: middle;
+  width: 60px;
+}
+
+/* 済ハンコ */
+.stamp-done {
+  width: 25px;
+  height: 25px;
+  border: 2px solid #c64545;   
+  color: #c64545;
+  font-size: 17px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  border-radius: 4px;         
+  background-color: transparent;
+  /* opacity: 0.85; */
+  box-shadow: 0 0 0.5px rgba(198,69,69,0.8);
+}
+
+/* 列位置調整 */
+td.check-cell {
+  text-align: center;
+  vertical-align: middle;
+  width: 60px;
+}
+
+.btn-primary{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 32px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: inherit;
+  background: #8b7355;
+  color: #fffef9;
+  box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+  width: 240px;
+  height: 50px;
+  margin-top: 40px;
+  text-align: center;
+  align-self: flex-end;
+}
+
+.btn-primary:hover {
+  background: #6d5a44;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(139, 115, 85, 0.4);
 }

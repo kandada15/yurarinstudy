@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('task.static', filename='css/deli_task_list.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+  <title>配信済課題一覧 - 文脈工房</title>
+</head>
+<body>
+  <header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">管理者</span>
+      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="holes-container">
+    {% for i in range(8) %}<div class="hole"></div>{% endfor %}
+  </div>
+
+  <div class="tabs-container">
+    <a href="#" class="tab" data-page="users">ユーザ管理</a>
+    <a href="#" class="tab" data-page="tasks">課題配信</a>
+    <a href="{{ url_for('dashboard.index') }}" class="tab active" data-page="dashboard">ダッシュボード</a>
+  </div>
+
+  <div class="app-container">
+    <div class="content-wrapper">
+      <h1>配信済課題一覧</h1>
+
+      <div class="task-grid">
+        {% for task in tasks %}
+        <button class="task-card" onclick="goStuList('{{ task.task_id }}')">
+          <div class="grou_content">
+            <label>配信日：{{ task.streamed_date.strftime('%m月%d日') if task.streamed_date else '未設定' }}</label>
+            <p>{{ task.task_name }}</p><br>
+            <p>配信者：{{ task.admin.admin_name }}</p>
+            <p>提出期限：{{ task.due_date.strftime('%m月%d日') if task.due_date else 'なし' }}</p>
+          </div>
+        </button>
+        {% else %}
+        <p style="grid-column: 1 / -1; text-align: center; margin-top: 50px; color: #8b7355;">
+          現在、配信済みの課題はありません。
+        </p>
+        {% endfor %}
+      </div>
+
+      <div class="pagination">
+          <button type="button" class="btn-back" onclick="backToList()"></button>
+          <button type="button" class="btn-next" onclick="nextToList()"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('task.static', filename='js/deli_task_list.js') }}"></script> 
+</body>
+</html>

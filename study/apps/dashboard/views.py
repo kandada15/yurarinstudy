@@ -1,76 +1,46 @@
 from flask import Blueprint, render_template, session, redirect, url_for
-from apps.extensions import db
-from apps.task.models.model_streamed import Streamed
-from apps.task.models.model_submission import Submission
-# 管理者(Admin)とグループ(Group)のモデルをインポート
-# ※ファイル名はご自身の環境に合わせて調整してください
-from apps.auth.models import Admin, Group 
-from datetime import datetime, timedelta
+from apps.task.dao.streamed_dao import StreamedDao
+from apps.task.dao.submission_dao import SubmissionDao2
+from apps.crud.dao.group_dao import GroupDao  # 修正したDaoをインポート
 
-# ブループリントの設定
-dashboard_bp = Blueprint(
-    'dashboard', 
-    __name__, 
-    template_folder='templates',
-    static_folder='static'
-)
+dashboard_bp = Blueprint('dashboard', __name__, template_folder='templates', static_folder='static')
+
+# 生徒ID（s...）を弾く
+@dashboard_bp.before_request
+def restrict_access():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('auth.login'))
+    if user_id.startswith('s'):
+        return redirect(url_for('writing.index'))
 
 @dashboard_bp.route('/')
 def index():
-    """管理者ダッシュボード画面"""
+    admin_id = session.get('user_id')
     
-    # 1. セッションからログイン中の管理者IDを取得
-    # login_admin_id = session.get('user_id')
-
-    # # ログインしていない場合はログイン画面へ強制リダイレクト
-    # if not login_admin_id:
-    #     return redirect(url_for('auth.login'))
-    login_admin_id = session.get('user_id')
-    # 2. ログイン中の管理者情報をDBから取得
-    # 定義書の物理名に合わせて Admin.ADMIN_ID で検索
-    admin_data = Admin.query.filter_by(admin_id=login_admin_id).first()
-
-    # 万が一DBにデータがない場合の安全策
-    # if not admin_data:
-    #     session.clear() # セッションを破棄してログインへ
-    #     return redirect(url_for('auth.login'))
-
-    # 3. 担当グループ一覧の取得
-    # 管理者IDに紐づくグループを取得
-    groups = Group.query.filter_by(admin_id=login_admin_id).all()
-
-    # 4. 統計データの集計
+    # 各DAOの初期化
+    s_dao = StreamedDao()
+    sub_dao = SubmissionDao2()
+    g_dao = GroupDao()  # 新しく作成
     
-    # (1) 累計課題配信数
-    streamed_count = TaskStreamed.query.count()
+    # 統計情報の取得
+    streamed_count = s_dao.get_streamed_count(admin_id)
+    weekly_deadline = s_dao.get_weekly_deadline_count()
+    sub_stats = sub_dao.get_stats()
+    unsubmitted_count = max(0, streamed_count - sub_stats["submitted_count"])
 
-    # (2) 未添削課題数 (CHECK_FLAG が False のもの)
-    # ※定義書に基づき物理名 CHECK_FLAG を参照
-    unchecked_count = TaskSubmission.query.filter_by(check_flag=False).count()
+    real_groups = g_dao.find_by_admin_id(admin_id)
 
-    # (3) 提出済み件数 (SUBMIT_FLAG が True のもの)
-    submitted_count = TaskSubmission.query.filter_by(submit_flag=True).count()
-
-    # (4) 未提出件数 (仮の計算式：全配信数 - 提出済数 など)
-    # ※本来は (受講生数 * 課題数) ですが、まずは固定値または簡易計算で実装
-    unsubmitted_count = 8 # 必要に応じてロジックを追加
-
-    # (5) 今週の締切課題数
-    today = datetime.now()
-    one_week_later = today + timedelta(days=7)
-    # STREAMED_LIMIT が今日から1週間以内のものをカウント
-    weekly_deadline_count = TaskStreamed.query.filter(
-        TaskStreamed.streamed_limit.between(today, one_week_later)
-    ).count()
-
-    # 5. テンプレートへすべてのデータを渡してレンダリング
     return render_template(
         'dashboard/dashboard.html',
-        admin=admin_data,
-        groups=groups,
+        admin={
+            "admin_id": admin_id, 
+            "admin_name": session.get('user_name', '管理者')
+        },
+        groups=real_groups, # DBから取得した本物のリストを渡す
         streamed_count=streamed_count,
-        unchecked_count=unchecked_count,
-        submitted_count=submitted_count,
+        unchecked_count=sub_stats["unchecked_count"],
+        submitted_count=sub_stats["submitted_count"],
         unsubmitted_count=unsubmitted_count,
-        weekly_deadline_count=weekly_deadline_count
+        weekly_deadline_count=weekly_deadline
     )

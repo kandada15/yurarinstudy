@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('crud.static', filename='css/info_inq.css') }}">
+  <link rel="stylesheet" href="{{ url_for('crud.static', filename='css/header.css') }}">
+  <title>ユーザー詳細</title>
+</head>
+<body>
+  <header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">管理者</span>
+      <!--ログアウト-->
+      <a href="{{ url_for( 'auth.logout' ) }}" class="logout-btn" >ログアウト</a>
+    </div>
+  </header>
+
+  <!-- 左側の穴 -->
+  <div class="holes-container">
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+  </div>
+
+  <!-- 右側のタブ -->
+  <div class="tabs-container">
+    <a href="user_info_list.html" class="tab active" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    <a href="task_create.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    <a href="dashboard.html" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
+  </div>
+  <div class="app-container">
+    <div class="content-wrapper">
+      <!-- タブ切り替え -->
+      <!--この部分デザイン見るだけのために着けてるから消す-->
+      <div class="tab-container">
+        <button class="tab-btn active" onclick="showCard('student', this)">受講者詳細</button>
+        <button class="tab-btn" onclick="showCard('admin', this)">管理者詳細</button>
+      </div>
+
+      <!-- 受講者カード -->
+      <div class="detail-card active" id="student-card">
+        <button class="delete-btn">この受講者を削除</button>
+        
+        <div class="basic-info">
+          <h2 class="section-title">受講者情報</h2>
+          
+          <div class="info-row">
+            <div class="info-item">
+              <span class="info-label">ID：</span>
+              <span class="info-value">S000001</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">氏名：</span>
+              <span class="info-value">山田 太郎</span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="info-item">
+              <span class="info-label">所属年度：</span>
+              <span class="info-value">2025年度</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">生年月日：</span>
+              <span class="info-value">2006年4月12日</span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="info-item">
+              <span class="info-label">所属グループ：</span>
+              <div class="group-tags">
+                <span class="group-tag">Aクラス</span>
+                <span class="group-tag secondary">Bクラス</span>
+                <span class="group-tag secondary">Dクラス</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="learning-summary">
+          <h2 class="section-title">学習サマリー</h2>
+          
+          <div class="progress-row">
+            <span class="progress-label">学習進捗：</span>
+            <div class="progress-bar-container">
+              <div class="progress-bar" style="width: 70%;">
+                <span class="progress-text">70%（進行中）</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="progress-row">
+            <span class="progress-label">未提出課題：</span>
+            <span class="info-text">2件</span>
+          </div>
+        </div>
+
+        <div class="button-container">
+          <button class="action-btn btn-primary">学習進捗ページを見る</button>
+          <button class="action-btn btn-primary">課題一覧を見る</button>
+          <button class="action-btn btn-reset" onclick="ShowPasswordreset('reset')">パスワードリセット</button>
+        </div>
+      </div>
+
+      <!-- 管理者カード -->
+      <div class="detail-card admin-card" id="admin-card">
+        <button class="delete-btn">この管理者を削除</button>
+        
+        <div class="basic-info">
+          <h2 class="section-title">管理者情報</h2>
+          
+          <div class="info-row">
+            <div class="info-item">
+              <span class="info-label">ID：</span>
+              <span class="info-value">A000001</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">氏名：</span>
+              <span class="info-value">猪口慎一</span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="info-item">
+              <span class="info-label">担当場所：</span>
+              <span class="info-value">数学採点</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">生年月日：</span>
+              <span class="info-value">1985年9月2日</span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="info-item">
+              <span class="info-label">所属グループ：</span>
+              <div class="group-tags">
+                <span class="group-tag admin">Aクラス</span>
+                <span class="group-tag admin">Ｂクラス</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="button-container">
+          <button class="action-btn btn-reset">パスワードリセット</button>
+        </div>
+      </div>
+
+      <div id="passeord_reset_modal" class="modal">
+        <h2>パスワードリセット確認</h2>
+        <label>**さんのパスワードをリセットします。よろしいですか？</label>
+        <label>※この操作は取り消せません。</label>
+        <div class="button-group">
+        <button type="button" class="action-btn btn-primary" onclick="backToInput()">キャンセル</button>
+        <button type="button" class="action-btn btn-reset" onclick="risetForm()">リセットする</button>
+      </div>
+
+      <!--ユーザ削除-->
+      <div id="user_delete_modal" class="modal">
+        <h2>削除処理確認</h2>
+        <label>**さんの情報を削除します。よろしいですか？</label>
+        <label>※この操作は取り消せません。</label>
+        <div class="button-group">
+          <button type="button" class="btn-back" onclick="backToInput2()">キャンセル</button>
+          <!--ここ関数とか変更する-->
+          <button type="button" class="action-btn btn-reset2" onclick="deleteForm()">削除</button>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+  <!-- モーダルオーバーレイ -->
+  <div class="modal-overlay" id="modalOverlay"></div>
+
+  <script>
+    function showCard(type, btn) {
+      // タブ切り替え
+      document.querySelectorAll('.tab-btn')
+        .forEach(tab => tab.classList.remove('active'));
+      btn.classList.add('active');
+
+      // カード切り替え
+      document.querySelectorAll('.detail-card')
+        .forEach(card => card.classList.remove('active'));
+
+      if (type === 'student') {
+        document.getElementById('student-card').classList.add('active');
+      } else {
+        document.getElementById('admin-card').classList.add('active');
+      }
+    }
+
+    // Flaskからデータを受け取る
+    //window.FLASK_USER_DATA = {{ user_data | tojson | safe }};
+
+    const userData = window.FLASK_USER_DATA || {
+      // ダミーデータ(開発用)
+      id: 'S000123',
+      name: '山田 太郎',
+      type: 'student',
+      year: '2025年度',
+      birthday: '2006年4月12日',
+      groups: ['Aクラス', '数学採点', '+他1'],
+      progress: 70,
+      unsubmitted: 2
+    };
+
+    // パスワードリセットモーダルを表示
+    function ShowPasswordreset(action) {
+      const modal = document.getElementById('passeord_reset_modal');
+      const overlay = document.getElementById('modalOverlay');
+
+      if (modal && overlay) {
+        modal.classList.add('show');
+        overlay.classList.add('show');
+
+        // 背景のスクロールを無効化
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    // モーダルを閉じる（キャンセル）
+    function backToInput() {
+      const modal = document.getElementById('passeord_reset_modal');
+      const overlay = document.getElementById('modalOverlay');
+
+      if (modal && overlay) {
+        modal.classList.remove('show');
+        overlay.classList.remove('show');
+
+        // 背景のスクロールを有効化
+        document.body.style.overflow = 'auto';
+      }
+    }
+
+    // パスワードリセット実行
+    function risetForm() {
+      // 確認モーダルを閉じる
+      const confirmModal = document.getElementById('passeord_reset_modal');
+      confirmModal.classList.remove('show');
+      
+      // 付箋風トースト通知
+      showToast("パスワードをリセットしました。");
+
+      // 2秒後に課題一覧へ戻る
+      setTimeout(() => {
+        window.location.href = "user_info_list.html";  
+      }, 2000);
+      
+      // 実際の実装では、ここでサーバーにパスワードリセットのリクエストを送る
+      console.log('Password reset executed');
+      
+      // 3秒後に完了モーダルを閉じる
+      setTimeout(function() {
+        closeCompleteModal();
+      }, 3000);
+    }
+
+    // 削除モーダルを表示
+    function ShowUserdelete(action) {
+      const modal = document.getElementById('user_delete_modal');
+      const overlay = document.getElementById('modalOverlay');
+
+      if (modal && overlay) {
+        modal.classList.add('show');
+        overlay.classList.add('show');
+
+        // 背景のスクロールを無効化
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    // 削除モーダルを閉じる（キャンセル）
+    function backToInput2() {
+      const modal = document.getElementById('user_delete_modal');
+      const overlay = document.getElementById('modalOverlay');
+
+      if (modal && overlay) {
+        modal.classList.remove('show');
+        overlay.classList.remove('show');
+
+        // 背景のスクロールを有効化
+        document.body.style.overflow = 'auto';
+      }
+    }
+
+    // 削除実行
+    function deleteForm() {
+      // 確認モーダルを閉じる
+      const confirmModal = document.getElementById('user_delete_modal');
+      confirmModal.classList.remove('show');
+
+      // 付箋風トースト通知
+      showToast("ユーザを削除しました。");
+
+      // 2秒後に課題一覧へ戻る
+      setTimeout(() => {
+        window.location.href = "user_info_list.html";
+      }, 2000);
+    }
+
+    // トースト通知
+    function showToast(message) {
+      let toast = document.createElement("div");
+      toast.className = "toast";
+      toast.textContent = message;
+
+      document.body.appendChild(toast);
+
+      // アニメーションで表示
+      setTimeout(() => {
+        toast.classList.add("show");
+      }, 10);
+
+      // 3秒後に削除
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 400);
+      }, 3000);
+    }
+
+  </script>
+</body>
+</html>

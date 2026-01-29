@@ -1,61 +1,63 @@
-// ============================================
-// グローバル変数
-// ============================================
-let currentStepData = {}; // 現在のステップのデータ
+/**
+ * step_list.js (ハンコ表示対応版)
+ */
+async function createStageTable() {
+    const table = document.querySelector("#stageTable tbody");
+    if (!table) return;
 
-// テーブル生成
-function createStageTable() {
-  const table = document.getElementById("stageTable");
+    try {
+        const response = await fetch('/writing/static/json/steps_data.json');
+        const allData = await response.json();
+        table.innerHTML = "";
 
-  // --- データ行 ---
-  let index = 1;
-  for (const key in dummyData) {
-    const [phase, content] = dummyData[key];
+        Object.keys(allData).forEach((key, index) => {
+        const phaseData = allData[key];
+        const firstStep = phaseData.steps[0];
+        if (!firstStep) return;
 
-    const tr = document.createElement("tr");
+        const tr = document.createElement("tr");
 
-    // ステージ番号
-    const tdStage = document.createElement("td");
-    tdStage.textContent = index;
-    tr.appendChild(tdStage);
+        // 1. ステージ番号
+        const tdNo = document.createElement("td");
+        tdNo.textContent = index + 1;
+        tr.appendChild(tdNo);
 
-    // フェーズ
-    const tdPhase = document.createElement("td");
-    tdPhase.textContent = phase;
-    tr.appendChild(tdPhase);
+        // 2. ★状況セル（ハンコを表示する場所）
+        const tdCheck = document.createElement("td");
+        tdCheck.className = "check-cell"; // CSSの td.check-cell を適用
+        
+        // DBの完了リスト (completedStages) にこのIDが含まれているかチェック
+        if (typeof completedStages !== 'undefined' && completedStages.includes(String(key))) {
+            // 完了していればハンコを表示
+            tdCheck.innerHTML = '<div class="stamp-done">済</div>';
+            tr.classList.add('row-complete'); // 行全体へのスタイル適用
+        }
+        tr.appendChild(tdCheck);
 
-    // 学習内容
-    const tdContent = document.createElement("td");
-    tdContent.textContent = content;
-    tr.appendChild(tdContent);
+        // 3. フェーズ名
+        const tdPhase = document.createElement("td");
+        tdPhase.textContent = firstStep.phase || "未設定";
+        tr.appendChild(tdPhase);
 
-    // スタートリンク
-    const tdLink = document.createElement("td");
-    const btn = document.createElement("button");
-    btn.textContent = "スタート";
-    btn.className = "start-button";
-    // onclick に key を渡す
-    btn.setAttribute("onclick", `goStep('${key}')`);
-    tdLink.appendChild(btn);
-    tr.appendChild(tdLink);
+        // 4. 学習内容
+        const tdContent = document.createElement("td");
+        tdContent.textContent = firstStep.title || "未設定";
+        tr.appendChild(tdContent);
 
-    table.appendChild(tr);
+        // 5. スタートボタン
+        const tdLink = document.createElement("td");
+        const btn = document.createElement("button");
+        btn.textContent = "スタート";
+        btn.className = "start-button";
+        btn.onclick = () => {
+            window.location.href = `/writing/step_learning?category_id=${currentCategoryId}&stage_no=${key}`;
+        };
+        tdLink.appendChild(btn);
+        tr.appendChild(tdLink);
 
-    index++;
-  }
+        table.appendChild(tr);
+        });
+    } catch (error) { console.error('リスト生成エラー:', error); }
 }
 
-// ページ読み込み時に実行
 window.onload = createStageTable;
-
-
-
-//ライティング学習トップへ飛ぶリンク
-function goWriting() {
-  window.location.href = 'index.html';
-}
-
-function goStep(key) {
-  // 遷移先を行ごとに変える
-  window.location.href = `/step_learning/${key}`;
-}

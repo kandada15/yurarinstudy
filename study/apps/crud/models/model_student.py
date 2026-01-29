@@ -1,32 +1,36 @@
 from apps.extensions import db
-from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
+from dataclasses import dataclass
+from datetime import date, datetime
 
+# Student テーブルモデル作成
 class Student(db.Model):
-    __tablename__ = "student"
-
-    student_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    student_name = db.Column(db.String(255))
-    password_hash = db.Column(db.String(255))
+    __tablename__ = 'student'
     
-    # 日付系
-    entry_year = db.Column(db.Date)
-    birthday = db.Column(db.Date)
-    entry_date = db.Column(db.Date, default=datetime.now)
-    
-    is_alert = db.Column(db.Boolean, default=False)
-    
-    # 外部キー（Groupとの紐付け）
+    # 受講者ID（主キー）
+    student_id = db.Column(db.String(10), primary_key=True)
+    # 受講者名
+    student_name = db.Column(db.String(50), nullable=False)
+    # パスワード
+    password = db.Column(db.String(12)) 
+    # 生年月日
+    birthday = db.Column(db.Date, nullable=False)
+    # 登録日時
+    created_at = db.Column(db.DateTime, nullable=True)
+    # 通知フラグ
+    alert = db.Column(db.Boolean, nullable=False, default=False)
+    # グループID（外部キー）
     group_id = db.Column(db.Integer, db.ForeignKey('group.group_id'))
 
-    # パスワード設定用プロパティ
-    @property
-    def password(self):
-        raise AttributeError("読み取り不可")
-    
-    @password.setter
-    def password(self, password):
-        self.password_hash = generate_password_hash(password)
-        
-    def verify_password(self, password):
-        return check_password_hash(self.password_hash, password)
+@dataclass
+class StudentToGroupname:
+    __tablename__ = "studenttogroupname"
+    student_id: int
+    student_name: str
+    password: str 
+    # 生年月日
+    birthday: date
+    # 通知フラグ
+    alert: bool
+    # グループID（外部キー）
+    group_id: int
+    group_name: str

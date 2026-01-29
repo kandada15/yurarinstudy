@@ -125,7 +125,7 @@ body {
 }
 
 .tab {
-  height: 250px;
+  height: 180px;
   width: 50px;
   border-radius: 0 8px 8px 0;
   cursor: pointer;
@@ -183,7 +183,7 @@ body {
   margin-top: 50px;
   margin-left: 30px;
   margin-right: 70px;
-  padding: 40px;
+  padding: 20px 40px;
   min-height: calc(100vh - 50px);
   background: #fff;
 }
@@ -267,4 +267,4 @@ body {
   .page-title {
     font-size: 22px;
   }
-}
+} 

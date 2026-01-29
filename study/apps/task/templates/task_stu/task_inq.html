@@ -1,0 +1,118 @@
+<!--課題入力-->
+<!--登録画面の一覧に戻るボタンを追加-->
+<!--CSSは改良予定-->
+<!--表示する課題をデータベースより、未提出課題のみを表示するようにする-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('task.static', filename='css/css_stu/task_inq.css') }}">
+  <link rel="stylesheet" href="{{ url_for('task.static', filename='css/header.css') }}">
+  <title>解答入力</title>
+</head>
+<body>
+<!-- 共通部分 -->
+<header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">受講者</span>
+      <!--ログアウト-->
+      <a href="{{ url_for( 'auth.logout' ) }}" class="logout-btn" >ログアウト</a>
+    </div>
+  </header>
+
+  <!-- 左側の穴 -->
+  <div class="holes-container">
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+
+    
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+  </div>
+
+  <!-- 右側のタブ -->
+  <div class="tabs-container">
+    <a href="learning_top.html" class="tab active" data-page="users" data-color="#e8dcc8">ライティング学習</a>
+    <a href="ass_list.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
+    <a href="mypage.html" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
+  </div>
+<!--ここまで-->
+
+<div class="app-container">
+  <div class="content-wrapper">
+    <div class="container">
+
+      <!-- 入力画面 -->
+      <form id="taskForm" method="post" action="{{ url_for('task.task_submit_post', streamed_id=task.streamed_id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div id="inputScreen">
+        <!--課題タイトル-->
+        <!--データベースから持ってくる-->
+        <h2>{{ task.streamed_name }}</h2>
+        <!-- 課題入力フォーム -->
+        <div id="formtask" class="form hidden">
+          <!--問題文-->
+          <div class="modal-body">
+            <label>問題文</label>
+            <div class="question-text">
+              <!--データベースから持ってくる-->
+              {{ task.streamed_text }}
+            </div>
+          </div>
+          <!-- preタグで改行を保持 -->
+          <!--<pre id="question"></pre>-->
+          <!--解答-->
+          <label for="answer_text">解答<span style="color: red;">*</span></label>
+          <textarea id="answer_text" name="answer_text" rows="15" cols="50" placeholder="解答を入力..."></textarea>
+          <div id="answer_text_error" class="error-message"></div>
+          <!--確認画面へ飛ぶ-->
+          <div class="button-group">
+            <button type="button" class="btn-primary" onclick="showConfirmScreen()">確認画面へ</button>
+          </div>
+        </div>
+      </div>
+            
+      <!-- 確認画面 -->
+      <!--ここで提出ボタン押したらデータベースに登録するっていう処理-->
+      <div id="confirmScreen" class="hidden">
+        <h2>提出内容の確認</h2>
+        <div id="confirmContent">
+          <div class="confirm-section">
+            <h3>入力内容</h3>
+
+              <div class="confirm-row">
+                <div class="confirm-label">問題文</div>
+                <div class="confirm-value">{{ task.streamed_text }}</div>
+              </div>
+
+              <div class="confirm-row">
+                <div class="confirm-label">解答</div>
+                <div id="confirm-answer" class="confirm-value" style="white-space: pre-wrap;"></div>
+              </div>
+          </div>
+        </div>
+        <div class="button-group">
+          <button type="button" class="btn-primary" onclick="backToInput()">戻る</button>
+          <button type="submit" class="btn-primary">提出</button>
+        </div>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+    
+<!--Javascriptの読み込み（必ずこの位置）-->
+<script src="{{ url_for('task.static', filename='js/js_stu/task_inq.js') }}"></script> 
+<!--Javascriptの読み込み（必ずこの位置）-->
+<script src="{{ url_for('task.static', filename='js/header.js') }}"></script> 
+</body>
+</html>

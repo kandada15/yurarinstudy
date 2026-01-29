@@ -1,15 +1,13 @@
 from apps.extensions import db
 
+# Group テーブルモデル作成
 class Group(db.Model):
     __tablename__ = "group"
 
-    # db.Column を使って定義します
+    # グループID（主キー）
     group_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    group_name = db.Column(db.String(50))
-    
-    # 外部キー（Adminとの紐付け）
-    created_by_admin_id = db.Column(db.String(255), db.ForeignKey('admin.admin_id'))
+    # グループ名
+    group_name = db.Column(db.String(50), nullable=False)
+    # 管理者ID（外部キー）
+    created_by_admin_id = db.Column("created_by_admin_id", db.String(10), db.ForeignKey('admin.admin_id'))
 
-    # リレーション（紐付いているStudentにアクセスしやすくする設定）
-    # これがあると group.students でそのグループの生徒一覧が取れるようになります
-    students = db.relationship('Student', backref='group_orders', lazy='dynamic')
