@@ -110,22 +110,29 @@ class GroupDao:
             cursor.close()
             conn.close()
         
-        # ダッシュボード用に管理者IDで絞り込むメソッドを追加
-    def find_by_admin_id(self, admin_id: str) -> list[dict]:
-        """ ログイン中の管理者が作成したグループのみを辞書形式で返す """
-        sql = """
-            SELECT
-                group_name AS name,
-                '（説明なし）' AS description,
-                0 AS member_count
-            FROM `group`
-            WHERE created_by_admin_id = %s
-        """
-        conn = self._get_connection()
-        try:
-            cursor = conn.cursor(dictionary=True)
-            cursor.execute(sql, (admin_id,))
-            return cursor.fetchall()
-        finally:
-            cursor.close()
-            conn.close()
+    # # (ダッシュボード用)ログイン中の管理者が作成したグループだけを取得
+    # def find_by_admin_id(self, admin_id: str) -> list[dict]:
+    #     """
+        
+    #     """
+    #     sql = """
+    #         SELECT
+    #             group_name AS name,
+    #             '（説明なし）' AS description,
+    #             0 AS member_count
+    #         FROM `group`
+    #         WHERE created_by_admin_id = %s
+    #     """
+        
+    #     # クラス内部の_get_connection()を使ってMySQL接続を取得
+    #     # 結果を辞書形式で取得
+    #     conn = self._get_connection()
+    #     try:
+    #         cursor = conn.cursor(dictionary=True)
+    #         cursor.execute(sql, (admin_id,))
+    #         return cursor.fetchall()
+        
+    #     finally:
+    #         # 例外の有無に関わらず、最後に必ずクローズする
+    #         cursor.close()
+    #         conn.close()
