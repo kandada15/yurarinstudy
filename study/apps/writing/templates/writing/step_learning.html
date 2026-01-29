@@ -3,160 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ステップ学習 - 文脈工房</title>
-    
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    {# CSSの読み込み #}
+    <title>{{ data.page_title }} - 文脈工房</title>
+    
+    {# CSSの読み込み先を step_l.css に修正 #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
     <link rel="stylesheet" href="{{ url_for('writing.static', filename='css/step_l.css') }}">
+    
+    <style>
+        /* JSで切り替えるため、初期状態でコンテンツを非表示にする設定 */
+        .content-wrapper { display: none; }
+    </style>
 </head>
 <body>
 
-    {# ヘッダー部分 #}
-    <header class="top-header">
-        <div class="logo-section">
-            <span class="app-name">文脈工房</span>
+    <div class="app-container">
+        
+        {# --- ステップ1: 導入画面 (lecture) --- #}
+        <div id="step1" class="content-wrapper fade-in">
+            <header class="step-header">
+                <div class="side">
+                    <div>
+                        <span id="step1-phase" class="phase-label"></span>
+                        <h2 id="step1-title" class="step-title"></h2>
+                    </div>
+                </div>
+            </header>
+            <div class="step1-content">
+                <img id="step1-image" class="step1-image" src="" alt="講義資料">
+                <p id="step1-description" class="step1-description"></p>
+            </div>
+            <div class="button-group">
+                <button type="button" class="btn-secondary" onclick="returnToList()">戻る</button>
+                <button type="button" class="btn-primary" onclick="nextStep()">次へ</button>
+            </div>
         </div>
-        <div class="user-section">
-            <span class="user-badge">受講者 さん</span>
-            <button class="logout-btn" onclick="location.href='/auth/logout'">ログアウト</button>
-        </div>
-    </header>
 
-    {# ノート風デザインの穴 #}
-    <div class="holes-container">
-        {% for i in range(10) %}<div class="hole"></div>{% endfor %}
+        {# --- ステップ2: 穴埋め問題画面 (quiz_cloze) --- #}
+        <div id="step2-question" class="content-wrapper fade-in">
+            <header class="step-header">
+                <div class="side">
+                    <div>
+                        <span id="step2-phase" class="phase-label"></span>
+                        <h2 id="step2-title" class="step-title"></h2>
+                    </div>
+                </div>
+            </header>
+            <div class="question-section">
+                <p id="step2-instruction" class="instruction"></p>
+                <div class="question-box">
+                    <h3>問題</h3>
+                    <p id="step2-question-text"></p>
+                </div>
+                <div class="answer-section">
+                    <h3>回答入力</h3>
+                    <table id="answer-table-input" class="answer-table"></table>
+                </div>
+            </div>
+            <div class="button-group">
+                <button type="button" class="btn-primary" onclick="gradeAnswers()">採点する</button>
+            </div>
+        </div>
+
+        {# --- ステップ2: 採点結果画面 --- #}
+        <div id="step2-answer" class="content-wrapper fade-in">
+            <header class="step-header">
+                <div class="side">
+                    <h2 class="step-title">採点結果</h2>
+                    <div class="score-display">
+                        <span id="score-text"></span>
+                    </div>
+                </div>
+            </header>
+            <div class="answer-section">
+                <table id="answer-table-result" class="answer-table"></table>
+            </div>
+            <div class="button-group">
+                <button type="button" class="btn-primary" onclick="nextStep()">次へ</button>
+            </div>
+        </div>
+
+        {# --- ステップ3: 記述問題画面 (writing_practice) --- #}
+        <div id="step3-question" class="content-wrapper fade-in">
+            <header class="step-header">
+                <div class="side">
+                    <div>
+                        <span id="step3-phase" class="phase-label"></span>
+                        <h2 id="step3-title" class="step-title"></h2>
+                    </div>
+                </div>
+            </header>
+            <div class="question-section">
+                <p id="step3-instruction" class="instruction"></p>
+                <div class="question-box">
+                    <h3>課題</h3>
+                    <p id="step3-question-text"></p>
+                </div>
+                <textarea id="essay-textarea" class="essay-textarea" rows="10" placeholder="回答を入力してください"></textarea>
+            </div>
+            <div class="button-group">
+                <button type="button" class="btn-primary" onclick="showExampleAnswer()">完了</button>
+            </div>
+        </div>
+
+        {# --- ステップ3: 回答例確認画面 --- #}
+        <div id="step3-answer" class="content-wrapper fade-in">
+            <header class="step-header">
+                <h2 class="step-title">回答例確認</h2>
+            </header>
+            <div class="answer-section">
+                <h3>あなたの回答</h3>
+                <textarea id="essay-textarea-answer" class="essay-textarea" rows="5" readonly></textarea>
+                <div class="example-answer-section">
+                    <h3>回答例</h3>
+                    <div id="example-answer-text" class="example-answer-box"></div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button type="button" class="btn-primary" onclick="nextStep()">学習を完了する</button>
+            </div>
+        </div>
+
+        {# --- 完了メッセージ --- #}
+        <div id="complete-screen" class="complete-screen" style="display: none;">
+            <h2 class="complete-title">お疲れ様でした！</h2>
+            <button class="btn-primary" onclick="returnToList()">一覧に戻る</button>
+        </div>
+
     </div>
 
-    {# 右側のタブ #}
-    <div class="tabs-container">
-        <a href="{{ url_for('writing.index') }}" class="tab active">ライティング学習</a>
-        <a href="#" class="tab">マイページ</a>
-        <a href="#" class="tab">課題</a>
-    </div>
-
-    <main class="main-content">
-        <div class="app-container">
-
-            <div id="step1" class="content-wrapper" style="display: none;">
-                <div class="step-header">
-                    <span class="phase-label" id="step1-phase"></span>
-                    <h2 class="step-title" id="step1-title"></h2>
-                </div>
-                <div class="step1-content">
-                    <img src="" alt="解説イラスト" class="step1-image" id="step1-image">
-                    <p class="step1-description" id="step1-description"></p>
-                </div>
-                <div class="button-group">
-                    <button type="button" class="btn-primary" onclick="nextStep()">
-                        次のステップへ
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <div id="step2-question" class="content-wrapper" style="display: none;">
-                <div class="step-header">
-                    <span class="phase-label" id="step2-phase"></span>
-                    <h2 class="step-title" id="step2-title"></h2>
-                </div>
-                <div class="question-section">
-                    <p class="instruction" id="step2-instruction"></p>
-                    <div class="question-box">
-                        <h3>問題文</h3>
-                        <p id="step2-question-text"></p>
-                    </div>
-                    <div class="answer-section">
-                        <h3>回答</h3>
-                        <table class="answer-table" id="answer-table-input"></table>
-                    </div>
-                </div>
-                <div class="button-group">
-                    <button type="button" class="btn-secondary" onclick="prevStep()">戻る</button>
-                    <button type="button" class="btn-primary" onclick="gradeAnswers()">採点する</button>
-                </div>
-            </div>
-
-            <div id="step2-answer" class="content-wrapper" style="display: none;">
-                <div class="step-header">
-                    <span class="phase-label">採点結果</span>
-                    <h2 class="step-title" id="score-text"></h2>
-                </div>
-                <div class="question-section">
-                    <div class="answer-section">
-                        <table class="answer-table" id="answer-table-result"></table>
-                    </div>
-                </div>
-                <div class="button-group">
-                    <button type="button" class="btn-secondary" onclick="showStep(1)">やり直す</button>
-                    <button type="button" class="btn-primary" onclick="nextStep()">次のステップへ</button>
-                </div>
-            </div>
-
-            <div id="step3-question" class="content-wrapper" style="display: none;">
-                <div class="step-header">
-                    <span class="phase-label" id="step3-phase"></span>
-                    <h2 class="step-title" id="step3-title"></h2>
-                </div>
-                <div class="question-section">
-                    <p class="instruction" id="step3-instruction"></p>
-                    <div class="question-box">
-                        <h3>問題文</h3>
-                        <p id="step3-question-text"></p>
-                    </div>
-                    <div class="answer-section">
-                        <h3>あなたの回答</h3>
-                        <textarea class="essay-textarea" id="essay-textarea" placeholder="ここに回答を記述してください..." rows="12"></textarea>
-                    </div>
-                </div>
-                <div class="button-group">
-                    <button type="button" class="btn-secondary" onclick="prevStep()">戻る</button>
-                    <button type="button" class="btn-primary" onclick="showExampleAnswer()">回答例を表示</button>
-                </div>
-            </div>
-
-            <div id="step3-answer" class="content-wrapper" style="display: none;">
-                <div class="step-header">
-                    <span class="phase-label">回答確認</span>
-                    <h2 class="step-title">回答例と振り返り</h2>
-                </div>
-                <div class="question-section">
-                    <div class="answer-section">
-                        <h3>あなたの回答</h3>
-                        <textarea class="essay-textarea" id="essay-textarea-answer" readonly rows="8"></textarea>
-                    </div>
-                    <div class="example-answer-section">
-                        <h3>回答例</h3>
-                        <div class="example-answer-box" id="example-answer-text"></div>
-                    </div>
-                </div>
-                <div class="button-group">
-                    <button type="button" class="btn-secondary" onclick="showStep(2)">入力に戻る</button>
-                    <button type="button" class="btn-primary" onclick="completeSteps()">学習を終了する</button>
-                </div>
-            </div>
-
-            <div id="complete-screen" class="content-wrapper complete-screen" style="display: none;">
-                <h2 class="complete-title">ステップ学習完了</h2>
-                <p class="complete-message">お疲れ様でした！このステージの学習は終了です。</p>
-                <div class="button-group">
-                    <button type="button" class="btn-primary" onclick="returnToList()">一覧に戻る</button>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-    {# JS側で使う変数の定義 #}
     <script>
-        const currentStageNo = "{{ stage_no }}";
-        const currentCategoryId = "{{ category_id }}";
+        // JSが参照するグローバル変数
+        const currentStageNo = "{{ data.name }}"; 
+        const currentCategoryId = "{{ data.category_id }}";
     </script>
-
-    {# キャッシュ対策のため ?v=1.3 を付けて読み込み #}
-    <script src="{{ url_for('writing.static', filename='js/step_l.js') }}?v=1.3"></script>
+    
+    {# JSの読み込み先を step_l.js に修正 #}
+    <script src="{{ url_for('writing.static', filename='js/step_l.js') }}"></script>
 </body>
 </html>

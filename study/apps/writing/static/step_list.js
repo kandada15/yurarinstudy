@@ -1,77 +1,50 @@
-// グローバル変数
-let currentStepData = {}; // 現在のステップのデータ
+// apps/writing/static/js/step_list.js
 
-// ダミーデータ
-const dummyData = {
-  stage1: ["理解","小論文とは/目的と特徴"],
-  stage2: ["構成","序論・本論・結論の作り方"],
-  stage3: ["思考","問題把握/主役の立て方/倫理展開"],
-  stage4: ["表現","文体/語彙/文法/接続詞"],
-  stage5: ["実践","添削/推敲/模擬問題/評価基準の理解"]
-};
-
-// テーブル生成
 function createStageTable() {
   const table = document.getElementById("stageTable");
+  if (!table) return;
 
-  // --- ヘッダー行 ---
-  const header = document.createElement("tr");
-  ["ステージ", "フェーズ", "学習内容", ""].forEach(text => {
-    const th = document.createElement("th");
-    th.textContent = text;
-    header.appendChild(th);
+  const tbody = table.querySelector("tbody") || table.appendChild(document.createElement("tbody"));
+  tbody.innerHTML = ""; 
+
+  // カテゴリ記号（①〜④）を取得
+  const symbolMap = { "1": "①", "2": "②", "3": "③", "4": "④" };
+  const symbol = symbolMap[currentCategoryId] || "①";
+
+  /* Python側から渡された learningData (JSON) のキー（①-1理解など）を回します 
+    
+  */
+  Object.keys(learningData).forEach((phaseKey) => {
+    // 現在のカテゴリ（①など）に一致するデータのみ表示
+    if (phaseKey.startsWith(symbol)) {
+      const content = learningData[phaseKey];
+      const firstStep = content.steps[0];
+      const isCompleted = completedStages.includes(phaseKey);
+
+      // ステージ番号を抽出 (例: ①-1理解 -> 1)
+      const stageNum = phaseKey.split('-')[1].replace(/[^0-9]/g, '');
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${stageNum}</td>
+        <td>${isCompleted ? '<span style="color: green; font-weight: bold;">済</span>' : '-'}</td>
+        <td>${firstStep.phase}</td>
+        <td>${firstStep.title}</td>
+        <td>
+          <button class="start-button" onclick="goStep('${phaseKey}')">スタート</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    }
   });
-  table.appendChild(header);
-
-  // --- データ行 ---
-  let index = 1;
-  for (const key in dummyData) {
-    const [phase, content] = dummyData[key];
-
-    const tr = document.createElement("tr");
-
-    // ステージ番号
-    const tdStage = document.createElement("td");
-    tdStage.textContent = index;
-    tr.appendChild(tdStage);
-
-    // フェーズ
-    const tdPhase = document.createElement("td");
-    tdPhase.textContent = phase;
-    tr.appendChild(tdPhase);
-
-    // 学習内容
-    const tdContent = document.createElement("td");
-    tdContent.textContent = content;
-    tr.appendChild(tdContent);
-
-    // スタートリンク
-    const tdLink = document.createElement("td");
-    const btn = document.createElement("button");
-    btn.textContent = "スタート";
-    btn.className = "start-button";
-    // onclick に key を渡す
-    btn.setAttribute("onclick", `goStep('${key}')`);
-    tdLink.appendChild(btn);
-    tr.appendChild(tdLink);
-
-    table.appendChild(tr);
-
-    index++;
-  }
 }
 
-// ページ読み込み時に実行
 window.onload = createStageTable;
 
+function goWriting() { window.location.href = '/writing/'; }
 
-
-//ライティング学習トップへ飛ぶリンク
-function goWriting() {
-  window.location.href = 'index.html';
-}
-
-function goStep(key) {
-  // 遷移先を行ごとに変える
-  window.location.href = `/step_learning/${key}`;
+function goStep(phaseName) {
+  // アドレスバーに表示されていた形式に合わせます
+  const url = `/writing/step_learning?category_id=${currentCategoryId}&stage_no=${encodeURIComponent(phaseName)}`;
+  window.location.href = url;
 }
