@@ -6,6 +6,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <link rel="stylesheet" href="{{ url_for('crud.static', filename='css/info_list.css') }}">
   <link rel="stylesheet" href="{{ url_for('crud.static', filename='css/header.css') }}">
   <title>ユーザ情報一覧</title>
@@ -56,7 +57,7 @@
         <div class="toolbar-center">
           <form id="searchbox" class="search-area">
             <input id="search" type="text" placeholder="ID・氏名・所属グループで検索...">
-            <button type="submit">検索</button>
+            <button type="button">検索</button>
           </form>
         </div>
 
@@ -69,38 +70,38 @@
       <div id="studentsList">
         <table>
           <tr>
+            
             <!--１行目-->
             <th>ID</th>
             <th>氏名</th>
-            <th>所属年度</th>
             <th>所属グループ</th>
             <th>操作</th>
           </tr>
           <tr>
-            {% for student in all_students %}
             <!--２行目-->
+            {% for student in all_students %}
             <td id="student_id">{{ student.student_id }}</td>
             <td id="user_name" class="user-name">
-              <!-- <a href="user_info_inq.html">山田 太郎</a> -->
               {{ student.student_name }}
             </td>
             <td class="group-cell">
-              <div class="group-tags" id="groups-1"></div>
+              <div class="group-tags" data-groups='{{ student.group_name | tojson | safe }}'></div>
             </td>
             <td>
               <!--詳細ボタン-->
               <button>
-                <a href="user_info_inq.html">詳細</a>
+                <a href="{{ url_for('crud.user_detail', id=student.student_id) }}" class="btn">詳細</a>
               </button>
               <!--リセットボタン-->
-              <button type="button" class="btn-reset" onclick="ShowPasswordreset('reset')">パスワードリセット</button>
+              <button type="button" class="btn-reset" 
+              onclick="ShowPasswordreset('{{ student.student_id }}', '{{ student.student_name }}')">パスワードリセット</button>
 
-              <button type="button" class="btn-reset" onclick="ShowUserdelete('reset')">削除</button>
+              <button type="button" class="btn-reset" 
+              onclick="ShowUserdelete('{{ student.student_id }}', '{{ student.student_name }}')">削除</button>
 
             </td>
-            {% endfor %}
           </tr>
-          
+          {% endfor %}
         </table>
         <div class="pagination">
           <button type="button" id="btn-back">前のページ</button>
@@ -115,31 +116,39 @@
             <!--１行目-->
             <th>ID</th>
             <th>氏名</th>
-            <th>担当場所</th>
             <th>所属グループ</th>
             <th>操作</th>
           </tr>
+
+          {% for admin in all_admins %}
           <tr>
             <!--２行目-->
-            <td></td>
+            <td id="admin_id">{{ admin.admin_id }}</td>
             <td class="user-name">
-              <a href="user_info_inq.html">猪口　慎一</a>
+              <!-- <a href="user_info_inq.html">猪口　慎一</a> -->
+               {{ admin.admin_name }}
             </td>
-            <td></td>
+            <!-- <td></td> -->
             <td class="group-cell">
-              <div class="group-tags" id="groups-2"></div>
+              <div class="group-tags" data-groups='{{ admin.group_name | tojson | safe }}'></div>
             </td>
             <td>
               <!--詳細ボタン-->
               <button>
-                <a href="user_info_inq.html">詳細</a>
+                <a href="{{ url_for('crud.user_detail', id=admin.admin_id) }}" class="btn">詳細</a>
               </button>
               <!--リセットボタン-->
-              <button type="button" class="btn-reset" onclick="ShowPasswordreset('reset')">パスワードリセット</button>
-              <button type="button" class="btn-reset" onclick="ShowUserdelete('delete')">削除</button>
+              <button type="button" class="btn-reset" 
+              onclick="ShowPasswordreset('{{ admin.admin_id }}', '{{ admin.admin_name }}')">パスワードリセット
+              </button>
+
+              <button type="button" class="btn-reset" 
+              onclick="ShowUserdelete('{{ admin.admin_id }}', '{{ admin.admin_id }}')">削除
+              </button>
 
             </td>
           </tr>
+          {% endfor %}
         </table>
         <div class="pagination">
           <button type="button" id="prevPage">前のページ</button>
@@ -153,7 +162,7 @@
         <label>{}さんのパスワードをリセットします。</label>
         <label>よろしいですか？</label>
         <div class="button-group">
-          <button type="button" class="btn-back" onclick="backToInput()">キャンセル</button>
+          <button type="button" class="btn-back" onclick="closeModal()">キャンセル</button>
           <button type="button" class="action-btn btn-reset2" onclick="risetForm()">リセットする</button>
         </div>
       </div>
@@ -164,7 +173,7 @@
         <label>{}さんの情報を削除します。よろしいですか？</label>
         <label>※この操作は取り消せません。</label>
         <div class="button-group">
-          <button type="button" class="btn-back" onclick="backToInput2()">キャンセル</button>
+          <button type="button" class="btn-back" onclick="closeModal()">キャンセル</button>
           <!--ここ関数とか変更する-->
           <button type="button" class="action-btn btn-reset2" onclick="deleteForm()">削除</button>
         </div>
