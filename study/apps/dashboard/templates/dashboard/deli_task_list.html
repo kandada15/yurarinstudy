@@ -24,7 +24,7 @@
   </div>
 
   <div class="tabs-container">
-    <a href="#" class="tab" data-page="users">ユーザ管理</a>
+    <a href="{{ url_for('crud.user_manage') }}" class="tab" data-page="users">ユーザ管理</a>
     <a href="{{ url_for('task.task_create_form') }}" class="tab" data-page="tasks">課題配信</a>
     <a href="{{ url_for('dashboard.index') }}" class="tab active" data-page="dashboard">ダッシュボード</a>
   </div>

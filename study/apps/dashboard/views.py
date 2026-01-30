@@ -3,6 +3,7 @@ from apps.task.dao.streamed_dao import StreamedDao
 from apps.task.dao.submission_dao import SubmissionDao2
 from apps.crud.dao.group_dao import GroupDao  # 修正したDaoをインポート
 from apps.dashboard.dao.dao_dashboard import Dashboard_DAO
+from apps.dashboard.dao.dashboard_dao import DashboardDao
 
 writing_bp = Blueprint('writing', __name__, template_folder='templates', static_folder='static')
 dashboard_bp = Blueprint('dashboard', __name__, template_folder='templates', static_folder='static')
@@ -12,7 +13,8 @@ dashboard_bp = Blueprint('dashboard', __name__, template_folder='templates', sta
 s_dao = StreamedDao()
 sub_dao = SubmissionDao2()
 g_dao = GroupDao()  # 新しく作成
-d_dao = Dashboard_DAO()
+d_dao = DashboardDao()
+D_dao = Dashboard_DAO()
 
 # 生徒ID（s...）を弾く
 @dashboard_bp.before_request
@@ -105,8 +107,12 @@ def streamed_list():
 def stedent_list(streamed_id):
 
     admin_id = session.get('user_id')
-    streamed = d_dao.find_streamed_name_by_id(streamed_id)
+    streamed = D_dao.find_streamed_name_by_id(streamed_id)
     keyword = request.args.get("keyword")
     # 配信済みかつ提出/添削のフラグが関連しているdaoを作成
-    streamed_student = d_dao.find_students_status_by_streamed_id(streamed_id, admin_id, keyword)
+    streamed_student = D_dao.find_students_status_by_streamed_id(streamed_id, admin_id, keyword)
     return render_template("dashboard/task_stu_list.html", streamed_name=streamed["streamed_name"], streamed_student=streamed_student)
+
+@dashboard_bp.route("/streamed/student/<int:streamed_id>/correction")
+def task_correction():
+    return render_template("")

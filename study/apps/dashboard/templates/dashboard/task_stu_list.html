@@ -20,7 +20,7 @@
     <div class="user-section">
       <span class="user-badge">管理者</span>
       <!--ここリンクをｊｓ管理してるけどアクション名？にしてログアウトできるように-->
-      <button class="logout-btn" onclick="gologout()">ログアウト</button>
+      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
     </div>
   </header>
 
@@ -38,10 +38,10 @@
 
   <!-- 右側のタブ -->
   <div class="tabs-container">
-    <a href="user_info_list.html" class="tab active" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
-    <a href="task_create.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
-    <a href="dashboard.html" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
-  </div>o
+    <a href="{{ url_for('crud.user_manage') }}" class="tab active" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    <a href="{{ url_for('task.task_create_form') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    <a href="{{ url_for('dashboard.index') }}" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
+  </div>
 <!--ここまで-->
 
   <div class="app-container">
@@ -79,7 +79,7 @@
                   <td>{{ sd_s.student_id }}</td>
                   <td>{{ sd_s.student_name }}</td>
                   <td><span class="status-badge status-uncorrected">{{ sd_s.status }}</span></td>
-                  <td><button class="start-btn">添削開始</button></td>
+                  <td><a href="{{ url_for('dashboard.') }}"><button  type="button" class="start-btn">添削開始</button></a></td>
                 </tr>
               {% endfor %}
               <!-- <tr>
