@@ -22,15 +22,14 @@ class Student(db.Model):
     group_id = db.Column(db.Integer, db.ForeignKey('group.group_id'))
 
 @dataclass
+# データを入れるだけのクラス自動作成
+# 受講者とグループの関係
 class StudentToGroupname:
     __tablename__ = "studenttogroupname"
     student_id: int
     student_name: str
     password: str 
-    # 生年月日
     birthday: date
-    # 通知フラグ
     alert: bool
-    # グループID（外部キー）
     group_id: int
     group_name: str

@@ -1,5 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, current_app,  json, jsonify, request,  session
-
+from flask import Blueprint, render_template, redirect, url_for, current_app,  jsonify, request,  session
 from apps.crud.dao.dao_student import StudentDao
 from apps.crud.dao.dao_admin import AdminDao
 
@@ -13,26 +12,31 @@ crud_bp = Blueprint(
     static_folder="static",
 )
 
-# DAO-インスタンス化
+# DAO作成
 student_dao = StudentDao()
 admin_dao = AdminDao()
 
 # ルーティングの定義
+# ユーザ一覧画面
 @crud_bp.route("/manage")
 def user_manage():
     admin_id = session.get('user_id')
+    # ログインしていない場合ログイン画面へリダイレクト
     if not admin_id:
         return redirect(url_for('auth.login'))
     
+    # 管理者,受講者一覧取得
     all_students = student_dao.find_all_groupname()
     all_admins = admin_dao.find_all_groupname()
 
+    # ユーザ一覧画面表示
     return render_template(
         "crud/user_info_list.html",
         all_students=all_students,
         all_admins=all_admins
     )
 
+# ユーザ詳細画面
 @crud_bp.route("/detail")
 def user_detail():
     user_data = {
@@ -108,46 +112,3 @@ def search_users():
             "status": "error",
             "message": str(e)
         }), 500
-    # クエリパラメータ ?query=xxx を取得
-    # search_query = request.args.get('query', '')
-    # user_type = request.args.get("type")
-    
-    # # DAOを使用してMySQLから検索
-    # # SQLイメージ: SELECT * FROM users WHERE id LIKE %q% OR name LIKE %q% OR groups LIKE %q%
-
-    # if user_type == "student":
-    #     if search_query:
-    #         results = student_dao.search_students(search_query)
-    #     else:
-    #         results = student_dao.find_all_groupname()
-
-    #     user_list = [{
-    #         "id": s.student_id,
-    #         "name": s.student_name,
-    #         "group_name": s.group_name
-    #     } for s in results]
-
-    # elif user_type == "admin":
-    #     if search_query:
-    #         results = admin_dao.search_admins(search_query)
-    #     else:
-    #         results = admin_dao.find_all_groupname()
-
-    #     user_list = [{
-    #         "id": a.admin_id,
-    #         "name": a.admin_name,
-    #         "group_name": a.group_name
-    #     } for a in results]
-
-    # else:
-    #     return jsonify({
-    #         "status": "error",
-    #         "message": "invalid type"
-    #     }), 400
-
-    # return jsonify({
-    #     "status": "success",
-    #     "type": user_type,
-    #     "users": user_list
-    # })
-

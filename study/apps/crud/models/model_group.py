@@ -10,4 +10,3 @@ class Group(db.Model):
     group_name = db.Column(db.String(50), nullable=False)
     # 管理者ID（外部キー）
     created_by_admin_id = db.Column("created_by_admin_id", db.String(10), db.ForeignKey('admin.admin_id'))
-

@@ -1,6 +1,5 @@
 from apps.extensions import db
 from datetime import date
-
 from dataclasses import dataclass
 
 # Admin テーブルモデル作成
@@ -19,6 +18,8 @@ class Admin(db.Model):
     created_at = db.Column(db.DateTime, nullable=True)
 
 @dataclass
+# データを入れるだけのクラス自動作成
+# 管理者とグループの関係
 class AdminToGroupname:
     __tablename__ = "admintogroupname"
     admin_id: int

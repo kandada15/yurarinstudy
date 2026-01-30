@@ -4,6 +4,7 @@ from typing import Optional
 from apps.crud.models.model_admin import Admin, AdminToGroupname
 from apps.config.db_config import DB_CONFIG
 
+
 # MySQLに直接アクセスするDAOクラス※adminテーブル専用
 class AdminDao:
 
@@ -17,7 +18,7 @@ class AdminDao:
 
     # 全件取得
     def find_all(self) -> list[Admin]:
-        """ 
+        """
         adminテーブルの全レコードを取得
         Adminオブジェクトのリストとして返す。
         管理者情報をadmin_id順で取得
@@ -47,18 +48,19 @@ class AdminDao:
                     admin_id=row["admin_id"],
                     admin_name=row["admin_name"],
                     password=row["password"],
-                    birthday=row["birthday"]
+                    birthday=row["birthday"],
                 )
                 admins.append(admin)
 
             return admins
+        
         finally:
             cursor.close()
             conn.close()
 
     # 全件取得
     def find_all_groupname(self) -> list[AdminToGroupname]:
-        """ 
+        """
         adminテーブルの全レコードを取得
         Adminオブジェクトのリストとして返す。
         管理者情報をadmin_id順で取得
@@ -86,29 +88,33 @@ class AdminDao:
             cursor.execute(sql)
             rows = cursor.fetchall()
 
-            # Adminオブジェクトに変換
+            # AdminToGroupnameオブジェクトに変換
             result = []
             for row in rows:
-                result.append(AdminToGroupname(
-                    admin_id=row["admin_id"],
-                    admin_name=row["admin_name"],
-                    password=row["password"],
-                    birthday=row["birthday"],
-                    group_id=row["group_id"],
-                    group_name=row["group_name"],
-                    created_by_admin_id=row["created_by_admin_id"]
-                ))
+                result.append(
+                    AdminToGroupname(
+                        admin_id=row["admin_id"],
+                        admin_name=row["admin_name"],
+                        password=row["password"],
+                        birthday=row["birthday"],
+                        group_id=row["group_id"],
+                        group_name=row["group_name"],
+                        created_by_admin_id=row["created_by_admin_id"],
+                    )
+                )
             return result
+
         finally:
+            # 例外の有無に関わらず、最後に必ずクローズする
             cursor.close()
             conn.close()
 
+    #
     def search_admins(self, search_query: str) -> list[AdminToGroupname]:
-        """  
-        admin_id, admin_name, group_name のいずれかに
-        検索キーワードが含まれるレコードを取得する。
         """
-
+        admin_id, admin_name, group_name のいずれかに
+        検索ワードが含まれるレコードを取得
+        """
         sql = """
             SELECT
                 admin.admin_id,
@@ -120,7 +126,7 @@ class AdminDao:
                 g.created_by_admin_id
             FROM admin
             LEFT JOIN `group` AS g
-              ON g.created_by_admin_id = admin.admin_id
+            ON g.created_by_admin_id = admin.admin_id
             WHERE 
                 admin.admin_id LIKE %s OR
                 admin.admin_name LIKE %s OR
@@ -128,37 +134,43 @@ class AdminDao:
             ORDER BY admin.admin_id ASC
         """
 
+        # 部分一致検索
         like_query = f"%{search_query}%"
         params = (like_query, like_query, like_query)
 
+        # クラス内部の_get_connection()を使ってMySQL接続を取得
+        # 結果を辞書形式で取得
         conn = self._get_connection()
         try:
             cursor = conn.cursor(dictionary=True)
             cursor.execute(sql, params)
             rows = cursor.fetchall()
 
+            # AdminToGroupname
             result = []
             for row in rows:
-                result.append(AdminToGroupname(
-                    admin_id=row["admin_id"],
-                    admin_name=row["admin_name"],
-                    password=row["password"],
-                    birthday=row["birthday"],
-                    group_id=row["group_id"],
-                    group_name=row["group_name"],
-                    created_by_admin_id=row["created_by_admin_id"]
-                ))
+                result.append(
+                    AdminToGroupname(
+                        admin_id=row["admin_id"],
+                        admin_name=row["admin_name"],
+                        password=row["password"],
+                        birthday=row["birthday"],
+                        group_id=row["group_id"],
+                        group_name=row["group_name"],
+                        created_by_admin_id=row["created_by_admin_id"],
+                    )
+                )
 
             return result
 
         finally:
+            # 例外の有無に関わらず、最後に必ずクローズする
             cursor.close()
             conn.close()
 
-
     # admin ID検索
     def find_by_id(self, admin_id: str) -> Optional[dict]:
-        """ 
+        """
         admin_idで admin テーブルから1件取得。見つからなければNoneを返す。
         戻り値: 辞書型 {"admin_id":..., "admin_name":...}
         %s はプレースホルダー
@@ -182,8 +194,11 @@ class AdminDao:
             cursor = conn.cursor(dictionary=True)
             cursor.execute(sql, (admin_id,))
             row = cursor.fetchone()
+            
             return row
+        
         finally:
+            # 例外の有無に関わらず、最後に必ずクローズする
             cursor.close()
             conn.close()
 
@@ -208,7 +223,7 @@ class AdminDao:
             cursor.execute(sql, (admin_id, admin_name, password, birthday))
             conn.commit()
             return admin_id
-        
+
         finally:
             # 例外の有無に関わらず、最後に必ずクローズする
             cursor.close()

@@ -22,7 +22,7 @@ writing_bp = Blueprint(
     static_folder="static",
 )
 
-# DAO-インスタンス化
+# DAO作成
 w_dao = WritingDao()
 
 # JSON読み込み(ステップ一覧の内容を外部JSONで管理)
