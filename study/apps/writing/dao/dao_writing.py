@@ -10,7 +10,6 @@ class WritingDao:
         return categories.get(category_id, "ライティング学習")
 
     def get_user_progress(self, student_id, category_id):
-        """LIKE検索でカテゴリ別の進捗を取得"""
         symbol = self.symbol_map.get(category_id, '①')
         sql = text("""
             SELECT phase_name, stage_flag 
