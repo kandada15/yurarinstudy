@@ -84,10 +84,10 @@ class StreamedDao:
         """
         sql = """
         INSERT INTO streamed 
-          (streamed_name, streamed_text, streamed_limit, group_id)
+        (streamed_name, streamed_text, streamed_limit, group_id)
         VALUES 
-          (%s, %s, %s, %s)
-    """
+        (%s, %s, %s, %s)
+        """
 
         # クラス内部の_get_connection()を使ってMySQL接続を取得
         # 実行＆コミット
@@ -111,7 +111,7 @@ class StreamedDao:
         """
         課題名/配信者/提出期限を表示する
         →groupのcreated_by_admin_nameを持って来る
-          ※group作成者=課題作成者
+        ※group作成者=課題作成者
         """
         sql = """
         SELECT
@@ -123,9 +123,9 @@ class StreamedDao:
             s.sent_at
         FROM streamed AS s
         LEFT OUTER JOIN `group` AS g
-          ON s.group_id = g.group_id
+        ON s.group_id = g.group_id
         LEFT OUTER JOIN admin 
-          ON g.created_by_admin_id = admin.admin_id
+        ON g.created_by_admin_id = admin.admin_id
         ORDER BY s.sent_at DESC
     """
         # クラス内部の_get_connection()を使ってMySQL接続を取得
@@ -172,15 +172,15 @@ class StreamedDao:
             s.sent_at
         FROM streamed AS s
         LEFT OUTER JOIN submission sub
-          ON s.streamed_id = sub.streamed_id
-          AND sub.student_id = %s
+        ON s.streamed_id = sub.streamed_id
+        AND sub.student_id = %s
         LEFT OUTER JOIN `group` AS g
-          ON s.group_id = g.group_id
+        ON s.group_id = g.group_id
         LEFT OUTER JOIN admin 
-          ON g.created_by_admin_id = admin.admin_id
+        ON g.created_by_admin_id = admin.admin_id
         WHERE sub.submission_id IS NULL
         ORDER BY s.sent_at DESC
-    """
+        """
 
         # クラス内部の_get_connection()を使ってMySQL接続を取得
         # 結果を辞書形式で取得
@@ -227,11 +227,11 @@ class StreamedDao:
             admin.admin_name
         FROM streamed AS s
         LEFT OUTER JOIN `group` AS g
-          ON s.group_id = g.group_id
+        ON s.group_id = g.group_id
         LEFT OUTER JOIN admin 
-          ON g.created_by_admin_id = admin.admin_id
+        ON g.created_by_admin_id = admin.admin_id
         WHERE streamed_id = %s
-    """
+        """
 
         # クラス内部の_get_connection()を使ってMySQL接続を取得
         # 結果を辞書形式で取得
@@ -289,10 +289,10 @@ class StreamedDao:
         COUNT(*)で件数を数える
         """
         sql = """
-          SELECT COUNT(*) AS count 
-          FROM streamed 
-          WHERE streamed_limit BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 7 DAY)
-      """
+        SELECT COUNT(*) AS count 
+        FROM streamed 
+        WHERE streamed_limit BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 7 DAY)
+        """
 
         # クラス内部の_get_connection()を使ってMySQL接続を取得
         # 結果を辞書形式で取得
