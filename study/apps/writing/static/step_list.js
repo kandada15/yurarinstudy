@@ -27,9 +27,9 @@ function createStageTable() {
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${stageNum}</td>
-        <td>${isCompleted ? '<span style="color: green; font-weight: bold;">済</span>' : '-'}</td>
         <td>${firstStep.phase}</td>
         <td>${firstStep.title}</td>
+        <td>${isCompleted ? '<span style="color: green; font-weight: bold;">済</span>' : '-'}</td>
         <td>
           <button class="start-button" onclick="goStep('${phaseKey}')">スタート</button>
         </td>

@@ -38,11 +38,13 @@ def step_list(category_id):
     # JSONファイルを読み込んで渡すことで TypeError を回避します
     learning_data = load_learning_data()
     
-    return render_template('writing/step_list.html', 
-                            data=data, 
-                            category_id=category_id, 
-                            completed_list=completed_list,
-                            learning_data=learning_data)
+    return render_template(
+        'writing/step_list.html', 
+        data=data, 
+        category_id=category_id, 
+        completed_list=completed_list,
+        learning_data=learning_data
+    )
 
 # --- 3. 学習画面 (UndefinedError 対策済み) ---
 @writing_bp.route('/step_learning')
@@ -63,8 +65,8 @@ def learning_page():
     return render_template('writing/step_learning.html', data=data)
 
 # --- 4. 進捗更新処理 ---
-@writing_bp.route('/update_progress', methods=['POST'])
-def update_progress():
+@writing_bp.route('/update_progress')
+def progress():
     if 'user_id' not in session: return jsonify({'status': 'error'}), 401
     req_data = request.get_json()
     phase_name = req_data.get('stage_no')

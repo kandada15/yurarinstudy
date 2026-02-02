@@ -1,23 +1,69 @@
-{% extends "header.html" %}
-{% block content %}
-<link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/l_pro_top.css') }}">
-<div class="app-container fade-in">
-    <div class="content-wrapper">
-        <h1>学習状況トップ</h1>
-        <p>学習状況を閲覧したい受講者が所属しているグループを選択してください。</p>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/l_pro_top.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>進捗管理：グループ一覧 - 文脈工房</title>
+    </head>
+    <body>
+    <header class="top-header">
+        <div class="logo-section">
+        <div class="logo-img">文</div>
+        <span class="app-name">文脈工房</span>
+        </div>
+        <div class="user-section">
+        <span class="user-badge">管理者</span>
+        <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
+        </div>
+    </header>
+
+    <div class="holes-container">
+        {% for i in range(8) %}<div class="hole"></div>{% endfor %}
+    </div>
+
+    <div class="tabs-container">
+        <a href="#" class="tab" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+        <a href="#" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+        <a href="{{ url_for('dashboard.index') }}" class="tab active" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
+    </div>
+
+    <div class="app-container fade-in">
+        <div class="content-wrapper">
+        <div class="name-button-contener">
+            <h1>学習状況トップ</h1>
+        </div>
+        
+        <p style="text-align: center; margin-bottom: 20px; color: #5a4a3a;">
+            学習状況を閲覧したい受講者が所属しているグループを選択してください。
+        </p>
+
         <div class="groups-container">
             {% for g in groups %}
-            <div class="grou_content" onclick="goStulist('{{ g.id }}')">
-                <div class="group-icon">📁</div>
-                <div class="group-info">
-                    <p class="group-title">{{ g.name }}</p>
-                    <p class="group-subtitle">{{ g.subtitle }}</p>
-                </div>
-                <div class="group-members"><span>メンバー：{{ g.count }}人</span></div>
+            <div class="grou_content" onclick="goStulist('{{ g.group_id }}')">
+            <div class="group-icon">📁</div>
+            
+            <div class="group-info">
+                <p class="group-title">{{ g.group_name }}</p>
+                <p class="group-subtitle">担当グループ</p>
+            </div>
+
+            <div class="group-members">
+                <span>メンバー：{{ g.member_count }}人</span>
+            </div>
+            </div>
+            {% else %}
+            <div>
+            <p>表示できるグループがありません。</p>
             </div>
             {% endfor %}
         </div>
+        </div>
     </div>
-</div>
-<script src="{{ url_for('dashboard.static', filename='js/l_pro_top.js') }}"></script>
-{% endblock %}
+
+    <script src="{{ url_for('dashboard.static', filename='js/l_pro_top.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/header.js') }}"></script>
+</body>
+</html>
