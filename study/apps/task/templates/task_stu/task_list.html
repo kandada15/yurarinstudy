@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('task.static', filename='css/css_stu/task_list.css') }}">
-  <link rel="stylesheet" href="{{ url_for('task.static', filename='css/header.css') }}">
+  <link rel="stylesheet" href="{{ url_for('task.static', filename='css/css_stu/header.css') }}">
   <title>課題一覧</title>
 </head>
 <body>
@@ -39,9 +39,9 @@
 
   <!-- 右側のタブ -->
   <div class="tabs-container">
-    <a href="learning_top.html" class="tab active" data-page="users" data-color="#e8dcc8">ライティング学習</a>
+    <a href="{{ url_for('writing.index') }}" class="tab active" data-page="users" data-color="#e8dcc8">ライティング学習</a>
+    <a href="{{ url_for('mypage.stu_mypage') }}" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
     <a href="{{ url_for('task.student_task_list') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
-    <a href="mypage.html" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
   </div>
 <!--ここまで-->
 

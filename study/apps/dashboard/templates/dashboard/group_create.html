@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/g_create.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+  <title>グループ作成 - 文脈工房</title>
+</head>
+<body>
+  <header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">管理者</span>
+      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="holes-container">
+    {% for i in range(8) %}<div class="hole"></div>{% endfor %}
+  </div>
+
+  <div class="tabs-container">
+    <a href="#" class="tab active" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    <a href="#" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    <a href="{{ url_for('dashboard.index') }}" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
+  </div>
+
+  <div class="app-container">
+    <div class="content-wrapper">
+      <div id="inputScreen">
+        <h2>新規グループ作成</h2>
+
+        <div class="scroll">
+          <div id="formgroup" class="form">
+            <div>
+              <label>グループ情報</label>
+              <div class="form-row">
+                <label for="group_name">グループ名 <span style="color: red;">*</span></label>
+                <input type="text" name="group_name" id="group_name" maxlength="20" placeholder="グループ名を入力...">
+                <div id="group_name_error" class="error-message"></div>
+              </div>
+            </div>
+
+            <div class="button-group">
+              <button type="button" class="btn-back" onclick="goGroupList()">一覧に戻る</button>
+              <button type="button" class="btn-primary" onclick="showConfirmScreen()">確認画面へ</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="confirmScreen" class="hidden">
+        <h2>新規グループ作成</h2>
+        <div id="confirmContent"></div>
+        <div class="button-group">
+          <button type="button" class="btn-back" onclick="backToInput()">戻る</button>
+          <button type="button" class="btn-primary" onclick="submitForm()">登録</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function goGroupList() {
+      window.location.href = "{{ url_for('dashboard.group_list') }}";
+    }
+  </script>
+
+  <script src="{{ url_for('dashboard.static', filename='js/g_create.js') }}"></script> 
+  <script src="{{ url_for('static', filename='js/header.js') }}"></script> 
+</body>
+</html>
