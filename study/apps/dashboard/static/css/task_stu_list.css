@@ -1,0 +1,281 @@
+/* ============================================ */
+/* Reset */
+/* ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Meiryo', sans-serif;
+  background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc8 100%);
+  max-height: 100vh;
+  padding: 20px;
+}
+
+/* ============================================ */
+/* Base Styles（文字など） */
+/* ============================================ */
+h1 {
+  font-size: 24px;
+  color: #5a4a3a;
+  font-weight: bold;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #8b7355;
+  padding-bottom: 15px;
+}
+
+/* ============================================ */
+/* Layout（ページ全体の構造） */
+/* ============================================ */
+.app-container {
+  position: relative;
+  max-width: 1100px;
+  height: 600px;
+  margin: 0 auto;
+  margin-top: 60px;
+  background: #fffef9;
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px);
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(139, 115, 85, 0.2);
+  overflow: hidden;
+}
+
+.content-wrapper {
+  height: 600px;
+  max-width: 1100px;
+  background: rgba(255, 254, 249, 0.95);
+  padding: 30px;
+  position: relative;
+}
+
+.table-section {
+  margin: 20px 0;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 0 10px;
+}
+
+.table-header h2 {
+  font-size: 20px;
+  color: #4a3728;
+  font-weight: 600;
+}
+
+/* ============================================ */
+/* Components（UIパーツ） */
+/* ============================================ */
+
+/* --- 検索フォーム --- */
+.search-section {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 30px 0;
+}
+
+.search-input {
+  width: 400px;
+  padding: 12px 20px;
+  border: 2px solid #c9b896;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+}
+
+.search-input::placeholder {
+  color: #a89378;
+}
+
+.search-btn {
+  padding: 12px 40px;
+  background-color: #a89378;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.search-btn:hover {
+  background-color: #8b7355;
+  transform: translateY(-2px);
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.25);
+}
+
+/* --- テーブル・スクロール --- */
+.table-scroll-wrapper {
+  max-height: 320px;
+  overflow-y: auto;
+  border: 2px solid #c9b896;
+  border-radius: 8px;
+  background: white;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.user-table thead {
+  position: sticky;
+  top: 0;
+  background-color: #c9b896;
+  z-index: 10;
+}
+
+.user-table th {
+  padding: 16px;
+  text-align: center;
+  color: #4a3728;
+  font-weight: 600;
+  font-size: 16px;
+  border-bottom: 2px solid #a89378;
+}
+
+.user-table td {
+  padding: 16px;
+  text-align: center;
+  color: #4a3728;
+  font-size: 14px;
+  border-bottom: 1px solid #e8dcc8;
+}
+
+.user-table tbody tr:hover {
+  background-color: #f9f5ed;
+}
+
+/* --- 各ボタン --- */
+.return-btn {
+  padding: 10px 24px;
+  background-color: #a89378;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.return-btn:hover {
+  background-color: #8b7355;
+  transform: translateY(-2px);
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.25);
+}
+
+.start-btn {
+  padding: 8px 20px;
+  background-color: #a89378;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.start-btn:hover {
+  background-color: #8b7355;
+  transform: scale(1.05);
+}
+
+/* --- スクロールバー --- */
+.table-scroll-wrapper::-webkit-scrollbar {
+  width: 10px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-track {
+  background: #f5f1e8;
+  border-radius: 5px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: #c9b896;
+  border-radius: 5px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #a89378;
+}
+
+/* --- ステータスバッジ --- */
+.status-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 2px solid;
+  width: 100px;
+}
+
+.status-unsubmitted {
+  background-color: #ffe6e6;
+  border-color: #ff4d4d;
+  color: #cc0000;
+}
+
+.status-uncorrected {
+  background-color: #fff9e6;
+  border-color: #ffd700;
+  color: #cc9900;
+}
+
+.status-completed {
+  background-color: #e6f9e6;
+  border-color: #bbf5b3;
+  color: #6fb172;
+}
+
+/* ============================================ */
+/* Utilities（汎用クラス） */
+/* ============================================ */
+.hidden {
+  display: none;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}

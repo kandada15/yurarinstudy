@@ -3,9 +3,19 @@ import os
 from flask import Blueprint, render_template, session, redirect, url_for, jsonify, request
 from apps.task.dao.streamed_dao import StreamedDao
 from apps.task.dao.submission_dao import SubmissionDao2
+from apps.crud.dao.group_dao import GroupDao  # 修正したDaoをインポート
+from apps.dashboard.dao.dao_dashboard import Dashboard_DAO
 from apps.dashboard.dao.dashboard_dao import DashboardDao
 
 dashboard_bp = Blueprint('dashboard', __name__, template_folder='templates', static_folder='static')
+
+# 各DAOの初期化
+# ルート外に置く
+s_dao = StreamedDao()
+sub_dao = SubmissionDao2()
+g_dao = GroupDao()  # 新しく作成
+d_dao = DashboardDao()
+D_dao = Dashboard_DAO()
 
 # 生徒ID（s...）を弾く
 @dashboard_bp.before_request
@@ -19,12 +29,6 @@ def restrict_access():
 @dashboard_bp.route('/')
 def index():
     admin_id = session.get('user_id')
-    
-    # 各DAOの初期化
-    d_dao = DashboardDao() 
-    s_dao = StreamedDao()
-    sub_dao = SubmissionDao2()
-    
     # 統計情報の取得
     streamed_count = s_dao.get_streamed_count(admin_id)
     weekly_deadline = s_dao.get_weekly_deadline_count()
@@ -46,7 +50,6 @@ def index():
         weekly_deadline_count=weekly_deadline
     )
 
-# --- dashboard_bp の中にまとめる ---
 
 # 1. 学習状況トップ（グループ選択）
 @dashboard_bp.route('/progress') 
@@ -174,6 +177,7 @@ def remove_group_member():
     else:
         return jsonify({"success": False, "message": "削除処理に失敗しました"}), 500
     
+
 @dashboard_bp.route('/api/group/update', methods=['POST'])
 def update_group():
     data = request.json
@@ -202,3 +206,37 @@ def group_create():
         success, message = d_dao.create_group(group_name, admin_id)
         return jsonify({"success": success, "message": message})
     return render_template('dashboard/group_create.html')
+
+@dashboard_bp.route("/streamed")
+def streamed_list():
+    admin_id = session.get('user_id')
+    all_tasks = s_dao.find_streamed_for_student(admin_id)
+
+    # ページネーションの設定
+    page = request.args.get('page', 1, type=int)
+    per_page = 4 # 1ページあたりの表示件数
+    offset = (page - 1) * per_page
+
+    # DAOにoffsetとlimitを渡して取得するように変更
+    # 簡易的なページネーション処理
+    tasks = all_tasks[offset : offset + per_page]
+
+    # 次のページがあるかどうかの判定
+    has_next = len(all_tasks) > offset + per_page
+    has_prev = page > 1
+
+    return render_template("dashboard/deli_task_list.html", tasks=tasks, has_next=has_next, has_prev=has_prev)
+
+@dashboard_bp.route("/streamed/student/<int:streamed_id>")
+def stedent_list(streamed_id):
+
+    admin_id = session.get('user_id')
+    streamed = D_dao.find_streamed_name_by_id(streamed_id)
+    keyword = request.args.get("keyword")
+    # 配信済みかつ提出/添削のフラグが関連しているdaoを作成
+    streamed_student = D_dao.find_students_status_by_streamed_id(streamed_id, admin_id, keyword)
+    return render_template("dashboard/task_stu_list.html", streamed_name=streamed["streamed_name"], streamed_student=streamed_student)
+
+@dashboard_bp.route("/streamed/student/<int:streamed_id>/correction")
+def task_correction():
+    return render_template("")
