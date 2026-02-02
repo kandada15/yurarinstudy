@@ -109,17 +109,24 @@ def learning_page():
     return render_template("writing/step_learning.html", data=data)
 
 # 進捗更新
-@writing_bp.route("/update_progress", methods=["POST"])
-def update_progress():
+@writing_bp.route('/update_progress', methods=['POST']) 
+def progress():
     # ログインしていない場合エラーを返す
-    if "user_id" not in session:
-        return jsonify({"status": "error"}), 401
-    
-    req_data = request.get_json()
-    phase_name = req_data.get("stage_no")
-    
-    # DAOを使用しDBの進捗を更新
-    w_dao.update_stage_progress(session.get("user_id"), phase_name)
-    
-    # 成功レスポンスを返す
-    return jsonify({"status": "success"})
+    if 'user_id' not in session:
+        return jsonify({'status': 'error', 'message': 'セッション切れです'}), 401
+    try:
+        # JSから送られてきたJSONを取得
+        req_data = request.get_json()
+        if not req_data:
+            return jsonify({'status': 'error', 'message': 'データが空です'}), 400
+            
+        phase_name = req_data.get('stage_no')
+        user_id = session.get('user_id')
+        # DAOを使用しDBの進捗を更新
+        w_dao.update_stage_progress(user_id, phase_name)
+        
+        return jsonify({'status': 'success'})
+
+    except Exception as e:
+        print(f"Update Progress Error: {e}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500

@@ -91,20 +91,22 @@ class Dashboard_DAO:
         配信された学生と提出・添削状況を取得する（管理者用）
         """
         sql = """
-          SELECT
-            stu.student_id,
-            stu.student_name,
-            sub.submit_flag,
-            sub.check_flag
-          FROM streamed AS s
-          INNER JOIN `group` AS g
-          ON g.group_id = s.group_id
-          INNER JOIN student AS stu
-          ON stu.group_id = g.group_id
-          LEFT OUTER JOIN submission AS sub
-          ON sub.student_id = stu.student_id
-          AND sub.streamed_id = s.streamed_id
-          WHERE s.streamed_id = %s AND g.created_by_admin_id = %s 
+            SELECT
+              stu.student_id,
+              stu.student_name,
+              s.streamed_id,
+              sub.submission_id,
+              sub.submit_flag,
+              sub.check_flag
+            FROM streamed AS s
+            INNER OUTER JOIN `group` AS g
+            ON g.group_id = s.group_id
+            INNER JOIN student AS stu
+            ON stu.group_id = g.group_id
+            LEFT JOIN submission AS sub
+            ON sub.student_id = stu.student_id
+            AND sub.streamed_id = s.streamed_id
+            WHERE s.streamed_id = %s AND g.created_by_admin_id = %s 
             AND(
               %s IS NULL 
               OR stu.student_name LIKE CONCAT('%', %s, '%')
@@ -128,9 +130,11 @@ class Dashboard_DAO:
               status = "添削済み"
               result.append(
                 StreamedStudent(
-                  student_id=row["student_id"],
-                  student_name=row["student_name"],
-                  status=status
+                    student_id=row["student_id"],
+                    student_name=row["student_name"],
+                    streamed_id=row["streamed_id"],
+                    submission_id=row["submission_id"],
+                    status=status
                 )
               )
               
@@ -154,7 +158,109 @@ class Dashboard_DAO:
         cursor.execute(sql, (streamed_id,))
         row = cursor.fetchone()
 
-        return row
+          return row
+        finally:
+          cursor.close()
+          conn.close()
+
+    def find_submission_by_id(self, submission_id: int):
+      sql="""
+        SELECT
+          sub.submission_id,
+          sub.answer_text,
+          sub.submit_flag,
+          sub.check_flag,
+          sub.return_flag
+        FROM submission AS sub
+        WHERE sub.submission_id = %s
+      """
+      
+      conn = self._get_connection()
+      try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(sql, (submission_id,))
+        row = cursor.fetchone()
+
+      return row
+    finally:
+      cursor.close()
+      conn.close()
+
+    def find_submission_by_streamed_id(self, submission_id: int, admin_id: int):
+    """
+    指定された課題に続いて、受講者が解答した解答を取得し
+    添削を行う。学生名や課題タイトル、フラグを取得する。 
+    →添削画面を表示する
+    """
+    sql = """
+        SELECT
+          sub.submission_id,
+          sub.answer_text,
+          sub.check_flag,
+          s.streamed_id,
+          s.streamed_name,
+          s.streamed_text,
+          stu.student_name
+        FROM submission AS sub
+        INNER JOIN streamed AS s
+        ON sub.streamed_id = s.streamed_id
+        INNER JOIN student AS stu
+        ON sub.student_id = stu.student_id
+        INNER JOIN `group` AS g
+        ON stu.group_id = g.group_id
+        WHERE sub.submission_id = %s 
+        AND g.created_by_admin_id = %s 
+        ORDER BY stu.student_id ASC
+    """
+
+    conn = self._get_connection()
+      try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(sql, (submission_id, admin_id))
+        row = cursor.fetchone()
+      return row
+
+        #  result = []
+        #  for row in rows:
+        #     # 状況判定（要件どおり）
+        #     if row["submit_flag"] is None or row["submit_flag"] == 0:
+        #       status = "未提出"
+        #     elif row["submit_flag"] == 1 and row["check_flag"] == 0:
+        #       status = "未添削"
+        #     else:
+        #       status = "添削済み"
+        #     result.append(
+        #        StreamedStudent(
+        #            student_id=row["student_id"],
+        #            student_name=row["student_name"],
+        #            streamed_id=row["streamed_id"],
+        #            status=status
+        #        )
+        #     )
+            
+        #  return result
       finally:
         cursor.close()
         conn.close()
+
+    def update_submission_correction(self, submission_id: str, corrected_answer: str):
+    """
+    添削結果を保存し、check_flag を ON にする
+    """
+    sql = """
+        UPDATE submission
+        SET
+          answer_text = %s,
+          check_flag = 1,
+          submitted_at = NOW()
+        WHERE submission_id = %s
+    """
+
+    conn = self._get_connection()
+    try:
+      cursor = conn.cursor()
+      cursor.execute(sql, (corrected_answer, submission_id))
+      conn.commit()
+    finally:
+      cursor.close()
+      conn.close()

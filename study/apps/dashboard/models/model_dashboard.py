@@ -24,4 +24,6 @@ class Dashboard(db.Model):
 class StreamedStudent:
     student_id: int
     student_name: str
+    streamed_id: int
+    submission_id: int
     status: str

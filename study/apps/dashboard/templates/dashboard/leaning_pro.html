@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/l_pro.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <title>{{ student_id }}さんの学習状況 | 文脈工房</title>
+</head>
+<body>
+
+<header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">管理者</span>
+      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
+    </div>
+</header>
+
+<div class="holes-container">
+    <div class="hole"></div><div class="hole"></div>
+    <div class="hole"></div><div class="hole"></div>
+    <div class="hole"></div><div class="hole"></div>
+    <div class="hole"></div><div class="hole"></div>
+</div>
+
+<div class="tabs-container">
+    <a href="#" class="tab" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    <a href="#" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    <a href="{{ url_for('dashboard.index') }}" class="tab active" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
+</div>
+
+<div class="app-container fade-in">
+    <div class="content-wrapper">
+        <div class="name-button-contener">
+            <a href="javascript:history.back()"><i class="fas fa-arrow-left back-icon"></i></a>
+            <h1>{{ student_id }}さんの学習状況</h1>
+        </div>
+      
+        <div class="stats-section-wrapper">
+            <div class="stats-section">
+                <div class="chart-container">
+                    <div class="chart-wrapper">
+                        <svg viewBox="0 0 150 150">
+                            <circle cx="75" cy="75" r="70"></circle>
+                        </svg>
+                    </div>
+                    <div class="percentage-info">
+                        <div class="percentage">{{ percent }}%</div>
+                        <div class="percentage-label">完了率</div>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">全ステージ数</div>
+                        <div class="stat-value">{{ stats.total_count }}個</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">完了ステージ数</div>
+                        <div class="stat-value">{{ stats.completed_count }}個</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">未完了ステージ数</div>
+                        <div class="stat-value">{{ stats.total_count - stats.completed_count }}個</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-section">
+            <div class="tabs">
+                <button class="tab2 active" onclick="switchTab(event, 'essay')">小論文</button>
+                <button class="tab2" onclick="switchTab(event, 'report')">レポート</button>
+                <button class="tab2" onclick="switchTab(event, 'business')">ビジネス文章</button>
+                <button class="tab2" onclick="switchTab(event, 'training')">表現トレーニング</button>
+            </div>
+
+            <div id="essay" class="tab-content active">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ステージ</th>
+                            <th>フェーズ</th>
+                            <th>学習内容</th>
+                            <th>進捗</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, content in master_data.items() %}
+                            {% if content.category == 'essay' %}
+                                <tr>
+                                    <td class="number"></td>
+                                    <td>{{ content.steps[0].phase }}</td>
+                                    <td>{{ content.title }}</td>
+                                    <td>
+                                        {% if key in completed_keys %}
+                                            <span>完了</span>
+                                        {% else %}
+                                            <span>未学習</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="report" class="tab-content">
+                <p style="padding: 20px; text-align: center;">レポートの課題データは準備中です。</p>
+            </div>
+            <div id="business" class="tab-content">
+                <p style="padding: 20px; text-align: center;">ビジネス文章の課題データは準備中です。</p>
+            </div>
+            <div id="training" class="tab-content">
+                <p style="padding: 20px; text-align: center;">表現トレーニングの課題データは準備中です。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('dashboard.static', filename='js/l_pro.js') }}"></script> 
+<script src="{{ url_for('static', filename='js/header.js') }}"></script> 
+</body>
+</html>

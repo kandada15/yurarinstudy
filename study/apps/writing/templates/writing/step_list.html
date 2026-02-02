@@ -2,37 +2,28 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>{{ data.name }} - ステージ選択 - 文脈工房</title>
-    
-    {# CSSの読み込み #}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
     <link rel="stylesheet" href="{{ url_for('writing.static', filename='css/step_list.css') }}">
-</head>
-<body>
+    <title>{{ data.name }} - 文脈工房</title>
+    </head>
+    <body class="fade-in">
 
-    {# ヘッダー部分 #}
+    {# ヘッダー #}
     <header class="top-header">
         <div class="logo-section">
-            <span class="app-name">文脈工房</span>
+        <div class="logo-img">文</div>
+        <span class="app-name">文脈工房</span>
         </div>
         <div class="user-section">
-            <span class="user-badge">受講者 さん</span>
-            <button class="logout-btn" onclick="location.href='/auth/logout'">ログアウト</button>
+        <span class="user-badge">受講者</span>
+        <button class="logout-btn" onclick="location.href='/auth/logout'">ログアウト</button>
         </div>
     </header>
 
     {# 左側の穴 #}
     <div class="holes-container">
-        <div class="hole"></div>
-        <div class="hole"></div>
-        <div class="hole"></div>
-        <div class="hole"></div>
-        <div class="hole"></div>
-        <div class="hole"></div>
-        <div class="hole"></div>
-        <div class="hole"></div>
-        <div class="hole"></div>
-        <div class="hole"></div>
+        {% for i in range(10) %}<div class="hole"></div>{% endfor %}
     </div>
 
     {# 右側のタブ #}
@@ -42,36 +33,45 @@
         <a href="#" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
     </div>
 
-    {# メインコンテンツ #}
-    <main class="main-content">
+    {# 原稿用紙コンテナ #}
+    <div class="app-container">
+        <div class="content-wrapper">
         <h1 class="title"> ＜ <span id="category-name">{{ data.name }}</span> ＞ </h1>
+        
+        <label class="choice-message">学習したいステージを選択しスタートボタンを押してください。</label>
 
-        <label class="choice-message">学習したいステージを選択してください。</label>
-
+        {# JSが tbody を探して中身を入れるためのテーブル構造 #}
         <table class="stageTable" id="stageTable">
             <thead>
-                <tr>
-                    <th>ステージ</th>
-                    <th>状況</th> <th>フェーズ</th>
-                    <th>学習内容</th>
-                    <th></th>
-                </tr>
+            <tr>
+                <th>ステージ</th>
+                <th>フェーズ</th>
+                <th>学習内容</th>
+                <th></th>
+                <th></th>
+            </tr>
             </thead>
             <tbody>
-                {# ここにJSで中身が入る #}
+            {# ここに JS (createStageTable) が行を流し込みます #}
             </tbody>
         </table>
 
-        <button type="button" class="btn-primary" onclick="location.href='{{ url_for('writing.index') }}'">
+        {# JS側の goWriting() 関数を呼び出すボタン #}
+        <button type="button" class="btn-primary" onclick="goWriting()">
             ライティング学習トップ
         </button>
-    </main>
+        </div>  
+    </div>
 
+    {# JSが必要とするグローバル変数 #}
     <script>
-    const currentCategoryId = "{{ category_id }}";
-    const completedStages = {{ completed_list | tojson }};
-    const learningData = {{ learning_data | tojson }};
-</script>
-<script src="{{ url_for('writing.static', filename='js/step_list.js') }}"></script>
+        const currentCategoryId = "{{ category_id }}";
+        const completedStages = {{ completed_list | tojson }};
+        const learningData = {{ learning_data | tojson }};
+    </script>
+
+    {# スクリプトの読み込み #}
+    <script src="{{ url_for('writing.static', filename='js/step_list.js') }}"></script> 
+    <script src="{{ url_for('static', filename='js/header.js') }}"></script> 
 </body>
 </html>

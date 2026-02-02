@@ -113,13 +113,13 @@ class DashboardDao:
 
     def get_group_name(self, group_id: int) -> str:
         """IDからグループ名を取得"""
-        sql = "SELECT group_name FROM `group` WHERE group_id = %s"
+        sql = "SELECT group_name FROM `group` WHERE group_id = %s" 
         conn = self._get_connection()
         try:
             cursor = conn.cursor(dictionary=True)
             cursor.execute(sql, (group_id,))
             result = cursor.fetchone()
-            return result["group_name"] if result else "不明なグループ"
+            return result['group_name'] if result else "不明なグループ"
         finally:
             cursor.close()
             conn.close()
@@ -147,27 +147,27 @@ class DashboardDao:
         """選択された受講生たちの所属グループを更新します"""
         # studentテーブルのgroup_idを書き換えるSQL
         sql = "UPDATE student SET group_id = %s WHERE student_id = %s"
-
+        
         conn = self._get_connection()
         try:
             cursor = conn.cursor()
             # 1人ずつ順番に更新
             for s_id in student_ids:
                 cursor.execute(sql, (group_id, s_id))
-            conn.commit()
+            conn.commit() 
             return True
         except Exception as e:
             print(f"Update Error: {e}")
-            conn.rollback()  # 失敗したら元に戻す
+            conn.rollback() # 失敗したら元に戻す
             return False
         finally:
             cursor.close()
             conn.close()
-
+    
     def remove_student_from_group(self, student_id):
         """受講生の所属グループを解除（NULLに更新）します"""
         sql = "UPDATE student SET group_id = NULL WHERE student_id = %s"
-
+        
         conn = self._get_connection()
         try:
             cursor = conn.cursor()
@@ -185,7 +185,7 @@ class DashboardDao:
     def update_group_name(self, group_id, group_name):
         """特定のグループIDの名前を更新します"""
         sql = "UPDATE `group` SET group_name = %s WHERE group_id = %s"
-
+        
         conn = self._get_connection()
         try:
             cursor = conn.cursor()
@@ -204,7 +204,7 @@ class DashboardDao:
         """新規グループを登録"""
         get_last_id_sql = "SELECT group_id FROM `group` ORDER BY group_id DESC LIMIT 1"
         insert_sql = "INSERT INTO `group` (group_id, group_name, created_by_admin_id) VALUES (%s, %s, %s)"
-
+        
         conn = self._get_connection()
         cursor = None
         try:
@@ -216,7 +216,7 @@ class DashboardDao:
             # 2. 登録実行
             cursor.execute(insert_sql, (new_id, group_name, admin_id))
             conn.commit()
-
+            
             return True, f"新規グループ(ID:{new_id})を作成しました"
 
         except Exception as e:

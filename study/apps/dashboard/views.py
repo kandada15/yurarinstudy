@@ -250,6 +250,7 @@ def streamed_list():
 
 @dashboard_bp.route("/streamed/student/<int:streamed_id>")
 def streamed_student_list(streamed_id):
+def streamed_student_list(streamed_id):
     admin_id = session.get('user_id')
     streamed = D_dao.find_streamed_name_by_id(streamed_id)
     keyword = request.args.get("keyword")

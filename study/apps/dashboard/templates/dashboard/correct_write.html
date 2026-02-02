@@ -1,63 +1,348 @@
 <!--添削書き込み-->
-<!--とりあえずのあとで大幅に機能調整-->
+<!--ｊｓにデータをおいて動作確認できるようにしてるんだけどそこのｊｓいじってデータベースからとってくるように改良求-->
+<!--一応ｊｓ統合バージョン作ってるけどよくわかんないからコメントアウトにしてるよろしくですです-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href=".css">
+  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/c_write.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
   <title>課題添削</title>
 </head>
 <body>
+<!--ここからbace.htmlから引っ張れる-->
+  <header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">管理者</span>
+      <!-- ログアウト -->
+      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
+    </div>
+  </header>
 
-<div class="container">
-    <!-- 入力画面 -->
-    <div id="inputScreen">
-      <h2>課題添削</h2>
+  <!-- 左側の穴 -->
+  <div class="holes-container">
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+  </div>
 
-      <!-- 課題入力フォーム -->
-      <div id="formtask" class="form hidden">
-        <!--課題タイトル-->
-        <div>
-          <label for="task_name">課題タイトル</label>
-          <p></p>
+  <!-- 右側のタブ -->
+  <div class="tabs-container">
+    <a href="{{ url_for('crud.user_manage') }}" class="tab active" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    <a href="{{ url_for('task.task_create_form') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    <a href="{{ url_for('dashboard.index') }}" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
+  </div>
+<!--ここまで-->
+
+  <div class="app-container">
+    <div class="content-wrapper">
+      <input type="hidden" name="streamed_id" value="{{ correction_student.streamed_id }}">
+
+      <!-- streamed_id は POST 用 -->
+      <input type="hidden" id="streamedId" value="{{ correction_student.streamed_id }}">
+
+      <!-- 入力画面 -->
+      <div id="inputScreen">
+        <!-- ヘッダー部分 -->
+        <div class="header-section">
+          <div class="task-title" id="taskTitle">{{ correction_student.streamed_name }}</div>
+          <div class="student-info">
+            回答者名: <span class="student-name" id="studentName">{{ correction_student.student_name }}</span>
+          </div>
+        </div><br>
+
+        <!-- 問題文アコーディオン -->
+        <div class="question-accordion">
+          <div class="question-header" onclick="toggleQuestion()">
+            <span class="question-header-text">📝 問題文を表示</span>
+            <span class="toggle-icon" id="toggleIcon">▼</span>
+          </div>
+          <div class="question-content" id="questionContent">
+            <div class="question-text" id="questionText">{{ correction_student.streamed_text }}</div>
+          </div>
         </div>
-        <!--問題文-->
-        <!-- preタグで改行を保持 -->
-        <pre id="question"></pre>
-         <!--回答-->
-        <!-- preタグで改行を保持 -->
-        <label for="answer_text">添削<span style="color: red;">*</span></label>
-        <textarea id="answer_text" name="answer_text" rows="15" cols="50" placeholder="添削を入力..."></textarea>
-         <div id="task_text_error" class="error-message"></div>
-        <!--確認画面へ飛ぶ-->
-        <div class="button-group">
-          <button type="button" class="btn-primary" onclick="showConfirmScreen('answer')">確認画面へ</button>
-    </div>
-        
-        
-     
-    <!-- 確認画面 -->
-    <div id="confirmScreen" class="hidden">
-      <h2>添削内容の確認</h2>
-      <div id="confirmContent"></div>
-      <div class="button-group">
-        <button type="button" class="btn-back" onclick="backToInput()">戻る</button>
-        <button type="button" class="btn-primary" onclick="submitForm()">添削完了</button>
-      </div>
-    </div>
 
-    <!-- 完了画面 -->
-    <!--ボタンを押さなくても戻る-->
-    <!--というか通知にする-->
-    <div id="completeScreen" class="hidden">
-      <h2>課題添削完了</h2>
-      <p style="text-align: center; margin: 30px 0; font-size: 18px; color: #4CAF50;">
-        課題の添削が完了しました。
-      </p>
+        <!-- ツールバー -->
+        <div class="toolbar">
+          <div class="color-group">
+            <button class="toolbar-btn color-btn active" id="redBtn" title="赤文字">
+              <span>🔴</span>
+            </button>
+            <button class="toolbar-btn color-btn" id="blueBtn" title="青文字">
+              <span>🔵</span>
+            </button>
+          </div>
+          <div class="toolbar-separator"></div>
+          <button class="toolbar-btn" id="strikeBtn" title="取り消し線">
+            <span>S̶</span> 取消線
+          </button>
+          <button class="toolbar-btn" id="underlineBtn" title="下線">
+            <span style="text-decoration: underline;">U</span> 下線
+          </button>
+          <button class="toolbar-btn" id="clearBtn" title="装飾をクリア">
+            <span>✕</span> クリア
+          </button>
+          <div class="toolbar-separator"></div>
+          <button class="toolbar-btn" id="undoBtn" title="元に戻す">
+            ↶ 戻す
+          </button>
+          <button class="toolbar-btn" id="redoBtn" title="やり直し">
+            ↷ 進む
+          </button>
+        </div>
+        <!-- 添削エリア -->
+        <div class="answer-section">
+          <span class="answer-label">解答（添削欄）</span>
+          <div class="answer-content" contenteditable="true" id="answerContent">{{ correction_student.answer_text | safe }}</div>
+          <!--</div>-->
+
+          <div class="button-group">
+            <button class="btn-back" onclick="goback('{{ correction_student.streamed_id }}')">生徒一覧に戻る</button>
+            <button class="submit-btn" onclick="showConfirmation()">確認画面へ</button>
+          </div>
+        </div> 
+      </div>
+
+      <!-- 確認画面 -->
+      <div id="confirmScreen" class="hidden">
+        <h2 class="task-title">添削内容の確認</h2>
+        <div id="confirmContent"></div><!--ここ消す-->
+        <!--
+        <div class="confirm-section">
+          <div class="confirm-row">
+            <div class="confirm-label">課題タイトル</div>
+            <div class="confirm-value">${taskTitle?.textContent ?? ''}</div>
+          </div>
+
+          <div class="confirm-row">
+            <div class="confirm-label">解答者</div>
+            <div class="confirm-value">${studentName?.textContent ?? ''}</div>
+          </div>
+
+          <div class="confirm-row">
+            <div class="confirm-label">添削内容</div>
+            <div class="confirm-value confirm-answer">
+              ${answerContent.innerHTML}
+            </div>
+          </div>
+        </div>
+        -->
+        <div class="button-group">
+          <button type="button" class="btn-back" onclick="backToInput()">戻る</button>
+          <button type="button" class="btn-primary" onclick="submitForm()">添削完了</button>
+        </div>
+      </div>
+       <form
+         id="correctionForm"
+         method="POST"
+         action="{{ url_for('dashboard.submit_correction', submission_id=submission_id) }}"
+         data-back-url="{{ url_for('dashboard.streamed_student_list', streamed_id=streamed_id) }}"
+       >
+         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+         <input type="hidden" name="answer_text" id="answerTextInput">
+          <input type="hidden" name="streamed_id" value="{{ correction_student.streamed_id }}">
+       </form>
     </div>
   </div>
+
+  <!--
+  <script>
+    // formDataに入力値を保持
+    let formData = {};
+
+    // 初期化
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('taskTitle').textContent = dummyData.taskTitle;
+      document.getElementById('studentName').textContent = dummyData.studentName;
+      document.getElementById('questionText').textContent = dummyData.questionText;
+
+      const answerContent = document.getElementById('answerContent');
+
+      // 回答文をそのまま表示（制限なし）
+      answerContent.innerHTML = dummyData.answerText;
+
+      initToolbar(answerContent);
+    });
+
+
+    // ツールバー初期化
+    function initToolbar(editor) {
+      const redBtn = document.getElementById('redBtn');
+      const blueBtn = document.getElementById('blueBtn');
+      const strikeBtn = document.getElementById('strikeBtn');
+      const underlineBtn = document.getElementById('underlineBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const undoBtn = document.getElementById('undoBtn');
+      const redoBtn = document.getElementById('redoBtn');
+
+      // - 色 -
+      redBtn.onclick = () => applyColor('#d32f2f', redBtn, blueBtn, editor);
+      blueBtn.onclick = () => applyColor('#1976d2', blueBtn, redBtn, editor);
+
+      // - 装飾 -
+      underlineBtn.onclick = () => exec('underline', editor);
+      strikeBtn.onclick = () => exec('strikeThrough', editor);
+      clearBtn.onclick = () => exec('removeFormat', editor);
+
+      // -Undo / Redo -
+      undoBtn.onclick = () => exec('undo', editor);
+      redoBtn.onclick = () => exec('redo', editor);
+    }
+
+    // ================================
+    // 装飾処理
+    // ================================
+    function applyColor(color, onBtn, offBtn, editor) {
+      exec('foreColor', editor, color);
+      onBtn.classList.add('active');
+      offBtn.classList.remove('active');
+    }
+
+    function exec(command, editor, value = null) {
+      editor.focus();
+      document.execCommand(command, false, value);
+    }
+
+    function toggleQuestion() {
+      const content = document.getElementById('questionContent');
+      const icon = document.getElementById('toggleIcon');
+
+      if (!content) return;
+
+      // openクラスでトグル制御
+      const isOpen = content.classList.contains('open');
+      
+      if (isOpen) {
+        content.classList.remove('open');
+        icon.textContent = '▼';
+      } else {
+        content.classList.add('open');
+        icon.textContent = '▲';
+      }
+    }
+
+
+    function goback() {
+      window.location.href = 'task_stu_list.html';
+    }
+
+    function backToInput() {
+      const inputScreen = document.getElementById("inputScreen");
+      const confirmScreen = document.getElementById("confirmScreen");
+
+      if (!inputScreen || !confirmScreen) {
+        console.error("画面要素が見つかりません");
+        return;
+      }
+
+      // 確認画面を隠す
+      confirmScreen.classList.add("hidden");
+      confirmScreen.style.display = "none";
+
+      // 入力画面を表示
+      inputScreen.classList.remove("hidden");
+      inputScreen.style.display = "block";
+
+      // フェードイン
+      inputScreen.classList.add("fade-in");
+    }
+
+
+    function showConfirmation() {
+      const inputScreen = document.getElementById('inputScreen');
+      const confirmScreen = document.getElementById('confirmScreen');
+      const confirmContent = document.getElementById('confirmContent');
+      const answerContent = document.getElementById('answerContent');
+      const taskTitle = document.getElementById('taskTitle');
+      const studentName = document.getElementById('studentName');
+
+      // 確認画面のHTML生成（装飾込み）
+      confirmContent.innerHTML = `
+        <div class="confirm-section">
+          <div class="confirm-row">
+            <div class="confirm-label">課題タイトル</div>
+            <div class="confirm-value">${taskTitle?.textContent ?? ''}</div>
+          </div>
+
+          <div class="confirm-row">
+            <div class="confirm-label">解答者</div>
+            <div class="confirm-value">${studentName?.textContent ?? ''}</div>
+          </div>
+
+          <div class="confirm-row">
+            <div class="confirm-label">添削内容</div>
+            <div class="confirm-value confirm-answer">
+              ${answerContent.innerHTML}
+            </div>
+          </div>
+        </div>
+      `;
+
+      // 画面切り替え
+      inputScreen.classList.add('hidden');
+      confirmScreen.classList.remove('hidden');
+
+      // 確実に非表示
+      inputScreen.style.display = 'none';
+      confirmScreen.style.display = 'block';
+    }
+
+    function submitForm() {
+      const answerEl = document.getElementById("answerContent");
+
+      if (!answerEl) {
+        console.error("answerContent が見つかりません");
+        return;
+      }
+
+      const answerHtml = answerEl.innerHTML || "";
+      const answerText = answerHtml.trim();
+
+      console.log("送信データ:", {
+        answer: answerText
+      });
+
+      showToast("課題の添削が完了しました。");
+
+      setTimeout(() => {
+        window.location.href = "task_stu_list.html";
+      }, 2000);
+    }
+
+    // トースト通知
+    function showToast(message) {
+      let toast = document.createElement("div");
+      toast.className = "toast";
+      toast.textContent = message;
+
+      document.body.appendChild(toast);
+
+      // アニメーションで表示
+      setTimeout(() => {
+        toast.classList.add("show");
+      }, 10);
+
+      // 3秒後に削除
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 400);
+      }, 3000);
+    }
+  </script>
+  -->
+
 <!--Javascriptの読み込み（必ずこの位置）-->
-<script src=".js"></script> 
+<script src="{{ url_for('dashboard.static', filename='js/c_write.js') }}"></script> 
+<script src="{{ url_for('dashboard.static', filename='js/header.js') }}"></script>
 </body>
 </html>
