@@ -49,7 +49,8 @@ def task_create_confirm():
     "streamed_name": request.form.get("streamed_name"), 
     "streamed_text": request.form.get("streamed_text"),
     "streamed_limit": request.form.get("streamed_limit"),
-    "group_id": request.form.get("group_id")
+    "group_id": request.form.get("group_id"),
+    "group_name": request.form.get("group_name")
   }
 
   # バリデーション、エラーメッセージを出力する

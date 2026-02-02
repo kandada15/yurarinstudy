@@ -1,0 +1,440 @@
+
+/* ============================================ */
+/* 1) Reset */
+/* ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Meiryo', sans-serif;
+  background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc8 100%);
+  max-height: 100vh;
+  padding: 20px;
+}
+
+/* ============================================ */
+/* 2) Base (基本・汎用) */
+/* ============================================ */
+/* 表示しない */
+.hidden {
+  display: none;
+}
+
+/* ============================================ */
+/* 3) Layout（ページの骨組み） */
+/* ============================================ */
+/* 原稿用紙風の背景 */
+.app-container {
+  position: relative;
+  max-width: 1100px;
+  /* ヘッダー引いた分の高さ指定 */
+  height: 600px;
+  margin: 0 auto;
+  margin-top: 60px;
+  background: #fffef9;
+  /* 40pxの方眼模様 */
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px);
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(139, 115, 85, 0.2);
+  overflow: hidden;
+}
+
+/* コンテンツラッパー */
+.content-wrapper {
+  height: 600px;
+  max-width: 1100px;
+  background: rgba(255, 254, 249, 0.95);
+  padding: 30px;
+  position: relative;
+  overflow-y: scroll;          /* 縦方向にスクロール */
+  -ms-overflow-style: none;    /* Edge / IE */
+  scrollbar-width: none;       /* Firefox */
+}
+/* Chrome / Safari */
+.content-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================================ */
+/* 4) Components（UIコンポーネント） */
+/* ============================================ */
+
+/* ---- ヘッダー（課題タイトル/受講者情報） ---- */
+.header-section {
+  padding: 25px 30px;
+  background: #faf8f4;
+  border-bottom: 2px solid #8b7355;
+}
+
+.task-title {
+  font-size: 22px;
+  color: #5a4a3a;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.student-info {
+  font-size: 14px;
+  color: #8b7d6b;
+}
+
+.student-name {
+  font-weight: 500;
+  color: #4a4035;
+}
+
+/* ---- 問題文アコーディオン ---- */
+.question-accordion {
+  background: #f5f0e8;
+  border-bottom: 1px solid #e0d5c4;
+}
+
+.question-header {
+  padding: 15px 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.2s;
+}
+
+.question-header:hover {
+  background: #ede7dc;
+}
+
+.question-header-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: #5a4a3a;
+}
+
+.toggle-icon {
+  font-size: 18px;
+  color: #8b7d6b;
+  transition: transform 0.3s;
+}
+
+.toggle-icon.open {
+  transform: rotate(180deg);
+}
+
+.question-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  display: block;
+}
+
+.question-content.open {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.question-text {
+  margin-top: 10px;
+  padding: 20px 30px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #4a4035;
+  margin: 0 15px 15px 15px;
+  border-radius: 6px;
+}
+
+/* ---- ツールバー ---- */
+.toolbar {
+  padding: 15px 30px;
+  background: #f5f0e8;
+  border-bottom: 1px solid #e0d5c4;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.color-group {
+  display: flex;
+  gap: 8px;
+  padding: 4px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #d0c4b0;
+}
+
+.toolbar-btn {
+  padding: 8px 16px;
+  border: 1px solid #c9b896;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #4a4035;
+  transition: all 0.2s;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toolbar-btn:hover {
+  background: #f5f0e8;
+  border-color: #a89577;
+}
+
+.toolbar-btn.active {
+  background: #8b7d6b;
+  color: white;
+  border-color: #8b7d6b;
+}
+
+.color-btn.active {
+  background: #8b7d6b;
+  color: white;
+  border-color: #8b7d6b;
+  transform: scale(1.05);
+}
+
+.toolbar-separator {
+  width: 1px;
+  height: 24px;
+  background: #d0c4b0;
+  margin: 0 4px;
+}
+
+/* ---- 添削エリア ---- */
+.answer-section {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+  background: white;
+}
+
+.answer-label {
+  font-size: 14px;
+  color: #8b7d6b;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.answer-content {
+  min-height: 300px;
+  max-height: 400px;
+  padding: 25px;
+  border: 1px solid #e0d5c4;
+  border-radius: 6px;
+  background: #fffef9;
+  font-size: 16px;
+  line-height: 2;
+  color: #4a4035;
+  outline: none;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  background-attachment: local;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 31px,
+      #f0ebe0 31px,
+      #f0ebe0 32px
+    );
+}
+
+.answer-content .original-text {
+  color: #4a4035;
+}
+
+.answer-content:focus {
+  border-color: #a89577;
+  box-shadow: 0 0 0 3px rgba(169, 149, 119, 0.1);
+}
+
+/* ---- ボタン群 ---- */
+.button-group {
+  display: flex;
+  gap: 150px;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.submit-btn {
+  padding: 14px 60px;
+  background: #8b7d6b;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.submit-btn:hover {
+  background: #6d6152;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-back {
+  background-color: #e8dcc8;
+  color: #5d4e37;
+  border: 1px solid #d4c5b0;
+  border-radius: 25px;
+  padding: 14px 40px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+}
+
+.btn-back:hover {
+  background-color: #d4c5b0;
+}
+
+.btn-primary {
+  background-color: #ec6262;
+  color: #ffffff;
+  border: none;
+  border-radius: 25px;
+  padding: 14px 40px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: center;
+  min-width: 200px;
+}
+
+.btn-primary:hover {
+  background-color: #e63535;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* ---- スクロールバー（各エリア） ---- */
+.answer-section::-webkit-scrollbar,
+.question-content::-webkit-scrollbar,
+.confirm-answer::-webkit-scrollbar,
+.answer-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.answer-section::-webkit-scrollbar-track,
+.question-content::-webkit-scrollbar-track,
+.confirm-answer::-webkit-scrollbar-track,
+.answer-content::-webkit-scrollbar-track {
+  background: #f5f0e8;
+}
+
+.answer-section::-webkit-scrollbar-thumb,
+.question-content::-webkit-scrollbar-thumb,
+.confirm-answer::-webkit-scrollbar-thumb,
+.answer-content::-webkit-scrollbar-thumb {
+  background: #c9b896;
+  border-radius: 4px;
+}
+
+.answer-section::-webkit-scrollbar-thumb:hover,
+.question-content::-webkit-scrollbar-thumb:hover,
+.confirm-answer::-webkit-scrollbar-thumb:hover,
+.answer-content::-webkit-scrollbar-thumb:hover {
+  background: #a89577;
+}
+
+/* ---- 確認画面 ---- */
+.confirm-section {
+  background-color: #faf8f5;
+  border-radius: 8px;
+  padding: 30px;
+  margin: 20px 0;
+  height: 400px;
+}
+
+.confirm-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 20px;
+  padding: 15px 0;
+  border-bottom: 1px solid #f0ebe5;
+}
+
+.confirm-row:last-child {
+  border-bottom: none;
+}
+
+.confirm-label {
+  color: #8b7355;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.confirm-value {
+  color: #333;
+  font-size: 15px;
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.confirm-answer {
+  min-height: 100px;
+  max-height: 240px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ---- 付箋風トースト通知 ---- */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #fff9c4;              /* 付箋カラー */
+  border-left: 6px solid #ffcc33;   /* アクセント */
+  padding: 18px 22px;
+  min-width: 240px;
+  font-size: 16px;
+  color: #6b5434;
+  border-radius: 4px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all .4s ease;
+  z-index: 9999;
+}
+
+/* 表示状態 */
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================ */
+/* 5) Animations（アニメーション定義） */
+/* ============================================ */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(-20px); }
+}

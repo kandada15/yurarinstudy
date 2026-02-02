@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, session, redirect, url_for, request
 from apps.task.dao.streamed_dao import StreamedDao
-from apps.task.dao.submission_dao import SubmissionDao2
+from apps.task.dao.submission_dao import SubmissionDao, SubmissionDao2
 from apps.crud.dao.group_dao import GroupDao  # 修正したDaoをインポート
 from apps.dashboard.dao.dao_dashboard import Dashboard_DAO
 from apps.dashboard.dao.dashboard_dao import DashboardDao
@@ -104,8 +104,7 @@ def streamed_list():
     return render_template("dashboard/deli_task_list.html", tasks=tasks, has_next=has_next, has_prev=has_prev)
 
 @dashboard_bp.route("/streamed/student/<int:streamed_id>")
-def stedent_list(streamed_id):
-
+def student_list(streamed_id):
     admin_id = session.get('user_id')
     streamed = D_dao.find_streamed_name_by_id(streamed_id)
     keyword = request.args.get("keyword")
@@ -113,6 +112,20 @@ def stedent_list(streamed_id):
     streamed_student = D_dao.find_students_status_by_streamed_id(streamed_id, admin_id, keyword)
     return render_template("dashboard/task_stu_list.html", streamed_name=streamed["streamed_name"], streamed_student=streamed_student)
 
-@dashboard_bp.route("/streamed/student/<int:streamed_id>/correction")
-def task_correction():
-    return render_template("")
+@dashboard_bp.route("/streamed/student/<int:submission_id>/correction", methods=["GET"])
+def task_correction(submission_id):
+    admin_id = session.get('user_id')
+    correction_student = D_dao.find_submission_by_streamed_id(submission_id, admin_id)
+    return render_template("dashboard/correct_write.html", correction_student=correction_student, submission_id=submission_id, streamed_id=correction_student["streamed_id"])
+
+@dashboard_bp.route("/streamed/student/<int:submission_id>/correction", methods=["POST"])
+def submit_correction(submission_id):
+    corrected_answer = request.form.get("answer_text")
+    streamed_id = request.form.get("streamed_id")
+
+    D_dao.update_submission_correction(submission_id, corrected_answer)
+    return ("", 204)
+    # return redirect(url_for('dashboard.student_list', streamed_id=streamed_id))
+
+# @dashboard_bp.route("/streamed/student/return")
+# def correction_return():
