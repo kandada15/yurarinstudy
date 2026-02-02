@@ -22,6 +22,17 @@ async function createStageTable() {
         tdNo.textContent = index + 1;
         tr.appendChild(tdNo);
 
+        
+        // 3. フェーズ名
+        const tdPhase = document.createElement("td");
+        tdPhase.textContent = firstStep.phase || "未設定";
+        tr.appendChild(tdPhase);
+
+        // 4. 学習内容
+        const tdContent = document.createElement("td");
+        tdContent.textContent = firstStep.title || "未設定";
+        tr.appendChild(tdContent);
+
         // 2. ★状況セル（ハンコを表示する場所）
         const tdCheck = document.createElement("td");
         tdCheck.className = "check-cell"; // CSSの td.check-cell を適用
@@ -34,15 +45,6 @@ async function createStageTable() {
         }
         tr.appendChild(tdCheck);
 
-        // 3. フェーズ名
-        const tdPhase = document.createElement("td");
-        tdPhase.textContent = firstStep.phase || "未設定";
-        tr.appendChild(tdPhase);
-
-        // 4. 学習内容
-        const tdContent = document.createElement("td");
-        tdContent.textContent = firstStep.title || "未設定";
-        tr.appendChild(tdContent);
 
         // 5. スタートボタン
         const tdLink = document.createElement("td");
