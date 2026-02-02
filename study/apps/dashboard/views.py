@@ -228,7 +228,7 @@ def streamed_list():
     return render_template("dashboard/deli_task_list.html", tasks=tasks, has_next=has_next, has_prev=has_prev)
 
 @dashboard_bp.route("/streamed/student/<int:streamed_id>")
-def student_list(streamed_id):
+def streamed_student_list(streamed_id):
     admin_id = session.get('user_id')
     streamed = D_dao.find_streamed_name_by_id(streamed_id)
     keyword = request.args.get("keyword")

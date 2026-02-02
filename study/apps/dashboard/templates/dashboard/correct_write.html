@@ -146,7 +146,7 @@
          id="correctionForm"
          method="POST"
          action="{{ url_for('dashboard.submit_correction', submission_id=submission_id) }}"
-         data-back-url="{{ url_for('dashboard.student_list', streamed_id=streamed_id) }}"
+         data-back-url="{{ url_for('dashboard.streamed_student_list', streamed_id=streamed_id) }}"
        >
          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
          <input type="hidden" name="answer_text" id="answerTextInput">
