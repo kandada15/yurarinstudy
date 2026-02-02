@@ -121,9 +121,9 @@ class SubmissionDao:
 
         sql = """
             INSERT INTO submission
-            (streamed_id, student_id, answer_text, submit_flag)
+            (streamed_id, student_id, answer_text, submit_flag, check_flag, return_flag)
             VALUES
-            (%s, %s, %s, 1)
+            (%s, %s, %s, 1, 0, 0)
         """
 
         conn = self._get_connection()

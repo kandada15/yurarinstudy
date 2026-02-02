@@ -78,52 +78,27 @@
                 <tr>
                   <td>{{ sd_s.student_id }}</td>
                   <td>{{ sd_s.student_name }}</td>
-                  <td><span class="status-badge status-uncorrected">{{ sd_s.status }}</span></td>
-                  <td><a href="{{ url_for('dashboard.') }}"><button  type="button" class="start-btn">添削開始</button></a></td>
+                  <td><span class="status-badge{% if sd_s.status == '未提出' %}
+                                                 status-unsubmitted
+                                               {% elif sd_s.status == '未添削' %}
+                                                 status-uncorrected
+                                               {% elif sd_s.status == '添削済み' %}
+                                                 status-completed
+                                               {% endif %}
+                      ">
+                          {{ sd_s.status }}
+                      </span>
+                  </td>
+                  <td>
+                    {% if sd_s.submission_id %}
+                      <a href="{{ url_for('dashboard.task_correction',
+                        submission_id=sd_s.submission_id) }}">
+                        <button type="button" class="start-btn">添削開始</button>
+                      </a>
+                    {% endif %}
+                  </td>
                 </tr>
               {% endfor %}
-              <!-- <tr>
-                <td>STU11111</td>
-                <td>小鳥遊　うらら</td>
-                <td><span class="status-badge status-uncorrected">未添削</span></td>
-                <td><button class="start-btn">添削開始</button></td>
-              </tr>
-              <tr>
-                <td>STU12345</td>
-                <td>西園寺　愛桜</td>
-                <td><span class="status-badge status-completed">添削済み</span></td>
-                <td><button class="start-btn">添削開始</button></td>
-              </tr><tr>
-                <td>STU12345</td>
-                <td>雷堂　颯真</td>
-                <td><span class="status-badge status-uncorrected">未添削</span></td>
-                <td><button class="start-btn">添削開始</button></td>
-              </tr><tr>
-                <td>STU12345</td>
-                <td>星野　湊</td>
-                <td><span class="status-badge status-unsubmitted">未提出</span></td>
-                <td><button class="start-btn">添削開始</button></td>
-              </tr><tr>
-                <td>STU12345</td>
-                <td>風間　ゆな</td>
-                <td><span class="status-badge status-uncorrected">未添削</span></td>
-                <td><button class="start-btn">添削開始</button></td>
-              </tr><tr>
-                <td>STU12345</td>
-                <td>月森　莉亜</td>
-                <td><span class="status-badge status-uncorrected">未添削</span></td>
-                <td><button class="start-btn">添削開始</button></td>
-              </tr><tr>
-                <td>STU12345</td>
-                <td>水無月　陽翔</td>
-                <td><span class="status-badge status-uncorrected">未添削</span></td>
-                <td><button class="start-btn">添削開始</button></td>
-              </tr><tr>
-                <td>STU12345</td>
-                <td>花岡　光</td>
-                <td><span class="status-badge status-uncorrected">未添削</span></td>
-                <td><button class="start-btn">添削開始</button></td>
-              </tr> -->
             </tbody>
           </table>
         </div>
@@ -132,7 +107,7 @@
   </div>
   <script>
     function goreturn() {
-      window.location.href = '/dashboard/streamed';
+      window.location.href = `dashboard/`;
     }
 
   </script>
