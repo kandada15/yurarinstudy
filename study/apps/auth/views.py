@@ -48,9 +48,7 @@ def login():
             if user_type == 'admin':
                 return redirect(url_for('dashboard.index'))
             else:
-                return redirect(url_for('writing.index'))            
-            
-            return redirect(url_for('writing.index'))
+                return redirect(url_for('writing.index'))
         else:
             error = 'ユーザ名またはパスワードに誤りがあります'
     return render_template('login.html', error=error)

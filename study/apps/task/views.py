@@ -124,7 +124,7 @@ def student_task_list():
     has_next = len(all_tasks) > offset + per_page
     has_prev = page > 1
 
-    # 表示
+    # 課題一覧画面表示
     return render_template(
         "task_stu/task_list.html",
         tasks=tasks,
@@ -140,7 +140,7 @@ def student_task_list():
 def task_submit(streamed_id):
     task = streamed_dao.find_by_id(streamed_id)
 
-    # 入力画面表示
+    # 課題入力画面表示
     return render_template("task_stu/task_inq.html", task=task, mode="submit")
 
 
