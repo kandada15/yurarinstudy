@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/l_pro_stu_list.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <title>{{ group_name }} - 受講者一覧</title>
+</head>
+<body>
+  <header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">管理者</span>
+      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="holes-container">
+    {% for i in range(8) %}<div class="hole"></div>{% endfor %}
+  </div>
+
+  <div class="tabs-container">
+    <a href="#" class="tab" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    <a href="#" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    <a href="{{ url_for('dashboard.index') }}" class="tab active" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
+  </div>
+
+  <div class="app-container">
+    <div class="content-wrapper">
+      <div class="name-button-contener">
+        <a href="{{ url_for('dashboard.progress_top') }}"><i class="fas fa-arrow-left back-icon"></i></a>
+        <h1 class="group_name" id="modal-group-name">{{ group_name }}</h1>
+      </div>
+      
+      <form id="searchbox" onsubmit="event.preventDefault(); searchStudent();">
+        <input id="search" name="search" type="text" size="40" 
+        placeholder="検索したいユーザのIDまたは氏名を入力..." >
+        <button type="submit">検索</button>
+      </form>
+          
+      <p>受講者一覧</p>
+          
+      <div class="table-group">
+        <table border="1">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>氏名</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in students %}
+            <tr>
+              <td>{{ s.student_id }}</td>
+              <td>{{ s.student_name }}</td>
+              <td>
+                <div class="button-center">
+                  <button type="button" class="btn-dis" 
+                          onclick="goleaningpro('{{ s.student_id }}', '{{ s.student_name }}')">
+                    学習状況
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="3" style="text-align: center;">受講者が登録されていません</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('dashboard.static', filename='js/l_pro_stu_list.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/header.js') }}"></script>
+</body>
+</html>

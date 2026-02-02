@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/g_list.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <title>グループ一覧 - 文脈工房</title>
+</head>
+<body>
+  <header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">管理者</span>
+      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="holes-container">
+    {% for i in range(8) %}<div class="hole"></div>{% endfor %}
+  </div>
+
+  <div class="tabs-container">
+    <a href="#" class="tab active" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    <a href="#" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    <a href="{{ url_for('dashboard.index') }}" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
+  </div>
+
+  <div class="app-container">
+    <div class="content-wrapper">
+      <h1>グループ一覧</h1>
+      <div class="group-create-area">
+        <button type="button" class="btn-create" onclick="location.href='{{ url_for('dashboard.group_create') }}'">
+        グループ新規作成
+        </button>
+      </div>
+
+      <div class="groups-container">
+        {% for g in groups %}
+        <div class="grou_content" onclick="openGroupModal('{{ g.group_id }}', '{{ g.group_name }}', {{ g.member_count }})">
+          <div class="group-icon">📁</div>
+          <div class="group-info">
+            <p class="group-title">{{ g.group_name }}</p>
+          </div>
+          <div class="group-members">
+            <span>メンバー：{{ g.member_count }}人</span>
+          </div>
+          <div class="group-button">
+            <button type="button" class="btn-menmber" onclick="event.stopPropagation(); openGroupModal('{{ g.group_id }}', '{{ g.group_name }}', {{ g.member_count }})">メンバー管理</button>
+            <button type="button" class="btn-menmber" onclick="event.stopPropagation(); openGroupeditModal('{{ g.group_id }}', '{{ g.group_name }}', {{ g.member_count }})">グループ編集</button>
+          </div>
+        </div>
+        {% else %}
+        <p>登録されているグループがありません。</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div id="group_stu_list" class="modal">
+    <div class="modal-content">
+      <div id="member-list-view" class="modal-view active">
+        <h1 class="group_name" id="modal-group-name">グループ名</h1>
+        <div class="right">
+          <button type="button" class="btn-add" onclick="showMemberAdd()">+ <i class="fas fa-user"></i> メンバー追加</button>
+        </div>
+        <p class="memberlist">受講者一覧</p>
+        <div class="table-scroll-container">
+          <table class="member-list-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>氏名</th>
+                <th>入学年度</th>
+                <th>削除</th>
+              </tr>
+            </thead>
+            <tbody id="member-list-body">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="member-add-view" class="modal-view">
+        <h1>メンバー追加</h1>
+        <div id="selectedMembersArea" class="selected-members-container" style="display: none;">
+          <p class="selected-label">選択中:</p>
+          <div id="selectedMembersList" class="selected-members-list"></div>
+        </div>
+
+        <form id="searchbox" onsubmit="event.preventDefault(); searchStudent();">
+          <input id="search" name="search" type="text" placeholder="氏名又はIDで検索..." required>
+          <button type="submit">検索</button>
+        </form>
+
+        <div id="studentsListAll">
+          <h3>全受講者</h3>
+          <div class="table-scroll-container-add">
+            <table>
+              <thead>
+                <tr>
+                  <th class="checkbox-col">
+                    <label class="checkbox-container">
+                      <input type="checkbox" onclick="toggleAllCheckbox(this)">
+                      <span class="checkmark"></span>
+                    </label>
+                  </th>
+                  <th>ID</th>
+                  <th>氏名</th>
+                  <th>入学年度</th>
+                </tr>
+              </thead>
+              <tbody id="all-students-body">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="studentsListResult" style="display: none;">
+          <button type="button" class="btn-back" onclick="resetStudentList()">一覧を表示</button>
+          <h3>検索結果</h3>
+          <div class="table-scroll-container-add">
+            <table>
+              <thead>
+                <tr>
+                  <th class="checkbox-col">
+                    <label class="checkbox-container">
+                      <input type="checkbox" onclick="toggleAllCheckbox(this)">
+                      <span class="checkmark"></span>
+                    </label>
+                  </th>
+                  <th>ID</th>
+                  <th>氏名</th>
+                  <th>入学年度</th>
+                </tr>
+              </thead>
+              <tbody id="search-results-body">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="list-button" style="margin-top: 30px;">
+          <button type="button" class="btn-back" onclick="showMemberList()">一覧に戻る</button>
+          <button type="button" class="btn-back" onclick="addSelectedMembers()">選択したメンバーを追加</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="deleteConfirmModal" class="modal-delete" style="display: none;">
+    <div class="modal-content confirm-modal">
+      <p id="deleteConfirmText">〇〇さんを〇〇グループから削除しますか？</p>
+      <p>後から追加できます。</p>
+      <div class="button-group">
+        <button type="button" class="btn-cancel" onclick="closeDeleteModal()">キャンセル</button>
+        <button type="button" class="btn-danger" onclick="confirmDelete()">削除</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="group_edit_view" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div id="group-edit-view-inner" class="modal-view active">
+        <h1 class="group_name" id="modal-edit-group-name">グループ名</h1>
+        <h3>グループ詳細</h3>
+        <table>
+          <tbody>
+            <tr>
+              <th class="th1">グループID</th>
+              <td>
+                <span id="groupIdText">---</span>
+              </td>
+            </tr>
+            <tr>
+              <th class="th1">グループ名</th>
+              <td>
+                <span class="view-mode" id="groupNameText">---</span>
+                <input type="text" class="edit-mode" id="groupNameInput" value="" style="display:none;">
+              </td>
+            </tr>
+            <tr>
+              <th class="th1">メンバー数</th>
+              <td id="modal-edit-member-count">0</td>
+            </tr>
+            <tr>
+              <th class="th1">管理者名</th>
+              <td>{{ session.get('user_name', '管理者') }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="button-group" style="margin-top: 20px;">
+          <button type="button" id="editBtn" class="btn-back" onclick="enableEdit()">編集</button>
+          <button type="button" id="cancelBtn" class="btn-back" style="display:none;" onclick="cancelEdit()">キャンセル</button>
+          <button type="button" id="saveBtn" class="btn-danger" style="display:none;" onclick="saveEdit()">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% include 'dashboard/modals_group.html' ignore missing %}
+
+  <script src="{{ url_for('static', filename='js/header.js') }}"></script> 
+  <script src="{{ url_for('dashboard.static', filename='js/g_list.js') }}"></script> 
+</body>
+</html>
