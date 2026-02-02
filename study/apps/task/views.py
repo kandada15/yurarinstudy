@@ -14,12 +14,13 @@ task_bp = Blueprint(
     static_folder="static",
 )
 
-# DAO-インスタンス化
+# DAOの作成
 streamed_dao = StreamedDao()
 submission_dao = SubmissionDao()
 group_dao = GroupDao()
 student_dao = StudentDao()
 
+# ルーティングの作成
 """admin用"""
 # 課題作成画面
 @task_bp.route("/create", methods=["GET"])
@@ -27,7 +28,7 @@ def task_create_form():
 
     # 配信先選択用にグループ一覧を取得
     groups = group_dao.find_all()
-    
+
     # 課題作成画面表示
     return render_template(
         "task_admin/task_create.html", groups=groups, stream_data={}, mode="input"
@@ -58,7 +59,7 @@ def task_create_confirm():
         errors["streamed_limit"] = "提出期限は必須です"
     if not stream_data["group_id"]:
         errors["group_id"] = "配信先グループは必須です"
-        
+
     # エラーがあれば入力画面に戻す
     if errors:
         return render_template(
@@ -69,19 +70,23 @@ def task_create_confirm():
             mode="input",
         )
 
-    # 確認画面で表示する配信先グループ名取得
+    # group_id に対応するgoup_name取得
     group = next(
         (g for g in groups if str(g.group_id) == stream_data["group_id"]), None
     )
-
+    if group:
+        stream_data["group_name"] = group.group_name
+    else:
+        stream_data["group_name"] = "不明なグループ"
+    
     # 確認画面表示
     return render_template(
         "task_admin/task_create.html",
         stream_data=stream_data,
-        group_name=group.group_name,
         groups=groups,
         mode="confirm",
     )
+
 
 # 課題配信完了画面
 @task_bp.route("/create/done", methods=["POST"])
@@ -99,6 +104,7 @@ def task_create_complete():
     return render_template(
         "task_admin/task_create.html", streamed_id=streamed_id, mode="complete"
     )
+
 
 """student用"""
 # 課題一覧画面
@@ -128,13 +134,15 @@ def student_task_list():
         has_prev=has_prev,
     )
 
+
 # 課題入力画面
 @task_bp.route("/student/tasks/<int:streamed_id>/inq", methods=["GET"])
 def task_submit(streamed_id):
     task = streamed_dao.find_by_id(streamed_id)
-    
+
     # 入力画面表示
     return render_template("task_stu/task_inq.html", task=task, mode="submit")
+
 
 # 入力内容保存
 @task_bp.route("/student/tasks/<int:streamed_id>/submit", methods=["POST"])
@@ -147,6 +155,6 @@ def task_submit_post(streamed_id):
     submission_dao.insert(
         streamed_id=streamed_id, student_id=student_id, answer_text=answer_text
     )
-    
+
     # 課題一覧画面へリダイレクト
     return redirect(url_for("task.student_task_list"))

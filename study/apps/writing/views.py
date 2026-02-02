@@ -22,7 +22,7 @@ writing_bp = Blueprint(
     static_folder="static",
 )
 
-# DAO作成
+# DAOの作成
 w_dao = WritingDao()
 
 # JSON読み込み(ステップ一覧の内容を外部JSONで管理)
@@ -41,6 +41,7 @@ def load_learning_data():
     except Exception:
         return {}
 
+# ルーティングの作成
 # トップページ
 @writing_bp.route("/")
 def index():
