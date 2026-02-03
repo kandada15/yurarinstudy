@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
-  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/l_pro.css') }}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <title>{{ student_id }}さんの学習状況 | 文脈工房</title>
-</head>
-<body>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/l_pro.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>{{ student_id }}さんの学習状況 | 文脈工房</title>
+    </head>
+    <body>
 
-<header class="top-header">
-    <div class="logo-section">
-      <div class="logo-img">文</div>
-      <span class="app-name">文脈工房</span>
-    </div>
-    <div class="user-section">
-      <span class="user-badge">管理者</span>
-      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
+    <header class="top-header">
+        <div class="logo-section">
+        <div class="logo-img">文</div>
+        <span class="app-name">文脈工房</span>
+        </div>
+        <div class="user-section">
+        <span class="user-badge">管理者</span>
+        <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
     </div>
 </header>
 
@@ -40,7 +40,7 @@
             <a href="javascript:history.back()"><i class="fas fa-arrow-left back-icon"></i></a>
             <h1>{{ student_id }}さんの学習状況</h1>
         </div>
-      
+    
         <div class="stats-section-wrapper">
             <div class="stats-section">
                 <div class="chart-container">
