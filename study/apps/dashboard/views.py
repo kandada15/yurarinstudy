@@ -239,6 +239,3 @@ def submit_correction(submission_id):
 
     D_dao.update_submission_correction(submission_id, corrected_answer)
     return ("", 204)
-
-# @dashboard_bp.route("/streamed/student/return")
-# def correction_return():

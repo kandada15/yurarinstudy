@@ -42,9 +42,9 @@ def login():
                 session['user_id'] = user.student_id
             
             session['user_type'] = user_type
-                # 管理者の場合はダッシュボードへ
             if user_type == 'admin':
                 session['user_name'] = user.admin_name
+                # 管理者の場合はダッシュボードへ
                 return redirect(url_for('dashboard.index'))
             else:
                 session['user_name'] = user.student_name

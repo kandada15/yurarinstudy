@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {# Blueprint 'mypage' の static から読み込み #}
-    <link rel="stylesheet" href="{{ url_for('mypage.static', filename='mypage.css') }}">
+    <link rel="stylesheet" href="{{ url_for('mypage.static', filename='css/mypage.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <title>マイページ - 文脈工房</title>
@@ -38,8 +38,8 @@
             <div class="header-row">
                 <h1>MYPAGE</h1>
                 <div class="header-right">
-                    <button class="btn-password" onclick="location.href='{{ url_for('auth.pass_reset') }}'">
-                        <i class="fas fa-cog"></i>　パスワード再設定
+                    <button class="btn-password" onclick="location.href='{{ url_for('mypage.pass_reset') }}'">
+                    パスワード再設定
                     </button>
                 </div>
             </div>
@@ -51,26 +51,14 @@
                         <div class="profile-grid">
                             <div class="profile-row">
                                 <div class="profile-item">
-                                    <i class="fas fa-user"></i>
                                     <span class="profile-label">　　氏　　名　　</span>
-                                    <span class="profile-value">{{ user.user_name }}</span>
+                                    <span class="profile-value">{{ user.student_name }}</span>
                                 </div>
                             </div>
                             <div class="profile-row">
                                 <div class="profile-item">
                                     <span class="profile-label">受講者ID</span>
-                                    <span class="profile-value">{{ user.user_id }}</span>
-                                </div>
-                                <div class="profile-divider">|</div>
-                                <div class="profile-item">
-                                    <span class="profile-label">学生番号</span>
-                                    <span class="profile-value">{{ user.student_no }}</span>
-                                </div>
-                            </div>
-                            <div class="profile-row">
-                                <div class="profile-item">
-                                    <span class="profile-label">ク ラ ス</span>
-                                    <span class="profile-value">{{ user.class_name }}</span>
+                                    <span class="profile-value">{{ user.student_id }}</span>
                                 </div>
                                 <div class="profile-divider">|</div>
                                 <div class="profile-item">
@@ -84,7 +72,7 @@
                     <div class="section">
                         <h3>所属グループ</h3>
                         <div class="group-list">
-                            {% for group in groups %}
+                            {% if group %}
                             <div class="group-item">
                                 <span class="folder-icon">📁</span>
                                 <div class="group-info">
@@ -94,8 +82,8 @@
                                 <span class="group-members">メンバー： {{ group.member_count }}人</span>
                             </div>
                             {% else %}
-                            <p style="font-size: 12px; color: #666;">所属グループはありません。</p>
-                            {% endfor %}
+                            <p>所属グループはありません。</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -103,7 +91,9 @@
                 <div class="right-column">
                     <div class="section progress-section">
                         <h3>学習状況</h3>
-                        <button type="button" class="btn-detail" onclick="location.href='{{ url_for('mypage.detail') }}'">詳細</button>
+                        <button type="button" class="btn-detail" onclick="location.href='{{ url_for('mypage.detail',student_id=user.student_id) }}'">
+                          詳細
+                        </button>
                         <div class="progress-content">
                             <div class="progress-chart">
                                 <svg width="110" height="110" viewBox="0 0 150 150">
@@ -155,7 +145,7 @@
                                 </div>
                             </div>
                             <div class="button-top">
-                                <button class="status-detail-btn" onclick="location.href='{{ url_for('task.past_list') }}'">
+                                <button class="status-detail-btn" onclick="location.href='{{ url_for('task.student_task_list') }}'">
                                     これまでの課題
                                 </button>
                             </div>
@@ -166,6 +156,7 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/header.js') }}"></script> 
+    <script src="{{ url_for('static', filename='js/header.js') }}">
+    </script> 
 </body>
 </html>

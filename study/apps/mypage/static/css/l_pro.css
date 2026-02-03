@@ -276,3 +276,18 @@ circle {
   color: #4a4a4a;
   line-height: 1;
 }
+
+/* テーブルのカウンターをリセット */
+table {
+  counter-reset: step-counter;
+}
+
+/* 各行の「step-number」クラスが来るたびにカウントアップ */
+table td.number {
+  counter-increment: step-counter;
+}
+
+/* 番号を表示したい場所に中身を注入 */
+table td.number::before {
+  content: counter(step-counter);
+}
