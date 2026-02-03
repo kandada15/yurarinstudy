@@ -30,12 +30,15 @@ def step_list(category_id):
         return redirect(url_for('auth.login'))
     
     student_id = session.get('user_id')
+    # DAOを使用して、そのユーザー・そのカテゴリの進捗データを取得
     progress_data = w_dao.get_user_progress(student_id, category_id)
+    
+    # 完了フラグ (stage_flag) が立っているフェーズ名だけを抽出してリスト化
     completed_list = [row['phase_name'] for row in progress_data if row['stage_flag']]
     
     data = {'name': w_dao.get_category_name(category_id), 'category_id': category_id}
     
-    # JSONファイルを読み込んで渡すことで TypeError を回避します
+    # 学習用データのJSONファイルを読み込んでテンプレートに渡す
     learning_data = load_learning_data()
     
     return render_template(

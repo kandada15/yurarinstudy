@@ -1,4 +1,6 @@
+/* ============================================ */
 /* リセット */
+/* ============================================ */
 * {
   margin: 0;
   padding: 0;
@@ -12,7 +14,9 @@ body {
   padding: 20px;
 }
 
+/* ============================================ */
 /* 原稿用紙風の背景 */
+/* ============================================ */
 .app-container {
   position: relative;
   max-width: 1100px;
@@ -31,7 +35,9 @@ body {
 
 }
 
+/* ============================================ */
 /* コンテンツラッパー */
+/* ============================================ */
 .content-wrapper {
   display: flex;
   flex-direction: column;
@@ -40,7 +46,6 @@ body {
   background: rgba(255, 254, 249, 0.95);
   padding: 30px;
   position: relative;
-  border: 1px solid #000; /*わかりやすくボーダーをひく*/
   overflow-y: scroll; /*縦方向にスクロール*/
   -ms-overflow-style: none; /* Edge / IE */
   scrollbar-width: none;    /* Firefox */
@@ -49,8 +54,9 @@ body {
 .content-wrapper::-webkit-scrollbar {
   display: none;
 }
-
+/* ============================================ */
 /* アニメーション（本をめくる効果） */
+/* ============================================ */
 .fade-in {
   animation: fadeIn 0.3s ease-in;
 }
@@ -220,30 +226,17 @@ td.check-cell {
   width: 60px;
 }
 
-.btn-primary{
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 32px;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-family: inherit;
-  background: #8b7355;
-  color: #fffef9;
-  box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
-  width: 240px;
-  height: 50px;
-  margin-top: 40px;
-  text-align: center;
-  align-self: flex-end;
-}
+@media screen and (max-height: 588px){
+  .app-container {
+    height: 500px;
+    margin-top: 25px; 
+  }
 
-.btn-primary:hover {
-  background: #6d5a44;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(139, 115, 85, 0.4);
+  .content-wrapper {
+    height: 500px;
+  }
+
+  .choice-message {
+    margin-bottom: 0;
+  }
 }
