@@ -84,22 +84,6 @@ function backToInput() {
   document.getElementById('inputScreen').style.display = 'block';
 };
 
-// function submitForm() {
-  //   const answerHtml =
-  //     document.getElementById('answerContent').innerHTML;
-  //      // hidden input にHTMLを格納
-  //     document.getElementById('answerTextInput').value = answerHtml;
-  
-  //     // 通常のHTMLフォーム送信
-  //     document.getElementById('correctionForm').submit();
-
-//     showToast("課題の添削が完了しました。");
-
-//     setTimeout(() => {
-//       window.location.href = `/dashboard/streamed/student/${streamedId}`;
-//     }, 2000);
-// };
-
 // トースト通知
 function showToast(message) {
   let toast = document.createElement("div");
