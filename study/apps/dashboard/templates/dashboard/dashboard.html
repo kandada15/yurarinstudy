@@ -109,15 +109,20 @@
           </div>
           <div class="bottom-buttons">
             <button type="button" class="big-btn" onclick="location.href='{{ url_for('dashboard.progress_top') }}'">学習進捗</button>
-            <button type="button" class="big-btn">返却済課題</button>-btn" onclick="location.href='{{ url_for('writing.update_progres
+             <button type="button" class="big-btn" onclick="location.href='{{ url_for('writing.progress') }}'">返却済課題</button>
+
           </div>   
         </div>
       </div>
     </div>
   </div>
-  <script>
-    function GoGroupManage() {window.location.href = "{{ url_for('dashboard.group_list') }}";};
-  </script>
-  <script src="{{ url_for('static', filename='js/header.js') }}"></script> 
+<script>
+  const groupManageUrl = `dashboard/manage`;
+
+  function GoGroupManage() {
+    window.location.href = groupManageUrl;
+  }
+</script>
+<script src="{{ url_for('static', filename='js/header.js') }}"></script> 
 </body>
 </html>
