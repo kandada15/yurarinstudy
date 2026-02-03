@@ -54,7 +54,6 @@ def index():
 # 1. 学習状況トップ（グループ選択）
 @dashboard_bp.route('/progress') 
 def progress_top():
-    d_dao = DashboardDao()
     admin_id = session.get('user_id')
     groups = d_dao.find_groups_for_progress(admin_id)
     return render_template('dashboard/leaning_pro_top.html', groups=groups)
@@ -62,7 +61,6 @@ def progress_top():
 # 2. 生徒一覧
 @dashboard_bp.route('/progress/group/<group_id>', methods=['GET']) 
 def student_list(group_id):
-    d_dao = DashboardDao()
     admin_id = session.get('user_id')
     #生徒一覧を取得
     students = d_dao.find_students_by_group(group_id)
@@ -83,7 +81,6 @@ def student_list(group_id):
 # 3. 個別進捗詳細
 @dashboard_bp.route('/progress/student/<student_id>') 
 def student_detail(student_id):
-    d_dao = DashboardDao()
     # current_dir定義
     current_dir = os.path.dirname(os.path.abspath(__file__))
     json_path = os.path.abspath(os.path.join(
@@ -118,7 +115,6 @@ def student_detail(student_id):
 @dashboard_bp.route('/manage')
 def group_list():
     admin_id = session.get('user_id')
-    d_dao = DashboardDao()
     
     # 1. HTMLのカード表示用に「自分が作ったグループ」を取得
     groups = d_dao.find_groups_for_progress(admin_id)
@@ -128,7 +124,6 @@ def group_list():
 @dashboard_bp.route('/api/students')
 def get_students_api():
     """JSの検索機能（モーダル）で使うための全受講者データ"""
-    d_dao = DashboardDao()
     students = d_dao.find_all_students()
     # mysql-connectorの辞書形式をそのままJSONとして返す
     return jsonify(students)
@@ -136,7 +131,6 @@ def get_students_api():
 @dashboard_bp.route('/api/group/<group_id>/members')
 def get_group_members(group_id):
     """特定のグループに所属する受講生の一覧を返すAPI"""
-    d_dao = DashboardDao()
     # DAOの find_students_by_group を使用
     members = d_dao.find_students_by_group(group_id)
     return jsonify(members)
@@ -153,7 +147,6 @@ def add_group_members():
     if not group_id or not student_ids:
         return jsonify({"success": False, "message": "データ不足"}), 400
 
-    d_dao = DashboardDao()
     success = d_dao.update_students_group(group_id, student_ids)
 
     if success:
@@ -169,7 +162,6 @@ def remove_group_member():
     if not student_id:
         return jsonify({"success": False, "message": "受講生IDが指定されていません"}), 400
 
-    d_dao = DashboardDao()
     success = d_dao.remove_student_from_group(student_id)
 
     if success:
@@ -187,7 +179,6 @@ def update_group():
     if not group_id or not group_name:
         return jsonify({"success": False, "message": "入力が正しくありません"}), 400
 
-    d_dao = DashboardDao()
     success = d_dao.update_group_name(group_id, group_name)
 
     if success:
@@ -197,7 +188,6 @@ def update_group():
 
 @dashboard_bp.route('/group/create', methods=['GET', 'POST'])
 def group_create():
-    d_dao = DashboardDao()
     if request.method == 'POST':
         data = request.json
         group_name = data.get('group_name')
