@@ -37,8 +37,8 @@
     {# 右側のタブ #}
     <div class="tabs-container">
         <a href="{{ url_for('writing.index') }}" class="tab {% if request.endpoint == 'writing.index' %}active{% endif %}" data-page="users" data-color="#e8dcc8">ライティング学習</a>
-        <a href="#" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
         <a href="{{ url_for('task.student_task_list') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
+        <a href="#" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
     </div>
 
     {# メインコンテンツ #}

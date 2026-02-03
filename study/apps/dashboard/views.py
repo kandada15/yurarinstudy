@@ -24,7 +24,7 @@ def restrict_access():
     if not user_id:
         return redirect(url_for('auth.login'))
     if user_id.startswith('s'):
-        return redirect(url_for('writing.index'))
+        return redirect(url_for('mypage.index'))
 
 @dashboard_bp.route('/')
 def index():

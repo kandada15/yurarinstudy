@@ -36,22 +36,20 @@ def login():
 
         # 2. ユーザーが存在し、パスワードが一致するか確認
         if user and user.password == password:
-            session['user_id'] = user_id
-            session['user_type'] = user_type
+            if user_type == 'admin':
+                session['user_id'] = user.admin_id 
+            else:
+                session['user_id'] = user.student_id
             
+            session['user_type'] = user_type
+                # 管理者の場合はダッシュボードへ
             if user_type == 'admin':
                 session['user_name'] = user.admin_name
-            else:
-                session['user_name'] = user.student_name
-            
-            # 管理者ならダッシュボードへ、受講者ならライティング学習画面へ
-            if user_type == 'admin':
                 return redirect(url_for('dashboard.index'))
             else:
-                return redirect(url_for('writing.index'))            
-            
-            # ログイン成功：ライティング学習のトップへリダイレクト
-            return redirect(url_for('writing.index'))
+                session['user_name'] = user.student_name
+                # 受講者の場合はマイページへ
+                return redirect(url_for('mypage.index'))
         else:
             # ログイン失敗：エラーメッセージをセット
             error = 'ユーザ名またはパスワードに誤りがあります'

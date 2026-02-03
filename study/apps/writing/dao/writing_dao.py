@@ -23,17 +23,19 @@ class WritingDao:
         }).mappings().all()
 
     def update_stage_progress(self, student_id, phase_name):
-        """指定されたフェーズの完了フラグを 1 に更新する"""
-        sql = text("""
-            UPDATE progress 
-            SET stage_flag = 1 
+        # まずは UPDATE を試みる
+        update_sql = text("""
+            UPDATE progress SET stage_flag = 1 
             WHERE student_id = :sid AND phase_name = :pname
         """)
+        result = db.session.execute(update_sql, {"sid": student_id, "pname": phase_name})
         
-        result = db.session.execute(sql, {"sid": student_id, "pname": phase_name})
-        
-        # デバッグログ
-        print(f"--- デバッグ: 更新対象フェーズ: {phase_name} ---")
-        print(f"--- デバッグ: 更新成功件数: {result.rowcount} ---")
+        # もし1件も更新されなかったら（＝レコードが存在しない）、新規作成する
+        if result.rowcount == 0:
+            insert_sql = text("""
+                INSERT INTO progress (student_id, phase_name, stage_flag)
+                VALUES (:sid, :pname, 1)
+            """)
+            db.session.execute(insert_sql, {"sid": student_id, "pname": phase_name})
         
         db.session.commit()
