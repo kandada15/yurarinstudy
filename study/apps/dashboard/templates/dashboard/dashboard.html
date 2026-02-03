@@ -115,9 +115,13 @@
       </div>
     </div>
   </div>
-  <script>
-    function GoGroupManage() {window.location.href = "{{ url_for('dashboard.group_list') }}";};
-  </script>
-  <script src="{{ url_for('static', filename='js/header.js') }}"></script> 
+<script>
+  const groupManageUrl = `dashboard/manage`;
+
+  function GoGroupManage() {
+    window.location.href = groupManageUrl;
+  }
+</script>
+<script src="{{ url_for('static', filename='js/header.js') }}"></script> 
 </body>
 </html>

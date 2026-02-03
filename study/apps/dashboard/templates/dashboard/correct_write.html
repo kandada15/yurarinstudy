@@ -1,6 +1,4 @@
 <!--添削書き込み-->
-<!--ｊｓにデータをおいて動作確認できるようにしてるんだけどそこのｊｓいじってデータベースからとってくるように改良求-->
-<!--一応ｊｓ統合バージョン作ってるけどよくわかんないからコメントアウトにしてるよろしくですです-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -20,7 +18,7 @@
     <div class="user-section">
       <span class="user-badge">管理者</span>
       <!-- ログアウト -->
-      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
+      <button class="logout-btn" onclick="gologout()">ログアウト</button>
     </div>
   </header>
 
@@ -104,7 +102,6 @@
         <div class="answer-section">
           <span class="answer-label">解答（添削欄）</span>
           <div class="answer-content" contenteditable="true" id="answerContent">{{ correction_student.answer_text | safe }}</div>
-          <!--</div>-->
 
           <div class="button-group">
             <button class="btn-back" onclick="goback('{{ correction_student.streamed_id }}')">生徒一覧に戻る</button>
@@ -116,27 +113,8 @@
       <!-- 確認画面 -->
       <div id="confirmScreen" class="hidden">
         <h2 class="task-title">添削内容の確認</h2>
-        <div id="confirmContent"></div><!--ここ消す-->
-        <!--
-        <div class="confirm-section">
-          <div class="confirm-row">
-            <div class="confirm-label">課題タイトル</div>
-            <div class="confirm-value">${taskTitle?.textContent ?? ''}</div>
-          </div>
-
-          <div class="confirm-row">
-            <div class="confirm-label">解答者</div>
-            <div class="confirm-value">${studentName?.textContent ?? ''}</div>
-          </div>
-
-          <div class="confirm-row">
-            <div class="confirm-label">添削内容</div>
-            <div class="confirm-value confirm-answer">
-              ${answerContent.innerHTML}
-            </div>
-          </div>
-        </div>
-        -->
+        <div id="confirmContent"></div>
+      
         <div class="button-group">
           <button type="button" class="btn-back" onclick="backToInput()">戻る</button>
           <button type="button" class="btn-primary" onclick="submitForm()">添削完了</button>
@@ -155,194 +133,13 @@
     </div>
   </div>
 
-  <!--
-  <script>
-    // formDataに入力値を保持
-    let formData = {};
-
-    // 初期化
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('taskTitle').textContent = dummyData.taskTitle;
-      document.getElementById('studentName').textContent = dummyData.studentName;
-      document.getElementById('questionText').textContent = dummyData.questionText;
-
-      const answerContent = document.getElementById('answerContent');
-
-      // 回答文をそのまま表示（制限なし）
-      answerContent.innerHTML = dummyData.answerText;
-
-      initToolbar(answerContent);
-    });
-
-
-    // ツールバー初期化
-    function initToolbar(editor) {
-      const redBtn = document.getElementById('redBtn');
-      const blueBtn = document.getElementById('blueBtn');
-      const strikeBtn = document.getElementById('strikeBtn');
-      const underlineBtn = document.getElementById('underlineBtn');
-      const clearBtn = document.getElementById('clearBtn');
-      const undoBtn = document.getElementById('undoBtn');
-      const redoBtn = document.getElementById('redoBtn');
-
-      // - 色 -
-      redBtn.onclick = () => applyColor('#d32f2f', redBtn, blueBtn, editor);
-      blueBtn.onclick = () => applyColor('#1976d2', blueBtn, redBtn, editor);
-
-      // - 装飾 -
-      underlineBtn.onclick = () => exec('underline', editor);
-      strikeBtn.onclick = () => exec('strikeThrough', editor);
-      clearBtn.onclick = () => exec('removeFormat', editor);
-
-      // -Undo / Redo -
-      undoBtn.onclick = () => exec('undo', editor);
-      redoBtn.onclick = () => exec('redo', editor);
-    }
-
-    // ================================
-    // 装飾処理
-    // ================================
-    function applyColor(color, onBtn, offBtn, editor) {
-      exec('foreColor', editor, color);
-      onBtn.classList.add('active');
-      offBtn.classList.remove('active');
-    }
-
-    function exec(command, editor, value = null) {
-      editor.focus();
-      document.execCommand(command, false, value);
-    }
-
-    function toggleQuestion() {
-      const content = document.getElementById('questionContent');
-      const icon = document.getElementById('toggleIcon');
-
-      if (!content) return;
-
-      // openクラスでトグル制御
-      const isOpen = content.classList.contains('open');
-      
-      if (isOpen) {
-        content.classList.remove('open');
-        icon.textContent = '▼';
-      } else {
-        content.classList.add('open');
-        icon.textContent = '▲';
-      }
-    }
-
-
-    function goback() {
-      window.location.href = 'task_stu_list.html';
-    }
-
-    function backToInput() {
-      const inputScreen = document.getElementById("inputScreen");
-      const confirmScreen = document.getElementById("confirmScreen");
-
-      if (!inputScreen || !confirmScreen) {
-        console.error("画面要素が見つかりません");
-        return;
-      }
-
-      // 確認画面を隠す
-      confirmScreen.classList.add("hidden");
-      confirmScreen.style.display = "none";
-
-      // 入力画面を表示
-      inputScreen.classList.remove("hidden");
-      inputScreen.style.display = "block";
-
-      // フェードイン
-      inputScreen.classList.add("fade-in");
-    }
-
-
-    function showConfirmation() {
-      const inputScreen = document.getElementById('inputScreen');
-      const confirmScreen = document.getElementById('confirmScreen');
-      const confirmContent = document.getElementById('confirmContent');
-      const answerContent = document.getElementById('answerContent');
-      const taskTitle = document.getElementById('taskTitle');
-      const studentName = document.getElementById('studentName');
-
-      // 確認画面のHTML生成（装飾込み）
-      confirmContent.innerHTML = `
-        <div class="confirm-section">
-          <div class="confirm-row">
-            <div class="confirm-label">課題タイトル</div>
-            <div class="confirm-value">${taskTitle?.textContent ?? ''}</div>
-          </div>
-
-          <div class="confirm-row">
-            <div class="confirm-label">解答者</div>
-            <div class="confirm-value">${studentName?.textContent ?? ''}</div>
-          </div>
-
-          <div class="confirm-row">
-            <div class="confirm-label">添削内容</div>
-            <div class="confirm-value confirm-answer">
-              ${answerContent.innerHTML}
-            </div>
-          </div>
-        </div>
-      `;
-
-      // 画面切り替え
-      inputScreen.classList.add('hidden');
-      confirmScreen.classList.remove('hidden');
-
-      // 確実に非表示
-      inputScreen.style.display = 'none';
-      confirmScreen.style.display = 'block';
-    }
-
-    function submitForm() {
-      const answerEl = document.getElementById("answerContent");
-
-      if (!answerEl) {
-        console.error("answerContent が見つかりません");
-        return;
-      }
-
-      const answerHtml = answerEl.innerHTML || "";
-      const answerText = answerHtml.trim();
-
-      console.log("送信データ:", {
-        answer: answerText
-      });
-
-      showToast("課題の添削が完了しました。");
-
-      setTimeout(() => {
-        window.location.href = "task_stu_list.html";
-      }, 2000);
-    }
-
-    // トースト通知
-    function showToast(message) {
-      let toast = document.createElement("div");
-      toast.className = "toast";
-      toast.textContent = message;
-
-      document.body.appendChild(toast);
-
-      // アニメーションで表示
-      setTimeout(() => {
-        toast.classList.add("show");
-      }, 10);
-
-      // 3秒後に削除
-      setTimeout(() => {
-        toast.classList.remove("show");
-        setTimeout(() => toast.remove(), 400);
-      }, 3000);
-    }
-  </script>
-  -->
-
 <!--Javascriptの読み込み（必ずこの位置）-->
 <script src="{{ url_for('dashboard.static', filename='js/c_write.js') }}"></script> 
 <script src="{{ url_for('dashboard.static', filename='js/header.js') }}"></script>
+<script>
+  function gologout(){
+    window.location.href = '/auth/logout';
+  }
+</script>
 </body>
 </html>
