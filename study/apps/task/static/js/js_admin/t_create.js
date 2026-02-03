@@ -1,6 +1,4 @@
 // formDataに入力値を保持
-// <form>タグ＋modeで判断しているため、基本は利用しない方向
-
 let formData = {};
 
 // エラー表示をクリア
@@ -109,9 +107,33 @@ function backToInput() {
 function submitForm() {
   console.log('送信データ:', formData);
 
-  // 確認画面を非表示、完了画面を表示
-  document.getElementById('confirmScreen').classList.add('hidden');
-  document.getElementById('completeScreen').classList.remove('hidden');
+  // 付箋風トースト通知
+  showToast("課題の配信が完了しました。");
+
+  // 2秒後に課題一覧へ戻る
+  setTimeout(() => {
+    window.location.href = "dashboard.html";  
+  }, 2000);
+}
+
+// トースト通知
+function showToast(message) {
+  let toast = document.createElement("div");
+  toast.className = "toast";
+  toast.textContent = message;
+
+  document.body.appendChild(toast);
+
+  // アニメーションで表示
+  setTimeout(() => {
+    toast.classList.add("show");
+  }, 10);
+
+  // 3秒後に削除
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 400);
+  }, 3000);
 }
 
 // フォームをリセットして最初に戻す

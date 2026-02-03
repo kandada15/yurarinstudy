@@ -43,9 +43,7 @@ function openModal(button) {
     }
 }
 
-/**
- * モーダルを閉じる関数
- */
+// モーダルを閉じる関数
 function closeModal() {
     console.log("closeModal called");
     const modal = document.getElementById("detail-modal");
