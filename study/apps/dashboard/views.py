@@ -197,6 +197,11 @@ def group_create():
         return jsonify({"success": success, "message": message})
     return render_template('dashboard/group_create.html')
 
+"""  
+以下より、ダッシュボード/課題返却機能
+"""
+
+""" 配信済み課題一覧の表示 """
 @dashboard_bp.route("/streamed")
 def streamed_list():
     admin_id = session.get('user_id')
@@ -217,6 +222,7 @@ def streamed_list():
 
     return render_template("dashboard/deli_task_list.html", tasks=tasks, has_next=has_next, has_prev=has_prev)
 
+""" 課題を配信された学生の一覧表示 """
 @dashboard_bp.route("/streamed/student/<int:streamed_id>")
 def streamed_student_list(streamed_id):
     admin_id = session.get('user_id')
@@ -224,21 +230,74 @@ def streamed_student_list(streamed_id):
     keyword = request.args.get("keyword")
     # 配信済みかつ提出/添削のフラグが関連しているdaoを作成
     streamed_student = D_dao.find_students_status_by_streamed_id(streamed_id, admin_id, keyword)
-    return render_template("dashboard/task_stu_list.html", streamed_name=streamed["streamed_name"], streamed_student=streamed_student)
+    return render_template("dashboard/task_stu_list.html", streamed_name=streamed["streamed_name"], streamed_student=streamed_student, streamed_id=streamed_id)
 
+""" 受講者(課題提出済み)の添削画面を表示 """
 @dashboard_bp.route("/streamed/student/<int:submission_id>/correction", methods=["GET"])
 def task_correction(submission_id):
     admin_id = session.get('user_id')
+    # 添削画面にて必要な成功をdaoにて取得する。
     correction_student = D_dao.find_submission_by_streamed_id(submission_id, admin_id)
     return render_template("dashboard/correct_write.html", correction_student=correction_student, submission_id=submission_id, streamed_id=correction_student["streamed_id"])
 
+""" 添削完了後、確認画面→DB登録まで """
 @dashboard_bp.route("/streamed/student/<int:submission_id>/correction", methods=["POST"])
 def submit_correction(submission_id):
+    # 添削した解答文を取得する
     corrected_answer = request.form.get("answer_text")
     streamed_id = request.form.get("streamed_id")
 
     D_dao.update_submission_correction(submission_id, corrected_answer)
     return ("", 204)
 
-# @dashboard_bp.route("/streamed/student/return")
-# def correction_return():
+
+""" 
+以下、ダッシュボードの添削済み課題を提出するためのコード(仮-動きません)
+html,css,js待ち
+"""
+
+""" 配信済みかつ未添削課題を探す。あれば、error-messageを返す """
+@dashboard_bp.route("/streamed/student/return/check", methods=["POST"])
+def check_can_return():
+    streamed_id = request.form.get("streamed_id")
+    has_unchecked =  D_dao.exists_unchecked_submission(streamed_id)
+
+    if has_unchecked:
+        return jsonify({
+            "can_return": False,
+            "status": "error",
+            "message": "未添削の課題があります"
+        })
+    
+    return jsonify({
+        "can_return": True
+    })
+
+""" 返却フラグを更新して、値を返す """
+@dashboard_bp.route("/streamed/student/return", methods=["POST"])
+def correction_return():
+    streamed_id = request.form.get("streamed_id")
+
+    # バリデーション(配信IDの有無)
+    if not streamed_id:
+      return jsonify({
+        "status": "error",
+        "message": "streamed_id が取得できません"
+      }), 400
+    
+    update_flag = D_dao.exists_flag_check(streamed_id)
+    if update_flag:
+        return jsonify({
+            "stasus": "error",
+            "message": "未提出または未添削の課題があります"
+        }), 400
+    
+    # 全員、「添削済み」のときのみ動かす
+    D_dao.update_return_flag(streamed_id)
+
+    return jsonify({
+        "status": "success",
+        "message": "課題の返却が完了しました"
+    })
+
+    

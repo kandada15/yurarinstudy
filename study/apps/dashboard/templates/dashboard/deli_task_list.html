@@ -15,7 +15,8 @@
     </div>
     <div class="user-section">
       <span class="user-badge">管理者</span>
-      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
+      <!-- ログアウト -->
+      <button class="logout-btn" onclick="gologout()">ログアウト</button>
     </div>
   </header>
 
@@ -67,6 +68,11 @@
   function changePage(page) {
     window.location.href = `${BASE_INQ_URL}?page=${page}`;
   }
+  </script>
+  <script>
+    function gologout(){
+      window.location.href = '/auth/logout';
+    }
   </script>
 </body>
 </html>

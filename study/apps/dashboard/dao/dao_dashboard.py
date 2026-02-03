@@ -220,26 +220,7 @@ class Dashboard_DAO:
          cursor.execute(sql, (submission_id, admin_id))
          row = cursor.fetchone()
          return row
-
-        #  result = []
-        #  for row in rows:
-        #     # 状況判定（要件どおり）
-        #     if row["submit_flag"] is None or row["submit_flag"] == 0:
-        #       status = "未提出"
-        #     elif row["submit_flag"] == 1 and row["check_flag"] == 0:
-        #       status = "未添削"
-        #     else:
-        #       status = "添削済み"
-        #     result.append(
-        #        StreamedStudent(
-        #            student_id=row["student_id"],
-        #            student_name=row["student_name"],
-        #            streamed_id=row["streamed_id"],
-        #            status=status
-        #        )
-        #     )
-            
-        #  return result
+       
        finally:
           cursor.close()
           conn.close()
@@ -265,3 +246,76 @@ class Dashboard_DAO:
        finally:
         cursor.close()
         conn.close()
+    
+    def  exists_unchecked_submission(self, streamed_id: int):
+       """
+       提出済みかつ未添削課題があれば、エラーメッセージを出す
+       """
+       sql = """
+           SELECT COUNT(*) AS cnt
+             FROM submission
+           WHERE streamed_id = %s
+             AND submit_flag = 1
+             AND check_flag = 0
+       """
+       conn = self._get_connection()
+       try:
+          cursor = conn.cursor()
+          cursor.execute(sql, (streamed_id,))
+          row = cursor.fetchone()
+          return row["cnt"] > 0
+       finally:
+          cursor.close()
+          conn.close()
+
+    def exists_flag_check(self, streamed_id: int) -> bool:
+       """
+       未提出 or 未添削の submission が1件でもあれば 返却不可とする
+       """
+       sql = """
+           SELECT 1
+             FROM streamed AS s
+             INNER JOIN `group` AS g
+                     ON g.group_id = s.group_id
+             INNER JOIN student AS stu
+                     ON stu.group_id = g.group_id
+             LEFT JOIN submission AS sub
+                    ON sub.student_id = stu.student_id
+                   AND sub.streamed_id = s.streamed_id
+            WHERE s.streamed_id = %s
+              AND (
+                    sub.submission_id IS NULL   
+                    OR sub.submit_flag = 0      
+                    OR sub.check_flag = 0       
+                  )
+            LIMIT 1
+       """
+       conn = self._get_connection()
+       try:
+         cursor = conn.cursor()
+         cursor.execute(sql, (streamed_id,))
+         row = cursor.fetchone() is not None
+         return row
+       finally:
+         cursor.close()
+         conn.close()
+
+    def update_return_flag(self, streamed_id: int):
+       sql = """
+           UPDATE submission
+              SET return_flag = 1
+           WHERE streamed_id = %s
+             AND submit_flag = 1
+             AND check_flag = 1
+       """
+
+       conn = self._get_connection()
+       try:
+          cursor = conn.cursor()
+          cursor.execute(sql, (streamed_id,))
+          conn.commit()
+       finally:
+          cursor.close()
+          conn.close()
+       
+       
