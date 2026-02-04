@@ -30,6 +30,7 @@ class StreamedDao:
             s.streamed_name,
             s.streamed_text,
             s.streamed_limit,
+            s.sent_at,
             g.group_id
             
         FROM streamed AS s
@@ -80,7 +81,7 @@ class StreamedDao:
     """
     sql = """
         INSERT INTO streamed 
-          (streamed_name, streamed_text, streamed_limit, group_id)
+          (streamed_name, streamed_text, streamed_limit,sent_at, group_id)
         VALUES 
           (%s, %s, %s, %s)
     """
@@ -121,6 +122,7 @@ class StreamedDao:
             s.streamed_name,
             s.streamed_text,
             s.streamed_limit,
+            
             admin.admin_name,
             s.sent_at
         FROM streamed AS s

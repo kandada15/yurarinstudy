@@ -99,11 +99,11 @@ class Dashboard_DAO:
               sub.submit_flag,
               sub.check_flag
             FROM streamed AS s
-            INNER OUTER JOIN `group` AS g
+            INNER JOIN `group` AS g
             ON g.group_id = s.group_id
             INNER JOIN student AS stu
             ON stu.group_id = g.group_id
-            LEFT JOIN submission AS sub
+            LEFT OUTER JOIN submission AS sub
             ON sub.student_id = stu.student_id
             AND sub.streamed_id = s.streamed_id
             WHERE s.streamed_id = %s AND g.created_by_admin_id = %s 
@@ -278,7 +278,7 @@ class Dashboard_DAO:
         ON g.group_id = s.group_id
         INNER JOIN student AS stu
         ON stu.group_id = g.group_id
-        LEFT JOIN submission AS sub
+        LEFT OUTER JOIN submission AS sub
         ON sub.student_id = stu.student_id
         AND sub.streamed_id = s.streamed_id
         WHERE s.streamed_id = %s
