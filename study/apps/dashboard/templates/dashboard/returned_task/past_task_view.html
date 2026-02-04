@@ -10,7 +10,7 @@
   <title>課題一覧</title>
 </head>
 <body>
-<!--ここからbace.htmlから引っ張れる-->
+<!-- 共通部分 -->
   <header class="top-header">
     <div class="logo-section">
       <div class="logo-img">文</div>
@@ -18,7 +18,7 @@
     </div>
     <div class="user-section">
       <span class="user-badge">管理者</span>
-      <!--ここリンクをｊｓ管理してるけどアクション名？にしてログアウトできるように-->
+      <!-- ログアウト -->
       <button class="logout-btn" onclick="gologout()">ログアウト</button>
     </div>
   </header>
@@ -37,9 +37,9 @@
 
   <!-- 右側のタブ -->
   <div class="tabs-container">
-    <a href="user_info_list.html" class="tab active" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
-    <a href="task_create.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
-    <a href="dashboard.html" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
+    <a href="{{ url_for('crud.user_manage') }}" class="tab active" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    <a href="{{ url_for('task.task_create_form') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    <a href="{{ url_for('dashboard.index') }}" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
   </div>
   <!--ここまで-->
 
@@ -53,72 +53,18 @@
         <p>過去課題を閲覧したい受講者が所属しているグループを選択してください。</p>
         
         <div class="groups-container">
-          <div class="grou_content" onclick="showCorrectionStatus('プログラミング実装')">
+          {% for group in groups %}
+          <div class="grou_content" onclick="showCorrectionStatus({{ group.streamed_name}})">
             <div class="group-icon">📁</div>
             <div class="group-info">
-              <p class="group-title">グループ１</p>
-              <p class="group-subtitle">プログラミング基礎</p>
+              <p class="group-title">{{ group.group_name }}</p>
+              <p class="group-subtitle">{{ group.streamed_name }}</p>
             </div>
             <div class="group-members">
               <span>メンバー：１５人</span>
             </div>
           </div>
-
-          <div class="grou_content" onclick="showCorrectionStatus('プログラミング実装')">
-            <div class="group-icon">📁</div>
-            <div class="group-info">
-              <p class="group-title">グループ１</p>
-              <p class="group-subtitle">プログラミング基礎</p>
-            </div>
-            <div class="group-members">
-              <span>メンバー：１５人</span>
-            </div>
-          </div>
-
-          <div class="grou_content" onclick="showCorrectionStatus('プログラミング実装')">
-            <div class="group-icon">📁</div>
-            <div class="group-info">
-              <p class="group-title">グループ１</p>
-              <p class="group-subtitle">プログラミング基礎</p>
-            </div>
-            <div class="group-members">
-              <span>メンバー：１５人</span>
-            </div>
-          </div>
-
-          <div class="grou_content" onclick="showCorrectionStatus('プログラミング実装')">
-            <div class="group-icon">📁</div>
-            <div class="group-info">
-              <p class="group-title">グループ１</p>
-              <p class="group-subtitle">プログラミング基礎</p>
-            </div>
-            <div class="group-members">
-              <span>メンバー：１５人</span>
-            </div>
-          </div>
-
-          <div class="grou_content" onclick="showCorrectionStatus('プログラミング実装')">
-            <div class="group-icon">📁</div>
-            <div class="group-info">
-              <p class="group-title">グループ１</p>
-              <p class="group-subtitle">プログラミング基礎</p>
-            </div>
-            <div class="group-members">
-              <span>メンバー：１５人</span>
-            </div>
-          </div>
-
-          <div class="grou_content" onclick="showCorrectionStatus('プログラミング実装')">
-            <div class="group-icon">📁</div>
-            <div class="group-info">
-              <p class="group-title">グループ１</p>
-              <p class="group-subtitle">プログラミング基礎</p>
-            </div>
-            <div class="group-members">
-              <span>メンバー：１５人</span>
-            </div>
-          </div>
-          
+          {% endfor %}    
         </div>
       </div>
 
