@@ -65,19 +65,22 @@ class AdminDao:
         Adminオブジェクトのリストとして返す。
         管理者情報をadmin_id順で取得
         """
+        # apps/crud/dao/admin_dao.py の SQL 部分
+
         sql = """
             SELECT
                 admin.admin_id,
                 admin.admin_name,
                 admin.password,
                 admin.birthday,
-                g.group_id,
-                g.group_name,
-                g.created_by_admin_id
+                admin.admin_id AS created_by_admin_id,
+                GROUP_CONCAT(g.group_id) as group_id,
+                GROUP_CONCAT(g.group_name) as group_name
             FROM admin
-            LEFT OUTER JOIN `group` AS g
+            LEFT JOIN `group` AS g
             ON g.created_by_admin_id = admin.admin_id
-            ORDER BY admin_id ASC
+            GROUP BY admin.admin_id
+            ORDER BY admin.admin_id ASC
         """
 
         # クラス内部の_get_connection()を使ってMySQL接続を取得
@@ -121,9 +124,9 @@ class AdminDao:
                 admin.admin_name,
                 admin.password,
                 admin.birthday,
-                g.group_id,
-                g.group_name,
-                g.created_by_admin_id
+                admin.admin_id AS created_by_admin_id,
+                GROUP_CONCAT(g.group_id) as group_id,
+                GROUP_CONCAT(g.group_name) as group_name
             FROM admin
             LEFT JOIN `group` AS g
             ON g.created_by_admin_id = admin.admin_id
@@ -131,6 +134,7 @@ class AdminDao:
                 admin.admin_id LIKE %s OR
                 admin.admin_name LIKE %s OR
                 g.group_name LIKE %s
+            GROUP BY admin.admin_id
             ORDER BY admin.admin_id ASC
         """
 
@@ -226,5 +230,56 @@ class AdminDao:
 
         finally:
             # 例外の有無に関わらず、最後に必ずクローズする
+            cursor.close()
+            conn.close()
+    
+    def reset_password(self, admin_id: str) -> bool:
+        # DATE_FORMAT で誕生日を 'YYYYMMDD' 形式の文字列に変換してパスワードに設定
+        sql = """
+            UPDATE admin 
+            SET password = DATE_FORMAT(birthday, '%Y%m%d') 
+            WHERE admin_id = %s
+        """
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql, (admin_id,))
+            conn.commit()
+            return cursor.rowcount > 0 # 更新された行があればTrue
+        finally:
+            cursor.close()
+            conn.close()
+    
+    def delete_admin(self, admin_id: str) -> bool:
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+
+            sql_get_groups = "SELECT group_id FROM `group` WHERE created_by_admin_id = %s"
+            cursor.execute(sql_get_groups, (admin_id,))
+            groups = cursor.fetchall()
+            
+            if groups:
+                # group_id のリストを作成 (例: [1, 2, 3])
+                group_ids = [g['group_id'] if isinstance(g, dict) else g[0] for g in groups]
+                format_strings = ','.join(['%s'] * len(group_ids))
+                sql_delete_mypage = f"DELETE FROM mypage WHERE group_id IN ({format_strings})"
+                cursor.execute(sql_delete_mypage, tuple(group_ids))
+            
+            
+            sql_group = "DELETE FROM `group` WHERE created_by_admin_id = %s"
+            cursor.execute(sql_group, (admin_id,))
+            sql_admin = "DELETE FROM admin WHERE admin_id = %s"
+            cursor.execute(sql_admin, (admin_id,))
+            
+            conn.commit()
+            return cursor.rowcount > 0
+
+        except Exception as e:
+            # どこかで失敗したらすべて元に戻す
+            conn.rollback()
+            print(f"管理者削除エラー: {e}")
+            raise e
+        finally:
             cursor.close()
             conn.close()
