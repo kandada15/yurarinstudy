@@ -1,8 +1,6 @@
-# dao_dashboard.py
-# Dashboard モデルを MySQL (dashboard テーブル) とやり取りする DAO クラス
-
 import mysql.connector
 from mysql.connector import MySQLConnection
+
 from apps.dashboard.models.model_dashboard import Dashboard, StreamedStudent, ReturnToStudent
 from apps.config.db_config import DB_CONFIG  # ★ これを追加
 
@@ -94,27 +92,27 @@ class Dashboard_DAO:
         配信された学生と提出・添削状況を取得する（管理者用）
         """
         sql = """
-             SELECT
-                 stu.student_id,
-                 stu.student_name,
-                 s.streamed_id,
-                 sub.submission_id,
-                 sub.submit_flag,
-                 sub.check_flag
-             FROM streamed AS s
-             INNER JOIN `group` AS g
-               ON g.group_id = s.group_id
-             INNER JOIN student AS stu
-               ON stu.group_id = g.group_id
-             LEFT JOIN submission AS sub
-               ON sub.student_id = stu.student_id
-               AND sub.streamed_id = s.streamed_id
-             WHERE s.streamed_id = %s AND g.created_by_admin_id = %s 
-               AND(
-                 %s IS NULL 
-                 OR stu.student_name LIKE CONCAT('%', %s, '%')
-               )
-             ORDER BY stu.student_id ASC
+            SELECT
+              stu.student_id,
+              stu.student_name,
+              s.streamed_id,
+              sub.submission_id,
+              sub.submit_flag,
+              sub.check_flag
+            FROM streamed AS s
+            INNER OUTER JOIN `group` AS g
+            ON g.group_id = s.group_id
+            INNER JOIN student AS stu
+            ON stu.group_id = g.group_id
+            LEFT JOIN submission AS sub
+            ON sub.student_id = stu.student_id
+            AND sub.streamed_id = s.streamed_id
+            WHERE s.streamed_id = %s AND g.created_by_admin_id = %s 
+            AND(
+              %s IS NULL 
+              OR stu.student_name LIKE CONCAT('%', %s, '%')
+            )
+          ORDER BY stu.student_id ASC
         """
 
         conn = self._get_connection()
@@ -125,14 +123,13 @@ class Dashboard_DAO:
 
           result = []
           for row in rows:
-             # 状況判定（要件どおり）
-             if row["submit_flag"] is None or row["submit_flag"] == 0:
-               status = "未提出"
-             elif row["submit_flag"] == 1 and row["check_flag"] == 0:
-               status = "未添削"
-             else:
-               status = "添削済み"
-             result.append(
+            if row["submit_flag"] is None or row["submit_flag"] == 0:
+              status = "未提出"
+            elif row["submit_flag"] == 1 and row["check_flag"] == 0:
+              status = "未添削"
+            else:
+              status = "添削済み"
+              result.append(
                 StreamedStudent(
                     student_id=row["student_id"],
                     student_name=row["student_name"],
@@ -140,183 +137,186 @@ class Dashboard_DAO:
                     submission_id=row["submission_id"],
                     status=status
                 )
-             )
-            
+              )
+              
           return result
+            
         finally:
           cursor.close()
           conn.close()
 
     def find_streamed_name_by_id(self, streamed_id: int):
-       sql = """
-            SELECT 
-                streamed_name
-            FROM streamed
-            WHERE streamed_id = %s
-        """
-       conn = self._get_connection()
-       try:
-          cursor = conn.cursor(dictionary=True)
-          cursor.execute(sql, (streamed_id,))
-          row = cursor.fetchone()
+      sql = """
+        SELECT 
+          streamed_name
+          FROM streamed
+          WHERE streamed_id = %s
+      """
+      
+      conn = self._get_connection()
+      try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(sql, (streamed_id,))
+        row = cursor.fetchone()
 
-          return row
-       finally:
-          cursor.close()
-          conn.close()
+        return row
+      finally:
+        cursor.close()
+        conn.close()
 
     def find_submission_by_id(self, submission_id: int):
-       sql="""
-           SELECT
-               sub.submission_id,
-               sub.answer_text,
-               sub.submit_flag,
-               sub.check_flag,
-               sub.return_flag
-           FROM submission AS sub
-           WHERE sub.submission_id = %s
-       """
-       conn = self._get_connection()
-       try:
-          cursor = conn.cursor(dictionary=True)
-          cursor.execute(sql, (submission_id,))
-          row = cursor.fetchone()
+      sql="""
+        SELECT
+          sub.submission_id,
+          sub.answer_text,
+          sub.submit_flag,
+          sub.check_flag,
+          sub.return_flag
+        FROM submission AS sub
+        WHERE sub.submission_id = %s
+      """
+      
+      conn = self._get_connection()
+      try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(sql, (submission_id,))
+        row = cursor.fetchone()
 
-          return row
-       finally:
-          cursor.close()
-          conn.close()
+        return row
+      finally:
+        cursor.close()
+        conn.close()
 
     def find_submission_by_streamed_id(self, submission_id: int, admin_id: int):
-       """
-       指定された課題に続いて、受講者が解答した解答を取得し
-       添削を行う。学生名や課題タイトル、フラグを取得する。 
-       →添削画面を表示する
-       """
-       sql = """
-             SELECT
-                 sub.submission_id,
-                 sub.answer_text,
-                 sub.check_flag,
-                 s.streamed_id,
-                 s.streamed_name,
-                 s.streamed_text,
-                 stu.student_name
-             FROM submission AS sub
-             INNER JOIN streamed AS s
-               ON sub.streamed_id = s.streamed_id
-             INNER JOIN student AS stu
-               ON sub.student_id = stu.student_id
-             INNER JOIN `group` AS g
-               ON stu.group_id = g.group_id
-             WHERE sub.submission_id = %s 
-               AND g.created_by_admin_id = %s 
-             ORDER BY stu.student_id ASC
-        """
+      """
+      指定された課題に続いて、受講者が解答した解答を取得し
+      添削を行う。学生名や課題タイトル、フラグを取得する。 
+      →添削画面を表示する
+      """
+      sql = """
+          SELECT
+            sub.submission_id,
+            sub.answer_text,
+            sub.check_flag,
+            s.streamed_id,
+            s.streamed_name,
+            s.streamed_text,
+            stu.student_name
+          FROM submission AS sub
+          INNER JOIN streamed AS s
+          ON sub.streamed_id = s.streamed_id
+          INNER JOIN student AS stu
+          ON sub.student_id = stu.student_id
+          INNER JOIN `group` AS g
+          ON stu.group_id = g.group_id
+          WHERE sub.submission_id = %s 
+          AND g.created_by_admin_id = %s 
+          ORDER BY stu.student_id ASC
+      """
 
-       conn = self._get_connection()
-       try:
-         cursor = conn.cursor(dictionary=True)
-         cursor.execute(sql, (submission_id, admin_id))
-         row = cursor.fetchone()
-         return row
-       
-       finally:
+      conn = self._get_connection()
+      try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(sql, (submission_id, admin_id))
+        row = cursor.fetchone()
+        return row
+      
+      finally:
           cursor.close()
           conn.close()
 
     def update_submission_correction(self, submission_id: str, corrected_answer: str):
-       """
-       添削結果を保存し、check_flag を ON にする
-       """
-       sql = """
-            UPDATE submission
-            SET
-              answer_text = %s,
-              check_flag = 1,
-              submitted_at = NOW()
-            WHERE submission_id = %s
-       """
+      """
+      添削結果を保存し、check_flag を ON にする
+      """
+      sql = """
+        UPDATE submission
+        SET
+          answer_text = %s,
+          check_flag = 1,
+          submitted_at = NOW()
+        WHERE submission_id = %s
+      """
 
-       conn = self._get_connection()
-       try:
+      conn = self._get_connection()
+      try:
         cursor = conn.cursor()
         cursor.execute(sql, (corrected_answer, submission_id))
         conn.commit()
-       finally:
+      finally:
         cursor.close()
         conn.close()
     
     def  exists_unchecked_submission(self, streamed_id: int):
-       """
-       提出済みかつ未添削課題があれば、エラーメッセージを出す
-       """
-       sql = """
-           SELECT COUNT(*) AS cnt
-             FROM submission
-           WHERE streamed_id = %s
-             AND submit_flag = 1
-             AND check_flag = 0
-       """
-       conn = self._get_connection()
-       try:
-          cursor = conn.cursor()
-          cursor.execute(sql, (streamed_id,))
-          row = cursor.fetchone()
-          return row["cnt"] > 0
-       finally:
-          cursor.close()
-          conn.close()
+      """
+      提出済みかつ未添削課題があれば、エラーメッセージを出す
+      """
+      sql = """
+        SELECT COUNT(*) AS cnt
+        FROM submission
+        WHERE streamed_id = %s
+        AND submit_flag = 1
+        AND check_flag = 0
+      """
+      conn = self._get_connection()
+      try:
+        cursor = conn.cursor()
+        cursor.execute(sql, (streamed_id,))
+        row = cursor.fetchone()
+        return row["cnt"] > 0
+      finally:
+        cursor.close()
+        conn.close()
 
     def exists_flag_check(self, streamed_id: int) -> bool:
-       """
-       未提出 or 未添削の submission が1件でもあれば 返却不可とする
-       """
-       sql = """
-           SELECT 1
-             FROM streamed AS s
-             INNER JOIN `group` AS g
-                     ON g.group_id = s.group_id
-             INNER JOIN student AS stu
-                     ON stu.group_id = g.group_id
-             LEFT JOIN submission AS sub
-                    ON sub.student_id = stu.student_id
-                   AND sub.streamed_id = s.streamed_id
-            WHERE s.streamed_id = %s
-              AND (
-                    sub.submission_id IS NULL   
-                    OR sub.submit_flag = 0      
-                    OR sub.check_flag = 0       
-                  )
-            LIMIT 1
-       """
-       conn = self._get_connection()
-       try:
-         cursor = conn.cursor()
-         cursor.execute(sql, (streamed_id,))
-         row = cursor.fetchone() is not None
-         return row
-       finally:
-         cursor.close()
-         conn.close()
+      """
+      未提出 or 未添削の submission が1件でもあれば 返却不可とする
+      """
+      sql = """
+        SELECT 1
+        FROM streamed AS s
+        INNER JOIN `group` AS g
+        ON g.group_id = s.group_id
+        INNER JOIN student AS stu
+        ON stu.group_id = g.group_id
+        LEFT JOIN submission AS sub
+        ON sub.student_id = stu.student_id
+        AND sub.streamed_id = s.streamed_id
+        WHERE s.streamed_id = %s
+        AND (
+          sub.submission_id IS NULL   
+          OR sub.submit_flag = 0      
+          OR sub.check_flag = 0       
+        )
+        LIMIT 1
+      """
+      conn = self._get_connection()
+      try:
+        cursor = conn.cursor()
+        cursor.execute(sql, (streamed_id,))
+        row = cursor.fetchone() is not None
+        return row
+      finally:
+        cursor.close()
+        conn.close()
 
     def update_return_flag(self, streamed_id: int):
-       sql = """
-           UPDATE submission
-              SET return_flag = 1
-           WHERE streamed_id = %s
-             AND submit_flag = 1
-             AND check_flag = 1
-       """
-
-       conn = self._get_connection()
-       try:
-          cursor = conn.cursor()
-          cursor.execute(sql, (streamed_id,))
-          conn.commit()
-       finally:
-          cursor.close()
-          conn.close()
+      sql = """
+        UPDATE submission
+        SET return_flag = 1
+        WHERE streamed_id = %s
+        AND submit_flag = 1
+        AND check_flag = 1
+      """
+      
+      conn = self._get_connection()
+      try:
+        cursor = conn.cursor()
+        cursor.execute(sql, (streamed_id,))
+        conn.commit()
+      finally:
+        cursor.close()
+        conn.close()
        
        
     def find_returned_groups(self, admin_id: str):
@@ -386,5 +386,3 @@ class Dashboard_DAO:
        finally:
         cursor.close()
         conn.close()
-        
-   

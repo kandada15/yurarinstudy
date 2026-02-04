@@ -65,7 +65,8 @@
               <div class="group-item">
                 <span class="folder-icon">📁</span>
                 <div class="group-info">
-                  <span class="group-name">{{ group.group_name }}</span>
+                  <span class="group-name">{{ group.name }}</span>
+                  <span class="group-description">{{ group.description }}</span>
                 </div>
                 <span class="group-members">メンバー： {{ group.member_count }}人</span>
               </div>
@@ -88,7 +89,7 @@
               <div class="task-item">
                 <div class="task-header">
                   <label class="task-label">未添削課題</label>
-                  <a href="{{ url_for('dashboard.streamed_list') }}"><button type="button" class="btn-detail">詳細</button></a>
+                  <button type="button" class="btn-detail">詳細</button>
                 </div>
                 <p class="task-num">{{ unchecked_count }}件</p>
               </div>

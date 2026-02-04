@@ -1,16 +1,13 @@
 import mysql.connector
 from mysql.connector import MySQLConnection
-from typing import Optional
 from apps.task.models.model_submission import Submission
 from apps.config.db_config import DB_CONFIG
-
 
 # MySQLに直接アクセスするDAOクラス※submissionテーブル専用
 class SubmissionDao:
 
     # 初期化処理
     def __init__(self, config: dict | None = None) -> None:
-        # 接続情報を保持（渡されなければ config.DB_CONFIG を使う）
         self.config = config or DB_CONFIG
 
     # DB接続作成処理
@@ -64,47 +61,9 @@ class SubmissionDao:
                 submissions.append(submission)
 
             return submissions
+        
         finally:
-            cursor.close()
-            conn.close()
-
-    # (檜垣)これはtask使ってるから途中か削除予定かな？
-    def find_by_task_student(self, task_id, student_id) -> Optional[dict]:
-        """
-        task_id * student_id に一致する提出物を1件取得する。
-        未提出の場合、falseを返す
-        戻り値は dict または None。
-        keys: submission_id, answer_text, q_t, submit_flag, submitted_at, check_flag, return_flag, task_id, student_id
-        """
-        sql = """
-            SELECT
-                submission_id,
-                answer_text,
-                q_t,
-                submit_flag,
-                submitted_at,
-                checked_flag,
-                returned_flag,
-                task_id,
-                student_id
-            FROM submission
-            WHERE task_id = %s AND student_id = %s
-            LIMIT 1    
-        """
-
-        conn = self._get_connection()
-        try:
-            # cursor(dictionary=True) にし、SELECT文の結果を辞書型で受け取る
-            cursor = conn.cursor(dictionary=True)
-
-            # sqlの実行
-            cursor.execute(sql, (task_id, student_id))
-
-            # 受講者/課題の１行を取得
-            row = cursor.fetchone()
-            return row
-        finally:
-            # 例外処理なしで、カーソルと接続を閉じる
+            # 例外の有無に関わらず、最後に必ずクローズする
             cursor.close()
             conn.close()
 
@@ -146,6 +105,7 @@ class SubmissionDao:
             cursor = conn.cursor()
             cursor.execute(sql, (streamed_id, student_id, answer_text,))
             conn.commit()
+            
             return cursor.lastrowid
 
         finally:
@@ -153,33 +113,39 @@ class SubmissionDao:
             cursor.close()
             conn.close()
 
-import mysql.connector
-from apps.config.db_config import DB_CONFIG
-
 class SubmissionDao2:
+    
+    # 初期化処理
     def __init__(self, config=None):
         self.config = config or DB_CONFIG
 
+    # DB接続作成処理
     def _get_connection(self):
         return mysql.connector.connect(**self.config)
 
     def get_stats(self):
-        """提出済み数と未添削数を一気に取得"""
+        """提出済課題数と未添削課題数を取得"""
         sql = """
             SELECT 
                 COUNT(*) AS submitted_count,
                 SUM(CASE WHEN check_flag = 0 THEN 1 ELSE 0 END) AS unchecked_count
             FROM submission
         """
+        
+        # クラス内部の_get_connection()を使ってMySQL接続を取得
+        # 結果を辞書形式で取得
         conn = self._get_connection()
         try:
             cursor = conn.cursor(dictionary=True)
             cursor.execute(sql)
             row = cursor.fetchone()
+            
             return {
                 "submitted_count": row["submitted_count"] if row else 0,
                 "unchecked_count": row["unchecked_count"] if row else 0
             }
+            
         finally:
+            # 例外の有無に関わらず、最後に必ずクローズする
             cursor.close()
             conn.close()
