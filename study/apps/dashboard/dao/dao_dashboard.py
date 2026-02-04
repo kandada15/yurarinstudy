@@ -3,7 +3,7 @@
 
 import mysql.connector
 from mysql.connector import MySQLConnection
-from apps.dashboard.models.model_dashboard import Dashboard, StreamedStudent
+from apps.dashboard.models.model_dashboard import Dashboard, StreamedStudent, ReturnToStudent
 from apps.config.db_config import DB_CONFIG  # ★ これを追加
 
 # MySQLに直接アクセスするDAOクラス※progressテーブル専用
@@ -319,3 +319,72 @@ class Dashboard_DAO:
           conn.close()
        
        
+    def find_returned_groups(self, admin_id: str):
+       sql = """
+           SELECT DISTINCT
+               g.group_id,
+               g.group_name,
+               s.streamed_id,
+               s.streamed_name
+           FROM submission AS sub
+           INNER JOIN streamed AS s
+              ON sub.streamed_id = s.streamed_id
+           INNER JOIN `group` AS g
+              ON s.group_id = g.group_id
+           WHERE sub.check_flag = 1
+             AND sub.return_flag = 1
+             AND g.created_by_admin_id = %s
+           ORDER BY s.streamed_id DESC
+       """
+
+       conn = self._get_connection()
+       try:
+         cursor = conn.cursor(dictionary=True)
+         cursor.execute(sql, (admin_id,))
+         return cursor.fetchall()
+       finally:
+         cursor.close()
+         conn.close()
+
+    def find_by_group_for_streamed(self) -> list[ReturnToStudent]:
+       """
+       返却済み課題一覧を得るために必要なカラム
+       フラグ=返却済みが立っている学生を絞込み
+       """
+       sql = """
+           SELECT DISTINCT
+               stu.student_id,
+               stu.student_name
+           FROM submission AS sub
+           INNER JOIN student AS stu
+             ON sub.student_id = stu.student_id
+           INNER JOIN student AS stu
+             ON stu.group_id = g.group_id
+           INNER JOIN submission AS sub
+              ON check_flag = 1
+           ORDER BY s.streamed_id ASC
+       """
+       conn = self._get_connection()
+       try:
+         cursor = conn.cursor(dictionary=True)
+         cursor.execute(sql)
+         rows = cursor.fetchall()
+
+         returned: list[ReturnToStudent] = []
+         for row in rows:
+           rts = ReturnToStudent(
+             streamed_id=row["streamed_id"],
+             streamed_name=row["streamed_name"],
+             group_id=row["group_id"],
+             group_name=row["group_name"],
+             student_id=row["student_id"],
+             student_name=row["student_name"]
+           )
+           returned.append(rts)
+
+         return returned
+       finally:
+        cursor.close()
+        conn.close()
+        
+   

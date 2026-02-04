@@ -304,6 +304,10 @@ def correction_return():
 """ 返却済み課題の表示 """
 @dashboard_bp.route("returned/groups")
 def returned_group_list():
-    groups = s_dao.find_all_for_student()
-    return render_template("dashboard/returned_task/past_task_view.html", groups=groups)
+    admin_id = session.get('user_id')
+    groups = D_dao.find_returned_groups(admin_id)
+    members_cnt = d_dao.find_groups_for_progress(admin_id)
+
+    student_list = D_dao.find_by_group_for_streamed()
+    return render_template("dashboard/returned_task/past_task_view.html", groups=groups, members_cnt=members_cnt, student_list=student_list)
    
