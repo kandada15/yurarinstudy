@@ -1,15 +1,6 @@
 import json
 import os
-from flask import (
-    Blueprint,
-    render_template,
-    request,
-    session,
-    redirect,
-    url_for,
-    jsonify,
-    current_app,
-)
+from flask import Blueprint, render_template, request, session, redirect, url_for, jsonify, current_app
 from apps.writing.dao.dao_writing import WritingDao
 
 # Blueprintの作成
@@ -25,7 +16,16 @@ writing_bp = Blueprint(
 # DAOの作成
 w_dao = WritingDao()
 
-# JSON読み込み(ステップ一覧の内容を外部JSONで管理)
+# 管理者ID（a...）を弾く
+@writing_bp.before_request
+def restrict_access():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('auth.login'))
+    if user_id.startswith('a'):
+        return redirect(url_for('dashboard.index'))
+
+# 別ファイルのJSONを読み込む
 def load_learning_data():
     json_path = os.path.join(
         current_app.root_path, 
