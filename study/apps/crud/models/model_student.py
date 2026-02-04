@@ -1,6 +1,6 @@
 from apps.extensions import db
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date
 
 # Student テーブルモデル作成
 class Student(db.Model):

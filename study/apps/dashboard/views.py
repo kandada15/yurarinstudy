@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, session, redirect, url_for, jsonify, request
-from apps.task.dao.streamed_dao import StreamedDao
+from apps.task.dao.dao_streamed import StreamedDao
 from apps.task.dao.dao_submission import SubmissionDao2
 from apps.crud.dao.dao_group import GroupDao
 from apps.dashboard.dao.dashboard_dao import DashboardDao

@@ -1,11 +1,7 @@
-# dao_dashboard.py
-# Dashboard モデルを MySQL (dashboard テーブル) とやり取りする DAO クラス
-
 import mysql.connector
 from mysql.connector import MySQLConnection
 from apps.dashboard.models.model_dashboard import Dashboard
-from apps.config.db_config import DB_CONFIG  # ★ これを追加
-
+from apps.config.db_config import DB_CONFIG
 
 # MySQLに直接アクセスするDAOクラス※progressテーブル専用
 class DashboardDao:
