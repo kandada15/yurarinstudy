@@ -51,7 +51,10 @@
         </div>
         <div class="content-study">
             <div class="step1-content">
-            <img src="" alt="講義資料" class="step1-image" id="step1-image">
+            <img src="{{ url_for('writing.static', filename='img/essay_1.png') }}" 
+                alt="講義資料" 
+                class="step1-image" 
+                id="step1-image">
             <p class="step1-description" id="step1-description"></p>
             </div>
 
@@ -278,6 +281,7 @@
     <script>
         const currentStageNo = "{{ data.name }}";
         const currentCategoryId = "{{ data.category_id }}";
+        const staticBaseUrl = "{{ url_for('writing.static', filename='') }}";
     </script>
     <script src="{{ url_for('writing.static', filename='js/step_l.js') }}"></script>
 </body>

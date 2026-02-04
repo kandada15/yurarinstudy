@@ -8,8 +8,7 @@
         "type": "lecture",
         "phase": "理解",
         "title": "小論文とは/目的と特徴",
-        "description": "小論文の基本的な概念と目的について学びます。",
-        "imageUrl": "/static/images/step1_intro.png"
+        "imageUrl": "img/essay_1.png"
       },
       {
         "step_number": 2,

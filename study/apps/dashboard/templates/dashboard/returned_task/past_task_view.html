@@ -54,15 +54,17 @@
         
         <div class="groups-container">
           {% for group in groups %}
-          <div class="grou_content" onclick="showCorrectionStatus({{ group.streamed_name}})">
+          <div class="grou_content" onclick="showCorrectionStatus('{{ group.streamed_name}}')">
             <div class="group-icon">📁</div>
             <div class="group-info">
               <p class="group-title">{{ group.group_name }}</p>
               <p class="group-subtitle">{{ group.streamed_name }}</p>
             </div>
-            <div class="group-members">
-              <span>メンバー：１５人</span>
-            </div>
+            {% for member in members_cnt %}
+              <div class="group-members">
+                <span>メンバー：{{ member.member_count }}</span>
+              </div>
+            {% endfor %}
           </div>
           {% endfor %}    
         </div>
@@ -74,8 +76,8 @@
           <button class="group-back-btn" onclick="backToGroupList()">
             <i class="fas fa-arrow-left"></i> 　グループ選択
           </button>
-          <h1>
-            グループメンバー・プログラミング実装
+          <h1 id="correction-title">
+            グループメンバー・{{ streamed_name }}
           </h1>
         </div>
         
@@ -103,48 +105,14 @@
               </tr>
             </thead>
             <tbody id="student-table">
-              <tr>
-                <td><i class="fas fa-user-circle"></i></td>
-                <td>***</td>
-                <td>** **</td>
-                <td><button class="correct-btn" onclick="goview()">過去課題閲覧　<i class="fas fa-caret-right"></i></button></td>
-              </tr>
-              <tr>
-                <td><i class="fas fa-user-circle"></i></td>
-                <td>***</td>
-                <td>** **</td>
-                <td><button class="correct-btn" onclick="goview()">過去課題閲覧　<i class="fas fa-caret-right"></i></button></td>
-              </tr>
-              <tr>
-                <td><i class="fas fa-user-circle"></i></td>
-                <td>***</td>
-                <td>** **</td>
-                <td><button class="correct-btn" onclick="goview()">過去課題閲覧　<i class="fas fa-caret-right"></i></button></td>
-              </tr>
-              <tr>
-                <td><i class="fas fa-user-circle"></i></td>
-                <td>***</td>
-                <td>** **</td>
-                <td><button class="correct-btn" onclick="goview()">過去課題閲覧　<i class="fas fa-caret-right"></i></button></td>
-              </tr>
-              <tr>
-                <td><i class="fas fa-user-circle"></i></td>
-                <td>***</td>
-                <td>** **</td>
-                <td><button class="correct-btn" onclick="goview()">過去課題閲覧　<i class="fas fa-caret-right"></i></button></td>
-              </tr>
-              <tr>
-                <td><i class="fas fa-user-circle"></i></td>
-                <td>***</td>
-                <td>** **</td>
-                <td><button class="correct-btn" onclick="goview()">過去課題閲覧　<i class="fas fa-caret-right"></i></button></td>
-              </tr>
-              <tr>
-                <td><i class="fas fa-user-circle"></i></td>
-                <td>***</td>
-                <td>** **</td>
-                <td><button class="correct-btn" onclick="goview()">過去課題閲覧　<i class="fas fa-caret-right"></i></button></td>
-              </tr>
+              {% for student in student_list %}
+                <tr>
+                  <td><i class="fas fa-user-circle"></i></td>
+                  <td>{{ student.student_id }}</td>
+                  <td>{{ student.student_name }}</td>
+                  <td><button class="correct-btn" onclick="goview()">過去課題閲覧　<i class="fas fa-caret-right"></i></button></td>
+                </tr>
+              {% endfor %}
             </tbody>
           </table>
         </div>
@@ -201,5 +169,12 @@
 
 <!--Javascriptの読み込み（必ずこの位置）-->
 <script src="{{ url_for('static', filename='js/header.js') }}"></script>
+ <!-- ログアウト -->
+<script>
+  function gologout(){
+    window.location.href = '/auth/logout';
+  }
+</script>
+
 </body>
 </html>
