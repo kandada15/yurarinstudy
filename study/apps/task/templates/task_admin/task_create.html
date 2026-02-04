@@ -3,6 +3,7 @@
 <!--href系はすべて url_for 処理必要-->
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,17 +12,19 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
   <title>新規課題作成</title>
 </head>
+
 <body>
-<!-- 共通部分 -->
-<header class="top-header">
+  <!-- 共通部分 -->
+  <header class="top-header">
     <div class="logo-section">
       <div class="logo-img">文</div>
       <span class="app-name">文脈工房</span>
     </div>
-    <div class="user-section"><caption></caption>
+    <div class="user-section">
+      <caption></caption>
       <span class="user-badge">管理者</span>
       <!-- ログアウト -->
-      <a href="{{ url_for( 'auth.logout' ) }}" class="logout-btn" >ログアウト</a>
+      <a href="{{ url_for( 'auth.logout' ) }}" class="logout-btn">ログアウト</a>
     </div>
   </header>
 
@@ -45,83 +48,83 @@
     <a href="{{ url_for('task.task_create_form') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
     <a href="{{ url_for('dashboard.index') }}" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
   </div>
-<!--ここまで-->
+  <!--ここまで-->
 
-<div class="app-container">
-  <div class="content-wrapper">
-    <form id="taskForm" method="post" action="{% if mode == 'confirm' %}
+  <div class="app-container">
+    <div class="content-wrapper">
+      <form id="taskForm" method="post" action="{% if mode == 'confirm' %}
                                                 {{ url_for('task.task_create_complete') }}
                                               {% else %}
                                                 {{ url_for('task.task_create_confirm') }}
                                               {% endif %}">
 
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <!-- 入力画面 -->
-    {% if mode != "confirm" and mode != "complete" %}
-    <div id="inputScreen">
-      <h2>新規課題作成</h2>
-      <!-- 課題作成入力フォーム -->
-      <div id="formtask" class="form">
-        <div class="side">
-          <div class="container">
-            <!--課題タイトル-->
-            <label for="task_name">課題タイトル<span style="color: red;">*</span></label>
-            <input type="text" name="streamed_name" id="streamed_name" maxlength="50" placeholder="課題タイトルを入力..." value="{{ stream_data.streamed_name if stream_data | default('') }}">
-            <div id="task_name_error" class="error-message">{{ errors.streamed_name if errors }}</div>
-            <!--課題提出期限-->
-            <label for="streamed_limit">課題提出期限<span style="color: red; ">*</span></label>
-            <input type="date" name="streamed_limit" id="streamed_limit" placeholder="課題提出期限を入力..." value="{{ stream_data.streamed_limit if stream_data | default('') }}">
-            <div id="streamed_limit_error" class="error-message">{{ errors.streamed_limit if errors }}</div>
-            <!--配信先グループ選択-->
-            <!--この部分を今管理者が持ってるグループからセレクトでしたいからそれをデータベースさんにお願いしたい。-->
-            <label for="group_id">配信先グループ選択<span style="color: red;">*</span></label>
-            <select name="group_id" id="group_id">
-              <option value="">グループを選択してください</option>
-              {% for group in groups %}
-              <option value="{{ group.group_id }}"
-                {% if stream_data.group_id == group.group_id|string %}
-                  selected
-                {% endif %}
-              >{{ group.group_name }}</option>
-              {% endfor %}
-            </select>
-            <div id="group_id_error" class="error-message">{{ errors.group_id if errors }}</div>
-          </div>
-          <div class="container">
-            <!--問題文-->
-            <label for="task_text">問題文<span style="color: red;">*</span></label>
-            <textarea name="streamed_text" id="streamed_text" placeholder="問題文を入力..." rows="5" cols="50">{{ stream_data.streamed_text if stream_data | default('') }}</textarea>
-            <div id="task_text_error" class="error-message">{{ errors.streamed_text if errors }}</div>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <!-- 入力画面 -->
+        {% if mode != "confirm" and mode != "complete" %}
+        <div id="inputScreen">
+          <h2>新規課題作成</h2>
+          <!-- 課題作成入力フォーム -->
+          <div id="formtask" class="form">
+            <div class="side">
+              <div class="container">
+                <!--課題タイトル-->
+                <label for="task_name">課題タイトル<span style="color: red;">*</span></label>
+                <input type="text" name="streamed_name" id="streamed_name" maxlength="50" placeholder="課題タイトルを入力..." value="{{ stream_data.streamed_name if stream_data | default('') }}">
+                <div id="task_name_error" class="error-message">{{ errors.streamed_name if errors }}</div>
+                <!--課題提出期限-->
+                <label for="streamed_limit">課題提出期限<span style="color: red; ">*</span></label>
+                <input type="date" name="streamed_limit" id="streamed_limit" placeholder="課題提出期限を入力..." value="{{ stream_data.streamed_limit if stream_data | default('') }}">
+                <div id="streamed_limit_error" class="error-message">{{ errors.streamed_limit if errors }}</div>
+                <!--配信先グループ選択-->
+                <!--この部分を今管理者が持ってるグループからセレクトでしたいからそれをデータベースさんにお願いしたい。-->
+                <label for="group_id">配信先グループ選択<span style="color: red;">*</span></label>
+                <select name="group_id" id="group_id">
+                  <option value="">グループを選択してください</option>
+                  {% for group in groups %}
+                  <option value="{{ group.group_id }}" 
+                    {% if stream_data.group_id == group.group_id|string %} 
+                      selected 
+                    {% endif %}
+                    >{{ group.group_name }}</option>
+                  {% endfor %}
+                </select>
+                <div id="group_id_error" class="error-message">{{ errors.group_id if errors }}</div>
+              </div>
+              <div class="container">
+                <!--問題文-->
+                <label for="task_text">問題文<span style="color: red;">*</span></label>
+                <textarea name="streamed_text" id="streamed_text" placeholder="問題文を入力..." rows="5" cols="50">{{ stream_data.streamed_text if stream_data | default('') }}</textarea>
+                <div id="task_text_error" class="error-message">{{ errors.streamed_text if errors }}</div>
+              </div>
+            </div>
+            <!--確認画面へ飛ぶ-->
+            <button type="submit" class="btn-primary">確認画面へ</button>
           </div>
         </div>
-        <!--確認画面へ飛ぶ-->
-          <button type="submit" class="btn-primary">確認画面へ</button>
-      </div>
-    </div>
 
-    <!-- 確認画面 -->
-    {% elif mode == "confirm" %}
-    <div id="confirmScreen">
-      <h2>配信内容の確認</h2>
-      <div id="confirmContent">
-        <div class="confirm-section">
-          <h3>入力内容の確認</h3>
-          <div class="confirm-row">
-            <div class="confirm-label">課題タイトル</div>
-            <div class="confirm-value">{{stream_data.streamed_name}}</div>
-          </div>
-          <div class="confirm-row">
-            <div class="confirm-label">問題文</div>
-            <div class="confirm-value">{{stream_data.streamed_text}}</div>
-          </div>
-          <div class="confirm-row">
-            <div class="confirm-label">課題提出期限</div>
-            <div class="confirm-value">{{stream_data.streamed_limit}}</div>
-          </div>
-          <div class="confirm-row">
-            <div class="confirm-label">配信先グループ</div>
-            <div class="confirm-value">{{stream_data.group_id}}</div>
-          </div>
+        <!-- 確認画面 -->
+        {% elif mode == "confirm" %}
+        <div id="confirmScreen">
+          <h2>登録内容の確認</h2>
+          <div id="confirmContent">
+            <div class="confirm-section">
+              <h3>入力内容の確認</h3>
+              <div class="confirm-row">
+                <div class="confirm-label">課題タイトル</div>
+                <div class="confirm-value">{{stream_data.streamed_name}}</div>
+              </div>
+              <div class="confirm-row">
+                <div class="confirm-label">問題文</div>
+                <div class="confirm-value">{{stream_data.streamed_text}}</div>
+              </div>
+              <div class="confirm-row">
+                <div class="confirm-label">課題提出期限</div>
+                <div class="confirm-value">{{stream_data.streamed_limit}}</div>
+              </div>
+              <div class="confirm-row">
+                <div class="confirm-label">配信先グループ</div>
+                <div class="confirm-value">{{stream_data.group_name}}</div>
+              </div>
 
           {% for k, v in stream_data.items() %}
             <input type="hidden" name="{{ k }}" value="{{ v }}">  
@@ -135,22 +138,22 @@
       </div>
     </div>
 
-    <!-- 完了画面 -->
-    {% elif mode == "complete" %}
-    <div id="completeScreen">
-      <h2>課題配信完了</h2>
-      <p style="text-align: center; margin: 30px 0; font-size: 18px; color: #6d5a43">
-        課題を配信しました。
-      </p>
-      <div class="button-group">
-        <a href="{{ url_for('dashboard.index')}}" class="return_button">ダッシュボードに戻る</a>
-      </div>
-    </div>
-    {% endif %}
-    </form>
+        <!-- 完了画面 -->
+        {% elif mode == "complete" %}
+        <div id="completeScreen">
+          <h2>課題配信完了</h2>
+          <p style="text-align: center; margin: 30px 0; font-size: 18px; color: #6d5a43">
+            課題を配信しました。
+          </p>
+          <div class="button-group">
+            <a href="{{ url_for('dashboard.index')}}" class="return_button">ダッシュボードに戻る</a>
+          </div>
+        </div>
+        {% endif %}
+      </form>
 
+    </div>
   </div>
-</div>
 
 <!--Javascriptの読み込み（必ずこの位置）-->
 <script src="{{ url_for('task.static', filename='js/js_admin/t_create.js') }}"></script> 

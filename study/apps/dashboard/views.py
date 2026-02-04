@@ -1,48 +1,67 @@
+from flask import Blueprint, render_template, session, redirect, url_for, jsonify, request
+from apps.task.dao.dao_streamed import StreamedDao
+from apps.task.dao.dao_submission import SubmissionDao2
+from apps.crud.dao.dao_group import GroupDao
+from apps.dashboard.dao.dashboard_dao import DashboardDao
+from apps.dashboard.dao.dao_dashboard import Dashboard_DAO
 import json
 import os
-from flask import Blueprint, render_template, session, redirect, url_for, jsonify, request
-from apps.task.dao.streamed_dao import StreamedDao
-from apps.task.dao.submission_dao import SubmissionDao, SubmissionDao2
-from apps.crud.dao.group_dao import GroupDao  # 修正したDaoをインポート
-from apps.dashboard.dao.dao_dashboard import Dashboard_DAO
-from apps.dashboard.dao.dashboard_dao import DashboardDao
 
-dashboard_bp = Blueprint('dashboard', __name__, template_folder='templates', static_folder='static')
+# Blueprintの作成
+dashboard_bp = Blueprint(
+    'dashboard', 
+    __name__, 
+    # 使用するテンプレートフォルダ
+    template_folder='templates',
+    # 専用の静的ファイル(CSS,JS,画像など)を置くフォルダ
+    static_folder='static'
+)
 
 # 各DAOの初期化
 # ルート外に置く
 s_dao = StreamedDao()
 sub_dao = SubmissionDao2()
-g_dao = GroupDao()  # 新しく作成
+g_dao = GroupDao()
 d_dao = DashboardDao()
 D_dao = Dashboard_DAO()
 
-# 生徒ID（s...）を弾く
+# アクセス制限(sから始まる受講者IDを弾く)
 @dashboard_bp.before_request
 def restrict_access():
     user_id = session.get('user_id')
+    # ログインしていない場合ログイン画面へリダイレクト
     if not user_id:
         return redirect(url_for('auth.login'))
     if user_id.startswith('s'):
         return redirect(url_for('mypage.index'))
 
+# ダッシュボードトップ画面
 @dashboard_bp.route('/')
 def index():
     admin_id = session.get('user_id')
-    # 統計情報の取得
-    streamed_count = s_dao.get_streamed_count(admin_id)
-    weekly_deadline = s_dao.get_weekly_deadline_count()
-    sub_stats = sub_dao.get_stats()
-    unsubmitted_count = max(0, streamed_count - sub_stats["submitted_count"])
-    real_groups = d_dao.find_groups_for_progress(admin_id)
 
+    # 配信済課題数を取得
+    streamed_count = s_dao.get_streamed_count(admin_id)
+    # 今週締切の課題数を取得
+    weekly_deadline = s_dao.get_weekly_deadline_count()
+    # 提出状況,添削状況を取得
+    sub_stats = sub_dao.get_stats()
+    # 未提出数計算
+    unsubmitted_count = max(0, streamed_count - sub_stats["submitted_count"])
+    # 所持グループ一覧取得
+    real_groups =d_dao.find_groups_for_progress(admin_id)
+
+    # ダッシュボードトップ画面表示
     return render_template(
         'dashboard/dashboard.html',
         admin={
             "admin_id": admin_id, 
             "admin_name": session.get('user_name', '管理者')
         },
-        groups=real_groups, 
+        # 所持グループのリスト
+        groups=real_groups,
+        
+        # ダッシュボードに表示する統計情報
         streamed_count=streamed_count,
         unchecked_count=sub_stats["unchecked_count"],
         submitted_count=sub_stats["submitted_count"],
@@ -50,56 +69,64 @@ def index():
         weekly_deadline_count=weekly_deadline
     )
 
-
-# 1. 学習状況トップ（グループ選択）
-@dashboard_bp.route('/progress') 
+# 学習状況トップ画面（グループ選択）
+@dashboard_bp.route('/progress')
 def progress_top():
     admin_id = session.get('user_id')
     groups = d_dao.find_groups_for_progress(admin_id)
     return render_template('dashboard/leaning_pro_top.html', groups=groups)
 
-# 2. 生徒一覧
+# 受講者一覧画面
 @dashboard_bp.route('/progress/group/<group_id>', methods=['GET']) 
 def student_list(group_id):
+    # セッションからログイン中のユーザIDを取得
     admin_id = session.get('user_id')
-    #生徒一覧を取得
+    
+    # group_idに対応する受講者一覧を取得
     students = d_dao.find_students_by_group(group_id)
+    # 管理者の所持グループを全聚徳
     all_groups = d_dao.find_groups_for_progress(admin_id)
-    #リストの中から、group_id と一致する名前をで探す
+    
+    # group_idに対応するgroup_nameを探す
     group_name = "不明なグループ"
     for g in all_groups:
-        # DBのID(数値)とURLのID(文字列)を比較するため、念のため両方 str() にして合わせる
         if str(g['group_id']) == str(group_id):
             group_name = g['group_name']
             break
+        
+    # 受講者一覧画面表示
     return render_template(
         'dashboard/leaning_pro_stu_list.html', 
         students=students, 
         group_name=group_name
     )
 
-# 3. 個別進捗詳細
+# 受講者別学習進捗画面
 @dashboard_bp.route('/progress/student/<student_id>') 
 def student_detail(student_id):
-    # current_dir定義
+
+    # JSONへのパス
     current_dir = os.path.dirname(os.path.abspath(__file__))
     json_path = os.path.abspath(os.path.join(
         current_dir, '..', 'writing', 'static', 'json', 'steps_data.json'
     ))
+    
+    # JSONを読み込む
     try:
         with open(json_path, 'r', encoding='utf-8') as f:
             master_data = json.load(f)
     except FileNotFoundError:
         return f"JSONファイルが見つかりません: {json_path}", 404
-    # 進捗を取得
+
+    # progressテーブルから受講者の進捗状況を取得
     progress_details = d_dao.get_student_detail_list(student_id)
-    # 完了しているフェーズ名をセットにする
     completed_keys = {d['phase_name'] for d in progress_details if d['stage_flag'] == 1}
-    #統計の計算
+    # 進捗率を計算
     total_stages = len(master_data)
     completed_stages = len(completed_keys)
     percent = int((completed_stages / total_stages) * 100) if total_stages > 0 else 0
 
+    # 受講者別学習進捗画面表示
     return render_template(
         'dashboard/leaning_pro.html',
         student_id=student_id,
@@ -112,11 +139,11 @@ def student_detail(student_id):
         }
     )
 
+# 
 @dashboard_bp.route('/manage')
 def group_list():
     admin_id = session.get('user_id')
     
-    # 1. HTMLのカード表示用に「自分が作ったグループ」を取得
     groups = d_dao.find_groups_for_progress(admin_id)
     
     return render_template('dashboard/group_list.html', groups=groups)
@@ -124,6 +151,7 @@ def group_list():
 @dashboard_bp.route('/api/students')
 def get_students_api():
     """JSの検索機能（モーダル）で使うための全受講者データ"""
+    d_dao = DashboardDao()
     students = d_dao.find_all_students()
     # mysql-connectorの辞書形式をそのままJSONとして返す
     return jsonify(students)
@@ -131,6 +159,7 @@ def get_students_api():
 @dashboard_bp.route('/api/group/<group_id>/members')
 def get_group_members(group_id):
     """特定のグループに所属する受講生の一覧を返すAPI"""
+    d_dao = DashboardDao()
     # DAOの find_students_by_group を使用
     members = d_dao.find_students_by_group(group_id)
     return jsonify(members)
@@ -146,14 +175,14 @@ def add_group_members():
     # 400エラーを出している犯人はここ
     if not group_id or not student_ids:
         return jsonify({"success": False, "message": "データ不足"}), 400
-
+    
     success = d_dao.update_students_group(group_id, student_ids)
 
     if success:
         return jsonify({"success": True, "message": "メンバーを追加しました"})
     else:
         return jsonify({"success": False, "message": "DB更新に失敗しました"}), 500
-    
+
 @dashboard_bp.route('/api/group/remove-member', methods=['POST'])
 def remove_group_member():
     data = request.json
@@ -162,6 +191,7 @@ def remove_group_member():
     if not student_id:
         return jsonify({"success": False, "message": "受講生IDが指定されていません"}), 400
 
+    d_dao = DashboardDao()
     success = d_dao.remove_student_from_group(student_id)
 
     if success:
@@ -169,7 +199,6 @@ def remove_group_member():
     else:
         return jsonify({"success": False, "message": "削除処理に失敗しました"}), 500
     
-
 @dashboard_bp.route('/api/group/update', methods=['POST'])
 def update_group():
     data = request.json
@@ -179,6 +208,7 @@ def update_group():
     if not group_id or not group_name:
         return jsonify({"success": False, "message": "入力が正しくありません"}), 400
 
+    d_dao = DashboardDao()
     success = d_dao.update_group_name(group_id, group_name)
 
     if success:
@@ -188,6 +218,7 @@ def update_group():
 
 @dashboard_bp.route('/group/create', methods=['GET', 'POST'])
 def group_create():
+    d_dao = DashboardDao()
     if request.method == 'POST':
         data = request.json
         group_name = data.get('group_name')

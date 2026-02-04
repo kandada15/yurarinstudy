@@ -49,6 +49,7 @@ class GroupDao:
 
             return groups
         finally:
+            # 例外の有無に関わらず、最後に必ずクローズする
             cursor.close()
             conn.close()
 
@@ -78,6 +79,7 @@ class GroupDao:
             row = cursor.fetchone()
             return row
         finally:
+            # 例外の有無に関わらず、最後に必ずクローズする
             cursor.close()
             conn.close()
 
