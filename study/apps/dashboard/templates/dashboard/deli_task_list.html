@@ -15,7 +15,8 @@
     </div>
     <div class="user-section">
       <span class="user-badge">管理者</span>
-      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
+      <!-- ログアウト -->
+      <button class="logout-btn" onclick="gologout()">ログアウト</button>
     </div>
   </header>
 
@@ -57,6 +58,21 @@
     </div>
   </div>
 
-  <script src="{{ url_for('task.static', filename='js/deli_task_list.js') }}"></script> 
+  <script src="{{ url_for('dashboard.static', filename='js/deli_task_list.js') }}"></script> 
+  <script>
+  // 回答画面へのベースURLを保持する役割（末尾のIDを除いた部分）
+  // /task/student/tasks/
+  const BASE_INQ_URL = "{{ url_for('dashboard.streamed_list') }}"; 
+
+  // ページ遷移用の関数
+  function changePage(page) {
+    window.location.href = `${BASE_INQ_URL}?page=${page}`;
+  }
+  </script>
+  <script>
+    function gologout(){
+      window.location.href = '/auth/logout';
+    }
+  </script>
 </body>
 </html>

@@ -1,186 +1,130 @@
-<!--学習状況表示-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
   <link rel="stylesheet" href="{{ url_for('mypage.static', filename='css/l_pro.css') }}">
-  <link rel="stylesheet" href="{{ url_for('mypage.static', filename='css/header.css') }}">
-  <title>学習状況表示</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <title>{{ student_id }}さんの学習状況 | 文脈工房</title>
 </head>
 <body>
-  <header class="top-header">
+
+<header class="top-header">
     <div class="logo-section">
       <div class="logo-img">文</div>
       <span class="app-name">文脈工房</span>
     </div>
     <div class="user-section">
-      <span class="user-badge">受講者</span>
-      <!--ログアウト-->
-      <a href="{{ url_for( 'auth.logout' ) }}" class="logout-btn" >ログアウト</a>
+      <span class="user-badge">管理者</span>
+      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
     </div>
-  </header>
+</header>
 
-  <!-- 左側の穴 -->
-  <div class="holes-container">
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
+<div class="holes-container">
+    <div class="hole"></div><div class="hole"></div>
+    <div class="hole"></div><div class="hole"></div>
+    <div class="hole"></div><div class="hole"></div>
+    <div class="hole"></div><div class="hole"></div>
+</div>
 
-    
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-  </div>
+<div class="tabs-container">
+    <a href="{{ url_for('writing.index') }}" class="tab" data-page="users" data-color="#e8dcc8">ライティング機能</a>
+    <a href="{{ url_for('task.student_task_list') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
+    <a href="{{ url_for('mypage.index') }}" class="tab active" data-page="dashboard" data-color="#d4c5b0">マイページ</a>
+</div>
 
-  <!-- 右側のタブ -->
-  <div class="tabs-container">
-    <a href="learning_top.html" class="tab active" data-page="users" data-color="#e8dcc8">ライティング学習</a>
-    <a href="mypage.html" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
-    <a href="ass_list.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
-  </div>
-
-  <div class="app-container">
+<div class="app-container fade-in">
     <div class="content-wrapper">
-      <h1>学習状況</h1>
+        <div class="name-button-contener">
+            <a href="javascript:history.back()"></a>
+            <h1>{{ student_id }}さんの学習状況</h1>
+        </div>
     
-      <!-- 統計情報（上部） -->
-      <div class="stats-section-wrapper">
-        <div class="stats-section">
-          <div class="chart-container">
-            <div class="chart-wrapper">
-              <svg viewBox="0 0 150 150">
-                <circle cx="75" cy="75" r="70"></circle>
-              </svg>
+        <div class="stats-section-wrapper">
+            <div class="stats-section">
+                <div class="chart-container">
+                    <div class="chart-wrapper">
+                        <svg viewBox="0 0 150 150">
+                            <circle cx="75" cy="75" r="70"></circle>
+                        </svg>
+                    </div>
+                    <div class="percentage-info">
+                        <div class="percentage">{{ percent }}%</div>
+                        <div class="percentage-label">完了率</div>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">全ステージ数</div>
+                        <div class="stat-value">{{ stats.total_count }}個</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">完了ステージ数</div>
+                        <div class="stat-value">{{ stats.completed_count }}個</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">未完了ステージ数</div>
+                        <div class="stat-value">{{ stats.total_count - stats.completed_count }}個</div>
+                    </div>
+                </div>
             </div>
-            <div class="percentage-info">
-              <div class="percentage">40%</div>
-              <div class="percentage-label">完了率</div>
-            </div>
-          </div>
-          
-          <div class="stats-grid">
-            <div class="stat-item">
-              <div class="stat-label">全ステージ数</div>
-              <div class="stat-value">２０個</div>
-            </div>
-            
-            <div class="stat-item">
-              <div class="stat-label">完了ステージ数</div>
-              <div class="stat-value">５個</div>
-            </div>
-            
-            <div class="stat-item">
-              <div class="stat-label">未完了ステージ数</div>
-              <div class="stat-value">１５個</div>
-            </div>
-          </div>
         </div>
-      </div>
 
-      <!-- テーブル（下部） -->
-      <div class="table-section">
-          <!-- タブ -->
-          <div class="tabs">
-            <button class="tab2 active" onclick="switchTab(event, 'essay')">小論文</button>
-            <button class="tab2" onclick="switchTab(event, 'report')">レポート</button>
-            <button class="tab2" onclick="switchTab(event, 'business')">ビジネス文章</button>
-            <button class="tab2" onclick="switchTab(event, 'training')">表現トレーニング</button>
-          </div>
+        <div class="table-section">
+            <div class="tabs">
+                <button class="tab2 active" onclick="switchTab(event, 'essay')">小論文</button>
+                <button class="tab2" onclick="switchTab(event, 'report')">レポート</button>
+                <button class="tab2" onclick="switchTab(event, 'business')">ビジネス文章</button>
+                <button class="tab2" onclick="switchTab(event, 'training')">表現トレーニング</button>
+            </div>
 
-          <!-- 小論文 -->
-          <div id="essay" class="tab-content active">
-            <table>
-              <thead>
-                <tr>
-                  <th>ステージ</th>
-                  <th>フェーズ</th>
-                  <th>学習内容</th>
-                  <th>進捗</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td>1</td><td>理解</td><td>小論文とは／目的と特徴</td><td>未学習</td></tr>
-                <tr><td>2</td><td>構成</td><td>序論・本論・結論の作り方</td><td>未学習</td></tr>
-                <tr><td>3</td><td>思考</td><td>問題把握／主張の立て方／論理展開</td><td>未学習</td></tr>
-                <tr><td>4</td><td>表現</td><td>文体／語彙／文章／接続詞</td><td>未学習</td></tr>
-                <tr><td>5</td><td>実践</td><td>添削／推敲／課題用例／評価基準の理解</td><td>未学習</td></tr>
-              </tbody>
-            </table>
-          </div>
+            <div id="essay" class="tab-content active">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ステージ</th>
+                            <th>フェーズ</th>
+                            <th>学習内容</th>
+                            <th>進捗</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, content in master_data.items() %}
+                            {% if content.category == 'essay' %}
+                                <tr>
+                                    <td class="number"></td>
+                                    <td>{{ content.steps[0].phase }}</td>
+                                    <td>{{ content.title }}</td>
+                                    <td>
+                                        {% if key in completed_keys %}
+                                            <span>完了</span>
+                                        {% else %}
+                                            <span>未学習</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
-          <!-- レポート -->
-          <div id="report" class="tab-content">
-            <table>
-              <thead>
-                <tr>
-                  <th>ステージ</th>
-                  <th>フェーズ</th>
-                  <th>学習内容</th>
-                  <th>進捗</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td>1</td><td>理解</td><td>小論文とは／目的と特徴</td><td>未学習</td></tr>
-                <tr><td>2</td><td>構成</td><td>序論・本論・結論の作り方</td><td>未学習</td></tr>
-                <tr><td>3</td><td>思考</td><td>問題把握／主張の立て方／論理展開</td><td>未学習</td></tr>
-                <tr><td>4</td><td>表現</td><td>文体／語彙／文章／接続詞</td><td>未学習</td></tr>
-                <tr><td>5</td><td>実践</td><td>添削／推敲／課題用例／評価基準の理解</td><td>未学習</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- ビジネス文章 -->
-          <div id="business" class="tab-content">
-            <table>
-              <thead>
-                <tr>
-                  <th>ステージ</th>
-                  <th>フェーズ</th>
-                  <th>学習内容</th>
-                  <th>進捗</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td>1</td><td>理解</td><td>小論文とは／目的と特徴</td><td>未学習</td></tr>
-                <tr><td>2</td><td>構成</td><td>序論・本論・結論の作り方</td><td>未学習</td></tr>
-                <tr><td>3</td><td>思考</td><td>問題把握／主張の立て方／論理展開</td><td>未学習</td></tr>
-                <tr><td>4</td><td>表現</td><td>文体／語彙／文章／接続詞</td><td>未学習</td></tr>
-                <tr><td>5</td><td>実践</td><td>添削／推敲／課題用例／評価基準の理解</td><td>未学習</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- 表現トレーニング -->
-          <div id="training" class="tab-content">
-            <table>
-              <thead>
-                <tr>
-                  <th>ステージ</th>
-                  <th>フェーズ</th>
-                  <th>学習内容</th>
-                  <th>進捗</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td>1</td><td>理解</td><td>小論文とは／目的と特徴</td><td>未学習</td></tr>
-                <tr><td>2</td><td>構成</td><td>序論・本論・結論の作り方</td><td>未学習</td></tr>
-                <tr><td>3</td><td>思考</td><td>問題把握／主張の立て方／論理展開</td><td>未学習</td></tr>
-                <tr><td>4</td><td>表現</td><td>文体／語彙／文章／接続詞</td><td>未学習</td></tr>
-                <tr><td>5</td><td>実践</td><td>添削／推敲／課題用例／評価基準の理解</td><td>未学習</td></tr>
-              </tbody>
-            </table>
-          </div>
+            <div id="report" class="tab-content">
+                <p style="padding: 20px; text-align: center;">レポートの課題データは準備中です。</p>
+            </div>
+            <div id="business" class="tab-content">
+                <p style="padding: 20px; text-align: center;">ビジネス文章の課題データは準備中です。</p>
+            </div>
+            <div id="training" class="tab-content">
+                <p style="padding: 20px; text-align: center;">表現トレーニングの課題データは準備中です。</p>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  
+</div>
 
-<!--Javascriptの読み込み（必ずこの位置）-->
-<script src="{{ url_for('mypage.static', filename='js/l_pro.js') }}"></script> 
-<script src="{{ url_for('mypage.static', filename='js/header.js') }}"></script> 
+<script src="{{ url_for('dashboard.static', filename='js/l_pro.js') }}"></script> 
+<script src="{{ url_for('static', filename='js/header.js') }}"></script> 
 </body>
 </html>

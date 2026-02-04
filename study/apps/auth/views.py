@@ -34,21 +34,21 @@ def login():
 
         # パスワードチェック
         if user and user.password == password:
-            # セッションに情報を保存
-            session['user_id'] = user_id
-            session['user_type'] = user_type
+            if user_type == 'admin':
+                session['user_id'] = user.admin_id 
+            else:
+                # セッションに名前を保存
+                session['user_id'] = user.student_id
             
-            # セッションに名前を保存
+            session['user_type'] = user_type
             if user_type == 'admin':
                 session['user_name'] = user.admin_name
-            else:
-                session['user_name'] = user.student_name
-
-            # ログイン後の遷移先を分岐
-            if user_type == 'admin':
+                # 管理者の場合はダッシュボード画面
                 return redirect(url_for('dashboard.index'))
             else:
-                return redirect(url_for('writing.index'))
+                session['user_name'] = user.student_name
+                # 受講者の場合はマイページ画面
+                return redirect(url_for('mypage.index'))
         else:
             error = 'ユーザ名またはパスワードに誤りがあります'
     return render_template('login.html', error=error)

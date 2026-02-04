@@ -1,6 +1,5 @@
 <!--task_stu_list.html-->
 <!--課題別受講者一覧-->
-<!--データベースから持ってくる情報だからｊｓで繰り返し表を表示させるようにするよりもFLaakのほうがいいと思うのでそっちでお願いしたい一番下にコメントアウトでこんな感じってコード載せとく-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -19,8 +18,8 @@
     </div>
     <div class="user-section">
       <span class="user-badge">管理者</span>
-      <!--ここリンクをｊｓ管理してるけどアクション名？にしてログアウトできるように-->
-      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
+      <!-- ログアウト -->
+      <button class="logout-btn" onclick="gologout()">ログアウト</button>
     </div>
   </header>
 
@@ -46,7 +45,6 @@
 
   <div class="app-container">
     <div class="content-wrapper">
-      <!--ここ名前何にしたらいいか迷走中-->
       <h1>{{ streamed_name }}</h1>
       <!-- 検索バーと受講者一覧のセクション -->
        <form method="get">
@@ -60,7 +58,7 @@
       <div class="table-section">
         <div class="table-header">
           <button class="return-btn"onclick="goreturn()">⇦　課題一覧へ戻る</button>
-          <button class="return-btn" onclick="returnToList()">添削済を返却</button>
+          <button class="return-btn" onclick="openReturnToList()">添削済を返却</button>
         </div>
         
         <div class="table-scroll-wrapper">
@@ -75,7 +73,7 @@
             </thead>
             <tbody>
               {% for sd_s in streamed_student %}
-                <tr>
+                <tr data-status="{{ sd_s.status }}">
                   <td>{{ sd_s.student_id }}</td>
                   <td>{{ sd_s.student_name }}</td>
                   <td><span class="status-badge{% if sd_s.status == '未提出' %}
@@ -105,47 +103,92 @@
       </div>
     </div>
   </div>
+
+  <div id="returnModal" class="modal hidden">
+    <div class="modal-content">
+      <p>添削済みの課題を返却しますか？</p>
+
+      <form id="returnForm"
+        data-back-url="{{ url_for('dashboard.streamed_list') }}"
+        data-streamed-id="{{ streamed_id }}">
+
+        <input type="hidden" name="streamed_id" value="{{ streamed_id }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="modal-actions">
+          <button type="button" onclick="submitReturn()">返却する</button>
+          <button type="button" onclick="closeReturnModal()">キャンセル</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<!-- Javascriptの読み込み（必ずこの位置） -->
   <script>
     function goreturn() {
-      window.location.href = `dashboard/`;
+      window.location.href = "{{ url_for('dashboard.streamed_list') }}";
     }
 
-  </script>
-  
+    // 未添削チェック
+    function openReturnToList() {
+      const rows = document.querySelectorAll("tbody tr");
+      const hasUnchecked = [...rows].some(
+      row => row.dataset.status === "未添削"
+    );
 
-<!--Javascriptの読み込み（必ずこの位置）-->
+    if (hasUnchecked) {
+      showToast("未添削の課題があります");
+      return;
+    }
+
+    document.getElementById("returnModal").classList.remove("hidden");
+    }
+
+    // モーダルを閉じる
+    function closeReturnModal() {
+      document.getElementById("returnModal").classList.add("hidden"); 
+    }
+
+    // 返却処理
+    function submitReturn() {
+      const form = document.getElementById("returnForm");
+
+      const formData = new FormData(form);
+
+      fetch("{{ url_for('dashboard.correction_return') }}", {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success) {
+          showToast(data.message);
+          closeReturnModal();
+          return;
+        }
+
+        showToast("課題の返却が完了しました");
+        setTimeout(() => {
+          window.location.href = form.dataset.backUrl;
+        }, 2000);
+      })
+      .catch(() => {
+        showToast("返却処理に失敗しました");
+      });
+    }
+
+    // 簡易トースト
+    function showToast(msg) {
+      alert(msg);
+    }
+  </script>
+
+<!-- 以下スクリプト -->
 <script src="{{ url_for('static', filename='js/header.js') }}"></script> 
+<script>
+  function gologout(){
+    window.location.href = '/auth/logout';
+  }
+</script>
 </body>
 </html>
-
-<!--バックエンドさんへ-->
-<!--
-あ、これちゃっぴーに書いてもらったやつ、
-調べる時間減ればいいと思って動かなかったらごめんぴ
-
-flask側
-
-from flask import Flask, render_template
-import sqlite3
-
-app = Flask(__name__)
-
-def get_tasks():
-    conn = sqlite3.connect("app.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, title, sender, deadline FROM tasks")
-    tasks = cursor.fetchall()
-    conn.close()
-    return tasks
-
-
-@app.route("/tasks")
-def task_list():
-    tasks = get_tasks()  # ← DBから取得
-    return render_template("task_list.html", tasks=tasks)
-
-HTML側
-
-
--->
-

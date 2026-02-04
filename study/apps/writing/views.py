@@ -60,22 +60,23 @@ def index():
 @writing_bp.route("/step_list/<int:category_id>")
 def step_list(category_id):
     # ログインしていない場合ログイン画面へリダイレクト
-    if "user_id" not in session:
-        return redirect(url_for("auth.login"))
-
+    if 'user_id' not in session:
+        return redirect(url_for('auth.login'))
+    
     # ログイン中の受講者ID,進捗状況を取得
-    student_id = session.get("user_id")
+    student_id = session.get('user_id')
     progress_data = w_dao.get_user_progress(student_id, category_id)
+    
     # 学習済ステップだけをリストにまとめる
-    completed_list = [row["phase_name"] for row in progress_data if row["stage_flag"]]
-
+    completed_list = [row['phase_name'] for row in progress_data if row['stage_flag']]
+    
     # テンプレートに渡すデータを作成
     data = {
         "name": w_dao.get_category_name(category_id), 
         "category_id": category_id
     }
-
-    # JSONのステップ一覧データ読み込み
+    
+    # 学習用データJSONのステップ一覧データ読み込み
     learning_data = load_learning_data()
 
     # ステップ一覧画面表示

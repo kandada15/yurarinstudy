@@ -56,7 +56,9 @@
           <div class="section box">
             <div class="group-header">
               <h2 class="group-title">所属グループ</h2>
-              <button type="button" class="group-button" onclick="GoGroupManage()">グループ管理</button>
+              <button type="button" class="group-button" onclick="location.href='{{ url_for('dashboard.group_list') }}'">
+                グループ管理
+              </button>
             </div>
             <div class="group-list">
               {% for group in groups %}
@@ -116,9 +118,13 @@
       </div>
     </div>
   </div>
-  <script>
-    function GoGroupManage() {window.location.href = "{{ url_for('dashboard.group_list') }}";};
-  </script>
-  <script src="{{ url_for('static', filename='js/header.js') }}"></script> 
+<script>
+  const groupManageUrl = `dashboard/manage`;
+
+  function GoGroupManage() {
+    window.location.href = groupManageUrl;
+  }
+</script>
+<script src="{{ url_for('static', filename='js/header.js') }}"></script> 
 </body>
 </html>
