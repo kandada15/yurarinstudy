@@ -133,7 +133,9 @@ function updateLectureDisplay(d) {
     setText('step1-title', d.title);
     setText('step1-description', d.description);
     const img = document.getElementById('step1-image');
-    if (img) img.src = d.imageUrl || "";
+    if (img && d.imageUrl) {
+        img.src = staticBaseUrl + d.imageUrl; 
+    }
 }
 
 function updateQuizDisplay(d) {
