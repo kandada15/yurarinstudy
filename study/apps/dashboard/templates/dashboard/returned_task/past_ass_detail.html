@@ -1,0 +1,143 @@
+<!--過去課題内容閲覧-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/returned_task/past_ass_detail.css') }}">
+  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/returned_task/header.css') }}">
+  <title></title>
+</head>
+<body>
+  <header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">管理者</span>
+      <!--ここリンクをｊｓ管理してるけどアクション名？にしてログアウトできるように-->
+      <button class="logout-btn" onclick="gologout()">ログアウト</button>
+    </div>
+  </header>
+
+  <!-- 左側の穴 -->
+  <div class="holes-container">
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+  </div>
+
+  <!-- 右側のタブ -->
+  <!--ここのリンク{{}}処理必要-->
+  <div class="tabs-container">
+    <a href="user_info_list.html" class="tab active" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    <a href="task_create.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    <a href="dashboard.html" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
+  </div>
+  <!--ここまで-->
+
+  <div class="app-container">
+    <div class="content-wrapper">
+      <div class="header">
+        <h1 class="title-heading">課題詳細</h1>
+        <div class="respondent">解答者：<span id="respondent-name">山田太郎</span></div>
+          
+      </div>
+
+      <div class="layout">
+        <div class="left-column">
+          <div class="form-group">
+            <label class="form-label">タイトル</label>
+            <div class="form-display" id="title">環境問題についての小論文</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">問題文</label>
+            <div class="form-display-area" id="question">近年、地球温暖化や海洋汚染などの環境問題が深刻化しています。これらの問題に対して、私たち一人ひとりができることは何でしょうか。あなたの考えを、具体例を挙げながら800字程度で述べなさい。</div>
+          </div>
+        </div>
+
+        <div class="right-column">
+          <div class="form-group">
+          <div class="side-answewr">
+              <label class="form-label">解答</label>
+              <button class="correction-toggle" onclick="toggleCorrection()" id="toggle-btn">添削を表示</button>
+          </div>
+              <div class="form-display-area answer" id="answer">環境問題は現代社会における最も重要な課題の一つである。私たちができることとして、日常生活における小さな行動の積み重ねが重要だと考える。
+
+まず、エネルギー消費の削減が挙げられる。例えば 、不要な照明を消す、エアコンの設定温度を適切にする、公共交通機関を利用するなどの行動が考えられる。
+
+次に、ごみの削減とリサイクルの徹底である。使い捨て製品の使用を控え、マイバッグやマイボトルを持参することで、プラスチックごみを減らすことができる。
+
+最後に、環境問題についての知識を深め、周囲の人々と共有することも重要である。一人ひとりの意識改革が、社会全体の変化につながると信じている。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <button class="close-button" onclick="closeWindow()">閉じる</button>
+      </div>
+    </div>
+  </div>
+<script>
+        // ダミーデータ（後でDBに差し替え）
+const data = {
+  respondent: "山田太郎",
+  title: "環境問題についての小論文",
+  question: "近年、地球温暖化や海洋汚染などの環境問題が深刻化しています。これらの問題に対して、私たち一人ひとりができることは何でしょうか。あなたの考えを、具体例を挙げながら800字程度で述べなさい。",
+  answerWithoutCorrection: `環境問題は現代社会における最も重要な課題の一つである。私たちができることとして、日常生活における小さな行動の積み重ねが重要だと考える。
+
+まず、エネルギー消費の削減が挙げられる。例えば、不要な照明を消す、エアコンの設定温度を適切にする、公共交通機関を利用するなどの行動が考えられる。
+
+次に、ごみの削減とリサイクルの徹底である。使い捨て製品の使用を控え、マイバッグやマイボトルを持参することで、プラスチックごみを減らすことができる。
+
+最後に、環境問題についての知識を深め、周囲の人々と共有することも重要である。一人ひとりの意識改革が、社会全体の変化につながると信じている。`,
+  answerWithCorrection: `環境問題は現代社会における最も重要な課題の一つである。【添削：導入部は良いですが、もう少し具体的な問題提起があるとより良いでしょう】私たちができることとして、日常生活における小さな行動の積み重ねが重要だと考える。
+
+まず、エネルギー消費の削減が挙げられる。例えば、不要な照明を消す、エアコンの設定温度を適切にする、公共交通機関を利用するなどの行動が考えられる。【添削：具体例が良いです。数値データを入れるとさらに説得力が増します】
+
+次に、ごみの削減とリサイクルの徹底である。【添削：「である」調で統一しましょう】使い捨て製品の使用を控え、マイバッグやマイボトルを持参することで、プラスチックごみを減らすことができる。
+
+最後に、環境問題についての知識を深め、周囲の人々と共有することも重要である。一人ひとりの意識改革が、社会全体の変化につながると信じている。【添削：結論部分はよく書けています。全体として論理的な構成です】`
+};
+
+let showingCorrection = false;
+
+// 初期表示（DOMが読み込まれてから）
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById('respondent-name').textContent = data.respondent;
+  document.getElementById('title').textContent = data.title;
+  document.getElementById('question').textContent = data.question;
+  document.getElementById('answer').textContent = data.answerWithoutCorrection;
+});
+
+function toggleCorrection() {
+  const answerField = document.getElementById('answer');
+  const toggleBtn = document.getElementById('toggle-btn');
+
+  showingCorrection = !showingCorrection;
+
+  if (showingCorrection) {
+    answerField.textContent = data.answerWithCorrection;
+    toggleBtn.textContent = '添削を非表示';
+  } else {
+    answerField.textContent = data.answerWithoutCorrection;
+    toggleBtn.textContent = '添削を表示';
+  }
+}
+
+function closeWindow() {
+  window.history.back();
+}
+
+    </script>
+    <!--Javascriptの読み込み（必ずこの位置）-->
+<script src="{{ url_for('static', filename='js/header.js') }}"></script>  
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!--受講者別過去課題提出物一覧(配信済み課題一覧)-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/returned_task/task_list.css') }}">
+  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/returned_task/deli_task_list.css') }}">
+  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/returned_task/header.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <title>課題一覧</title>
+</head>
+<body>
+<!--ここからbace.htmlから引っ張れる-->
+  <header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">管理者</span>
+      <!--ここリンクをｊｓ管理してるけどアクション名？にしてログアウトできるように-->
+      <button class="logout-btn" onclick="gologout()">ログアウト</button>
+    </div>
+  </header>
+
+  <!-- 左側の穴 -->
+  <div class="holes-container">
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+    <div class="hole"></div>
+  </div>
+
+  <!-- 右側のタブ -->
+  <!--ここのリンク{{}}処理必要-->
+  <div class="tabs-container">
+    <a href="user_info_list.html" class="tab active" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    <a href="task_create.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    <a href="dashboard.html" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
+  </div>
+  <!--ここまで-->
+
+  <div class="app-container">
+    <div class="content-wrapper">
+
+      <!-- 課題一覧画面 -->
+      <div id="task-list-view">
+        <!--ここの名前のとこデータベースでお願いしますすすす-->
+        <!--課題表示の繰り返し処理も。。。-->
+        <div class="name-button-contener">
+          <button class="group-back-btn" onclick="backToMemberList()">
+            <i class="fas fa-arrow-left"></i> 　受講者選択
+          </button>
+
+          <h1>
+            〇〇さんの課題一覧
+          </h1>
+        </div>
+        
+        <div class="task-grid">
+          <button class="task-card" onclick="location.href='past_ass_detail.html'">
+            <label>配信日11月30日</label>
+            <p class="task_title">小論文の順序立て構成練習</p>
+            <div class="side">
+              <p class="pp">配信者:猪口慎一</p>
+              <p class="pp">提出期限:12月26日</p>
+            </div>
+          </button>
+          
+          <button class="task-card" onclick="location.href='past_ass_detail.html'">
+            <label>配信日12月5日</label>
+            <p class="task_title">読解問題と要約練習</p>
+            <div class="side">
+              <p class="pp">配信者:田中太郎</p>
+              <p class="pp">提出期限:12月30日</p>
+            </div>
+          </button>
+          
+          <button class="task-card" onclick="location.href='past_ass_detail.html'">
+            <label>配信日12月10日</label>
+            <p class="task_title">文章構成と論理展開</p>
+            <div class="side">
+              <p class="pp">配信者:佐藤花子</p>
+              <p class="pp">提出期限:1月10日</p>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+
+  function backToMemberList() {
+    window.location.href =
+      'past_task_view.html?from=group&group=プログラミング実装';
+  }
+  </script>
+
+  
+
+<!--Javascriptの読み込み（必ずこの位置）-->
+<script src="{{ url_for('static', filename='js/header.js') }}"></script>  
+</body>
+</html>

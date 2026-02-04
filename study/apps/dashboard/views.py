@@ -300,4 +300,9 @@ def correction_return():
         "message": "課題の返却が完了しました"
     })
 
+
+""" 返却済み課題の表示 """
+@dashboard_bp.route("returned/groups")
+def returned_group_list():
+    return render_template("dashboard/returned_task/past_task_view.html")
    
