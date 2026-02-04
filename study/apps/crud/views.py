@@ -112,3 +112,68 @@ def search_users():
             "status": "error",
             "message": str(e)
         }), 500
+
+# ============================================
+# パスワードリセット API
+# ============================================
+@crud_bp.route("/api/user/reset_password", methods=["POST"])
+def api_reset_password():
+    data = request.json
+    # ターミナルで中身を確認するためのデバッグ
+    print(f"--- パスワードリセットリクエスト ---")
+    print(f"受信データ: {data}")
+
+    if not data:
+        return jsonify({"status": "error", "message": "データが空です"}), 400
+
+    user_id = data.get("user_id")
+    user_type = data.get("type")
+
+    success = False
+    try:
+        if user_type == "admin":
+            # AdminDao の reset_password を実行
+            success = admin_dao.reset_password(user_id)
+        else:
+            # StudentDao の reset_password を実行
+            success = student_dao.reset_password(user_id)
+        
+        if success:
+            return jsonify({"status": "success", "message": "パスワードをリセットしました"})
+        else:
+            return jsonify({"status": "error", "message": "対象のユーザが見つかりませんでした"}), 400
+
+    except Exception as e:
+        print(f"エラー発生: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+# ============================================
+# ユーザ削除 API
+# ============================================
+@crud_bp.route("/api/user/delete", methods=["POST"])
+def api_delete_user():
+    data = request.json
+    print(f"--- ユーザ削除リクエスト ---")
+    print(f"受信データ: {data}")
+
+    if not data:
+        return jsonify({"status": "error", "message": "データが空です"}), 400
+
+    user_id = data.get("user_id")
+    user_type = data.get("type")
+
+    success = False
+    try:
+        if user_type == "admin":
+            success = admin_dao.delete_admin(user_id)
+        else:
+            success = student_dao.delete_student(user_id)
+
+        if success:
+            return jsonify({"status": "success", "message": "ユーザを削除しました"})
+        else:
+            return jsonify({"status": "error", "message": "削除に失敗しました"}), 400
+
+    except Exception as e:
+        print(f"エラー発生: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500

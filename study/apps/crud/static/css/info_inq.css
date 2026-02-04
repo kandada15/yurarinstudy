@@ -41,15 +41,8 @@ body {
   background: rgba(255, 254, 249, 0.95);
   padding: 30px;
   position: relative;
-  border: 1px solid #000; /*わかりやすくボーダーをひく*/
-  overflow-y: scroll; /*縦方向にスクロール*/
-  -ms-overflow-style: none; /* Edge / IE */
-  scrollbar-width: none;    /* Firefox */
 }
-/* Chrome / Safari */
-.content-wrapper::-webkit-scrollbar {
-  display: none;
-}
+
 /* ============================================ */
 /* アニメーション（本をめくる効果） */
 /* ============================================ */
