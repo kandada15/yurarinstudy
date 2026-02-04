@@ -49,7 +49,7 @@ def index():
     # 未提出数計算
     unsubmitted_count = max(0, streamed_count - sub_stats["submitted_count"])
     # 所持グループ一覧取得
-    real_groups = g_dao.find_by_id(admin_id)
+    real_groups =d_dao.find_groups_for_progress(admin_id)
 
     # ダッシュボードトップ画面表示
     return render_template(
@@ -249,7 +249,6 @@ def streamed_list():
     return render_template("dashboard/deli_task_list.html", tasks=tasks, has_next=has_next, has_prev=has_prev)
 
 @dashboard_bp.route("/streamed/student/<int:streamed_id>")
-def streamed_student_list(streamed_id):
 def streamed_student_list(streamed_id):
     admin_id = session.get('user_id')
     streamed = D_dao.find_streamed_name_by_id(streamed_id)
