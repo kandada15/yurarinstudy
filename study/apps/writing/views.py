@@ -6,6 +6,15 @@ from apps.writing.dao.writing_dao import WritingDao
 writing_bp = Blueprint('writing', __name__, template_folder='templates', static_folder='static')
 w_dao = WritingDao()
 
+# 管理者ID（a...）を弾く
+@writing_bp.before_request
+def restrict_access():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('auth.login'))
+    if user_id.startswith('a'):
+        return redirect(url_for('dashboard.index'))
+
 def load_learning_data():
     """別ファイルのJSONを読み込む補助関数"""
     json_path = os.path.join(current_app.root_path, 'writing', 'static', 'json', 'steps_data.json')

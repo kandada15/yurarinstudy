@@ -24,23 +24,25 @@ def index():
     profile = m_dao.get_user_profile(user_id)
     group_info = m_dao.get_user_group(user_id)
     tasks = m_dao.get_task_summary(user_id)
-    progress = m_dao.get_writing_progress(user_id)
+    progress_stats = m_dao.get_student_stats(user_id)
 
     # 進捗率と円グラフの計算 (外周 251.2)
-    comp = progress['completed'] or 0
-    total = progress['total'] or 1
+    comp = progress_stats['completed_count'] or 0
+    total = progress_stats['total_count'] or 1
+    
     percent = int((comp / total) * 100)
     stroke_offset = 251.2 * (1 - percent / 100)
 
     return render_template(
-          'mypage/mypage.html', 
-          user=profile, 
-          tasks=tasks, 
-          group=group_info,
-          percent=percent, 
-          offset=stroke_offset,
-          comp=comp,
-          total=total)
+        'mypage/mypage.html', 
+        user=profile, 
+        tasks=tasks, 
+        group=group_info,
+        percent=percent, 
+        offset=stroke_offset,
+        comp=comp,
+        total=total
+    )
 
 @mypage_bp.route('/pass_reset')
 def pass_reset():
