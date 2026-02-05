@@ -308,6 +308,14 @@ def returned_group_list():
     groups = D_dao.find_returned_groups(admin_id)
     members_cnt = d_dao.find_groups_for_progress(admin_id)
 
-    student_list = D_dao.find_by_group_for_streamed()
-    return render_template("dashboard/returned_task/past_task_view.html", groups=groups, members_cnt=members_cnt, student_list=student_list)
+    # student_list = D_dao.find_by_group_for_submission()
+    return render_template("dashboard/returned_task/past_task_view.html", groups=groups, members_cnt=members_cnt)
    
+@dashboard_bp.route("/returned/groups/<int:group_id>/streamed/<int:streamed_id>")
+def returned_student_list(group_id, streamed_id):
+    students = D_dao.find_returned_students_by_group(group_id, streamed_id)
+    return render_template("dashboard/returned_task/past_task_view.html", student_list=students, streamed_id=streamed_id)
+# @dashboard_bp.route("/returned/groups/<int:group_id>")
+# def returned_student_list(group_id):
+#     students = D_dao.find_returned_students_by_group(group_id)
+#     return render_template("dashboard/returned_task/list_past_ass_stu.html", students=students)
