@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, redirect, url_for
+from flask import Blueprint, render_template, session, redirect, url_for, request, jsonify
 import os
 import json
 from apps.mypage.dao.mypage_dao import MypageDao
@@ -80,3 +80,21 @@ def detail(student_id):
             'completed_count': completed_stages
         }
     )
+
+@mypage_bp.route("/repassword", methods=["GET", "POST"])
+def repassword():
+    student_id = session.get("user_id")
+    
+    if request.method == "POST":
+        data = request.get_json()
+        new_password = data.get("password")
+
+        # 3. 準備したインスタンスを使って、パスワード再設定メソッドを呼ぶ
+        # メソッド名が update_password だと仮定しています
+        success = m_dao.update_password(student_id, new_password)
+
+        if success:
+            return jsonify({"status": "success", "message": "パスワードを更新しました。"})
+        else:
+            return jsonify({"status": "error", "message": "更新に失敗しました。"}), 500
+    return render_template("mypage/repassword.html")
