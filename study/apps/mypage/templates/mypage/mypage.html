@@ -28,9 +28,9 @@
 
     {# 右側のタブ（URLを Flask のルートに変更） #}
     <div class="tabs-container">
-        <a href="{{ url_for('writing.index') }}" class="tab" data-page="writing">ライティング学習</a>
-        <a href="{{ url_for('task.student_task_list') }}" class="tab" data-page="tasks">課題</a>
-        <a href="{{ url_for('mypage.index') }}" class="tab active" data-page="mypage">マイページ</a>
+        <a href="{{ url_for('writing.index') }}" class="tab {% if request.endpoint == 'writing.index' %}active{% endif %}" data-page="users" data-color="#e8dcc8">ライティング学習</a>
+        <a href="{{ url_for('task.student_task_list') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
+        <a href="{{ url_for('mypage.index') }}" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
     </div>
 
     <div class="app-container">
@@ -38,7 +38,7 @@
             <div class="header-row">
                 <h1>MYPAGE</h1>
                 <div class="header-right">
-                    <button class="btn-password" onclick="location.href='{{ url_for('mypage.pass_reset') }}'">
+                    <button class="btn-password" onclick="location.href='{{ url_for('mypage.repassword') }}'">
                     パスワード再設定
                     </button>
                 </div>
@@ -51,6 +51,7 @@
                         <div class="profile-grid">
                             <div class="profile-row">
                                 <div class="profile-item">
+                                    <i class="fas fa-user"></i>
                                     <span class="profile-label">　　氏　　名　　</span>
                                     <span class="profile-value">{{ user.student_name }}</span>
                                 </div>

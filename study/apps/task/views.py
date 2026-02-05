@@ -97,6 +97,7 @@ def task_create_complete():
         streamed_name=request.form.get("streamed_name"),
         streamed_text=request.form.get("streamed_text"),
         streamed_limit=request.form.get("streamed_limit"),
+        sent_at=request.form.get("sent_at"),
         group_id=request.form.get("group_id"),
     )
 

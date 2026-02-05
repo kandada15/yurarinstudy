@@ -37,22 +37,8 @@ body {
   background: rgba(255, 254, 249, 0.95);
   padding: 30px;
   position: relative;
-  border: 1px solid #000;
-  /*わかりやすくボーダーをひく*/
-  overflow-y: scroll;
-  /*縦方向にスクロール*/
-  -ms-overflow-style: none;
-  /* Edge / IE */
-  scrollbar-width: none;
-  /* Firefox */
-  scrollbar-gutter: stable;
-  /* 揺れ防止！ */
 }
 
-/* Chrome / Safari */
-.content-wrapper::-webkit-scrollbar {
-  display: none;
-}
 
 /* アニメーション */
 .fade-in {
@@ -108,9 +94,6 @@ h2 {
   flex-direction: column;
 }
 
-/* .form>div {
-  margin-bottom: 20px;
-} */
 
 .form>div>div {
   display: flex;
@@ -153,12 +136,6 @@ input[type="date"] {
   width: 100%;
 }
 
-textarea {
-  width: 100%;
-  min-height: 300px;
-  resize: vertical;
-}
-
 input[type="text"]:focus,
 input[type="date"]:focus,
 textarea:focus {
@@ -176,10 +153,24 @@ textarea::placeholder {
 /* テキストエリア */
 textarea {
   resize: vertical;
-  min-height: 310px;
+  max-height: 310px;
   font-family: inherit;
   line-height: 1.6;
   width: 100%;
+  min-height: 300px;
+  resize: vertical;
+  overflow-y: scroll;
+  /*縦方向にスクロール*/
+  -ms-overflow-style: none;
+  /* Edge / IE */
+  scrollbar-width: none;
+  /* Firefox */
+  scrollbar-gutter: stable;
+  /* 揺れ防止！ */
+}
+
+textarea ::-webkit-scrollbar {
+  display: none;
 }
 
 /* 日付入力 */
@@ -189,11 +180,45 @@ input[type="date"] {
 
 /* エラーメッセージ */
 .error-message {
-  color: #d32f2f;
+  display: none;
+  color: #f5f5f5;
   font-size: 13px;
-  min-height: 18px;
-  margin-bottom: 15px;
-  /* margin-top: 4px; */
+  padding: 6px 16px 6px 12px;
+  font-weight: 500;
+  margin-top: 8px;
+  
+  background: linear-gradient(135deg, 
+    rgb(255, 152, 152) 0%, 
+    rgb(241, 136, 136) 100%);
+  
+  border-radius: 2px 6px 6px 2px;
+  border: 1px solid rgba(197, 51, 51, 0.87);
+  border-left: none;
+  
+  box-shadow: 
+    2px 2px 4px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.05);
+  
+  transform: rotate(0.5deg);
+  
+  white-space: nowrap;
+  width: fit-content;
+  position: relative;
+}
+
+.error-message:not(:empty) {
+  display: inline-block;
+}
+
+.error-message::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: rgba(220, 70, 70, 0.3);
+  border-radius: 2px 0 0 2px;
 }
 
 
@@ -229,6 +254,7 @@ input[type="submit"] {
   transition: all 0.3s ease;
   align-self: center;
   min-width: 200px;
+  margin-top: 20px;
 }
 
 .btn-primary:hover {
@@ -241,17 +267,36 @@ input[type="submit"] {
   transform: translateY(0);
 }
 
-.btn-back {
-  background-color: #e8dcc8;
-  color: #5d4e37;
-  border: 1px solid #d4c5b0;
-  border-radius: 25px;
-  padding: 14px 40px;
-  font-size: 16px;
-  font-weight: 500;
+.btn-deli {
+  padding: 12px 28px;
+  border: 2px solid #ff5e5e;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-width: 150px;
+  width: 400px;
+  height: 50px;
+  background: #f05665;
+  color: #fff;
+}
+
+.btn-deli:hover {
+  background: #c82333;
+}
+
+.btn-back {
+  padding: 12px 28px;
+  background-color: white;
+  color: #6b5d4f;
+  border: 2px solid #a89371;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 400px;
+  height: 50px;
 }
 
 .btn-back:hover {
@@ -263,6 +308,8 @@ input[type="submit"] {
   align-items: flex-start;
   gap: 40px;
   width: 100%;
+  height: 400px;
+  margin-top: -20px;
 }
 
 /* 左カラム */
@@ -292,8 +339,21 @@ input[type="submit"] {
 .confirm-section {
   background-color: #faf8f5;
   border-radius: 8px;
-  padding: 30px;
-  margin: 20px 0;
+  padding: 50px;
+  margin: 30px 0;
+  height: 370px;
+  overflow-y: scroll;
+  /*縦方向にスクロール*/
+  -ms-overflow-style: none;
+  /* Edge / IE */
+  scrollbar-width: none;
+  /* Firefox */
+  scrollbar-gutter: stable;
+  /* 揺れ防止！ */
+}
+
+.confirm-section::-webkit-scrollbar {
+  display: none;
 }
 
 .confirm-section h3 {
@@ -355,4 +415,118 @@ input[type="submit"] {
   background-color: #6d5a43;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+}
+
+/* ===== 付箋風トースト通知 ===== */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #fff9c4;              /* やわらかい付箋色 */
+  border-left: 6px solid #ffcc33;   /* 付箋の綴じ色 */
+  padding: 18px 22px;
+  min-width: 240px;
+  font-size: 16px;
+  color: #6b5434;
+  border-radius: 4px;               /* 角は少しだけ丸く */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all .4s ease;
+  z-index: 9999;
+}
+
+/* 表示状態 */
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* 表示状態 */
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 成功（提出完了） */
+.toast-success {
+  background: #8b7355;   
+  color: #fffef9;
+}
+
+/* 警告 */
+.toast-warning {
+  background: #c27d3f;
+  color: white;
+}
+
+.toast-icon {
+  font-size: 20px;
+}
+
+select {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+@media screen and (max-height: 588px){
+  .app-container {
+    height: 500px;
+    margin-top: 25px; 
+  }
+
+  .content-wrapper {
+    height: 500px;
+  }
+
+  h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #8b7355;
+    padding-bottom: 10px;
+  }
+
+  .side {
+    height: 350px;
+  }
+
+  .confirm-section {
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 1000px;
+    max-height: 320px;
+  }
+
+  .confirm-section h3 {
+    font-size: 15px;
+  }
+
+  .confirm-label {
+    font-size: 11px;
+  }
+
+  .confirm-row {
+    gap: 15px;
+  }
+
+  .button-group {
+    gap: 40px;
+    margin-top: 0px;
+  }
+
+  .btn-back {
+    max-width: 200px;
+  }
+
+  .btn-deli {
+    max-width: 200px;
+  }
+
+  .btn-primary {
+    margin-top: 20px;
+  }
+
 }

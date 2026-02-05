@@ -111,3 +111,15 @@ class MypageDao:
         finally:
             cursor.close()
             conn.close()
+
+    def update_password(self, user_id, new_password):
+        sql = "UPDATE student SET password = %s WHERE student_id = %s" 
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql, (new_password, user_id))
+            conn.commit()
+            return cursor.rowcount > 0
+        finally:
+            cursor.close()
+            conn.close()

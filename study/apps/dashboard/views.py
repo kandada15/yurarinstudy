@@ -167,7 +167,6 @@ def get_group_members(group_id):
 @dashboard_bp.route('/api/group/add-members', methods=['POST'])
 def add_group_members():
     data = request.json
-    print(f"--- 届いたデータ: {data} ---") # これをターミナルで確認！
 
     group_id = data.get('group_id')
     student_ids = data.get('student_ids')
@@ -228,10 +227,7 @@ def group_create():
         return jsonify({"success": success, "message": message})
     return render_template('dashboard/group_create.html')
 
-"""  
-以下より、ダッシュボード/課題返却機能
-"""
-
+"""課題返却"""
 """ 配信済み課題一覧の表示 """
 @dashboard_bp.route("/streamed")
 def streamed_list():
@@ -282,11 +278,7 @@ def submit_correction(submission_id):
     return ("", 204)
 
 
-""" 
-以下、ダッシュボードの添削済み課題を提出するためのコード(仮-動きません)
-html,css,js待ち
-"""
-
+"""添削済み課題を返却(仮-動きません)html,css,js待ち"""
 """ 配信済みかつ未添削課題を探す。あれば、error-messageを返す """
 @dashboard_bp.route("/streamed/student/return/check", methods=["POST"])
 def check_can_return():
@@ -311,10 +303,10 @@ def correction_return():
 
     # バリデーション(配信IDの有無)
     if not streamed_id:
-      return jsonify({
-        "status": "error",
-        "message": "streamed_id が取得できません"
-      }), 400
+        return jsonify({
+            "status": "error",
+            "message": "streamed_id が取得できません"
+        }), 400
     
     update_flag = D_dao.exists_flag_check(streamed_id)
     if update_flag:

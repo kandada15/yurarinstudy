@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  {# 静的ファイルのパスも正しい形式に修正 #}
   <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/dashboard.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
   <title>ダッシュボード</title>
@@ -26,10 +25,8 @@
   </div>
 
   <div class="tabs-container">
-    {# ユーザ管理のブループリント名が不明なため一旦 '#'  #}
-    <a href="#" class="tab" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    <a href="{{ url_for('crud.user_manage') }}" class="tab" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
     
-    {# 【修正箇所】'task.index' から 'writing.index' に変更 #}
     <a href="{{ url_for('task.task_create_form') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
     
     <a href="{{ url_for('dashboard.index') }}" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
@@ -42,7 +39,10 @@
       <div class="dashboard-grid">
         <div class="left-column">
           <div class="profile-box box">
-            <h2 class="box-title">プロフィール情報</h2>
+            <div class="group-header">
+              <h2 class="group-title">プロフィール情報</h2>
+              <button class="group-button"  onclick="location.href='{{ url_for('dashboard.repassword') }}'">パスワード再設定</button>
+            </div>
             <div class="profile-item">
               <span class="profile-label">管理者ID</span>
               <span class="profile-value">{{ admin.admin_id }}</span>
@@ -65,8 +65,7 @@
               <div class="group-item">
                 <span class="folder-icon">📁</span>
                 <div class="group-info">
-                  <span class="group-name">{{ group.name }}</span>
-                  <span class="group-description">{{ group.description }}</span>
+                  <span class="group-name">{{ group.group_name }}</span>
                 </div>
                 <span class="group-members">メンバー： {{ group.member_count }}人</span>
               </div>
@@ -89,7 +88,7 @@
               <div class="task-item">
                 <div class="task-header">
                   <label class="task-label">未添削課題</label>
-                  <button type="button" class="btn-detail">詳細</button>
+                  <a href="{{ url_for('dashboard.streamed_list') }}"><button type="button" class="btn-detail">詳細</button></a>
                 </div>
                 <p class="task-num">{{ unchecked_count }}件</p>
               </div>
