@@ -36,16 +36,6 @@ def user_manage():
         all_admins=all_admins
     )
 
-# ユーザ詳細画面
-@crud_bp.route("/detail")
-def user_detail():
-    user_data = {
-        "id": "S000123",
-        "name": "山田 太郎",
-        "role": "student"
-    }
-    return render_template("crud/user_info_inq.html", user_data=user_data)
-
 @crud_bp.route("/user_add")
 def user_add():
     return render_template("crud/new_user_add.html")
@@ -203,3 +193,18 @@ def new_user_add():
             return jsonify({"status": "error", "message": "登録に失敗しました。"}), 500
 
     return render_template("crud/new_user_add.html")
+
+@crud_bp.route("/user_info/<user_type>/<user_id>")
+def user_info(user_type, user_id):
+    """
+    ユーザー詳細画面の表示
+    例: /crud/user_info/student/s0002
+    """
+    # DAOを使って1件取得
+    user = admin_dao.find_by_id(user_id, user_type)
+    
+    if not user:
+        # 見つからない場合は一覧へ戻す（メッセージ付き）
+        return "指定されたユーザーが見つかりませんでした", 404
+
+    return render_template("crud/user_info.html", user=user, user_type=user_type)
