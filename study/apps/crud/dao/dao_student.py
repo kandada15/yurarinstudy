@@ -263,3 +263,39 @@ class StudentDao:
             # 例外の有無に関わらず、最後に必ずクローズする
             cursor.close()
             conn.close()
+
+    def reset_password(self, student_id: int) -> bool:
+        sql = """
+            UPDATE student 
+            SET password = DATE_FORMAT(birthday, '%Y%m%d') 
+            WHERE student_id = %s
+        """
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql, (student_id,))
+            conn.commit()
+            return cursor.rowcount > 0
+        finally:
+            cursor.close()
+            conn.close()
+        
+    def delete_student(self, student_id: int) -> bool:
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            sql_progress = "DELETE FROM progress WHERE student_id = %s"
+            cursor.execute(sql_progress, (student_id,))
+            sql_child = "DELETE FROM mypage WHERE student_id = %s"
+            cursor.execute(sql_child, (student_id,))
+            sql_parent = "DELETE FROM student WHERE student_id = %s"
+            cursor.execute(sql_parent, (student_id,))
+            
+            conn.commit()
+            return cursor.rowcount > 0
+        except Exception as e:
+            conn.rollback() # エラーが起きたら元に戻す
+            raise e
+        finally:
+            cursor.close()
+            conn.close()

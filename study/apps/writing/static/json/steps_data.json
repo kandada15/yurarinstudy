@@ -16,8 +16,15 @@
         "phase": "理解",
         "title": "小論文とは/目的と特徴",
         "instruction": "次の（）に当てはまる文字を回答してください。",
-        "question": "小論文とは、自分の意見を(1)的に述べる文章である。単なる(2)文ではなく、根拠に基づいた(3)が求められる。また、読み手を納得させるための説得な(4)が重要である。さらに、(5)を明確にし、根拠を示しながら、結論に至る(6)が必要である。",
-        "correctAnswers": ["論理", "感想", "主張", "構成", "主題", "過程"]
+        "question": "小論文とは、自分の意見を(1)的に述べる文章である。単なる(2)文ではなく...",
+        "correctAnswers": [
+          "論理",
+          "感想",
+          "主張",
+          "構成",
+          "主題",
+          "過程"
+        ]
       },
       {
         "step_number": 3,
@@ -25,8 +32,730 @@
         "phase": "理解",
         "title": "小論文とは/目的と特徴",
         "instruction": "次の問題に対する回答を記述してください。",
-        "question": "小論文を書く際に最も重要なことは何ですか？また、それはなぜ重要だと考えますか？あなたの考えを400字程度で述べてください。",
-        "exampleAnswer":  "小論文を書く際に最も重要なことは、明確な主張と論理的な根拠を示すことである。なぜなら、小論文は単なる感想文ではなく、読み手を説得するための文章だからである。\n\n主張が明確でなければ、読み手は筆者が何を伝えたいのか理解できない。また、根拠が論理的でなければ、主張に説得力が生まれない。例えば、「環境保護は重要である」という主張だけでは不十分で、「温室効果ガスの増加により気温が上昇し、生態系に深刻な影響を及ぼしている」といった具体的なデータや事例を示すことで、初めて説得力のある文章となる。\n\nさらに、論理的な構成も重要である。序論で問題提起を行い、本論で根拠を示し、結論で主張をまとめるという流れを意識することで、読み手にとって理解しやすい文章になる。\n\nこのように、明確な主張と論理的な根拠、そして適切な構成が、小論文において最も重要な要素であると考える。"
+        "question": "小論文における「小論文とは/目的と特徴」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズでは小論文とは/目的と特徴の基本を学びました。適切な論理を意識し、論理的な構成を保つことが、質の高い小論文作成の第一歩となります。"
+      }
+    ]
+  },
+  "①-2構成": {
+    "category": "essay",
+    "title": "小論文の基礎：フェーズ2",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "構成",
+        "title": "段落構成の基本/三段構成",
+        "imageUrl": "img/essay_2.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "構成",
+        "title": "段落構成の基本/三段構成",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "三段構成では(1)・(2)・(3)に分ける。(4)で問題を提起し...",
+        "correctAnswers": [
+          "序論",
+          "本論",
+          "結論",
+          "序論",
+          "本論",
+          "結論"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "構成",
+        "title": "段落構成の基本/三段構成",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "小論文における「段落構成の基本/三段構成」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズでは段落構成の基本/三段構成の基本を学びました。適切な序論を意識し、論理的な構成を保つことが、質の高い小論文作成の第一歩となります。"
+      }
+    ]
+  },
+  "①-3思考": {
+    "category": "essay",
+    "title": "小論文の基礎：フェーズ3",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "思考",
+        "title": "多角的視点/反対意見",
+        "imageUrl": "img/essay_3.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "思考",
+        "title": "多角的視点/反対意見",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "論理を強固にするためには、(1)視点が必要である。自分の主張に対する(2)意見を...",
+        "correctAnswers": [
+          "多角的",
+          "反対",
+          "反論",
+          "説得力",
+          "譲歩",
+          "検討"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "思考",
+        "title": "多角的視点/反対意見",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "小論文における「多角的視点/反対意見」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズでは多角的視点/反対意見の基本を学びました。適切な多角的を意識し、論理的な構成を保つことが、質の高い小論文作成の第一歩となります。"
+      }
+    ]
+  },
+  "①-4表現": {
+    "category": "essay",
+    "title": "小論文の基礎：フェーズ4",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "表現",
+        "title": "文体と表記ルール",
+        "imageUrl": "img/essay_4.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "表現",
+        "title": "文体と表記ルール",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "小論文では原則として(1)調を用いる。話し言葉である(2)語や...",
+        "correctAnswers": [
+          "だ・である",
+          "抜き",
+          "主観的",
+          "照応",
+          "簡潔",
+          "表記"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "表現",
+        "title": "文体と表記ルール",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "小論文における「文体と表記ルール」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズでは文体と表記ルールの基本を学びました。適切なだ・であるを意識し、論理的な構成を保つことが、質の高い小論文作成の第一歩となります。"
+      }
+    ]
+  },
+  "①-5実践": {
+    "category": "essay",
+    "title": "小論文の基礎：フェーズ5",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "実践",
+        "title": "総合演習/推敲",
+        "imageUrl": "img/essay_5.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "実践",
+        "title": "総合演習/推敲",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "試験本番では、まず(1)を行い、全体の(2)を立てる。書き終えた後は...",
+        "correctAnswers": [
+          "課題読解",
+          "プロット",
+          "誤字脱字",
+          "論理",
+          "推敲",
+          "確認"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "実践",
+        "title": "総合演習/推敲",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "小論文における「総合演習/推敲」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズでは総合演習/推敲の基本を学びました。適切な課題読解を意識し、論理的な構成を保つことが、質の高い小論文作成の第一歩となります。"
+      }
+    ]
+  },
+  "②-1理解": {
+    "category": "business",
+    "title": "ビジネス文書の基礎：フェーズ1",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "理解",
+        "title": "ビジネス文書の役割",
+        "imageUrl": "img/business_1.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "理解",
+        "title": "ビジネス文書の役割",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "ビジネス文書は(1)を正確に伝え、(2)として残す役割がある。基本は(3)・(4)・(5)である。",
+        "correctAnswers": [
+          "情報",
+          "記録",
+          "正確",
+          "簡潔",
+          "丁寧",
+          "迅速"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "理解",
+        "title": "ビジネス文書の役割",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "ビジネス文書における「ビジネス文書の役割」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズではビジネス文書の役割の基本を学びました。適切な情報を意識し、論理的な構成を保つことが、質の高いビジネス文書作成の第一歩となります。"
+      }
+    ]
+  },
+  "②-2構成": {
+    "category": "business",
+    "title": "ビジネス文書の基礎：フェーズ2",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "構成",
+        "title": "文書フォーマット",
+        "imageUrl": "img/business_2.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "構成",
+        "title": "文書フォーマット",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "社外文書の基本構成は、(1)・(2)・(3)・(4)・本文・(5)となる。",
+        "correctAnswers": [
+          "日付",
+          "宛名",
+          "発信者",
+          "件名",
+          "結語",
+          "記書き"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "構成",
+        "title": "文書フォーマット",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "ビジネス文書における「文書フォーマット」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズでは文書フォーマットの基本を学びました。適切な日付を意識し、論理的な構成を保つことが、質の高いビジネス文書作成の第一歩となります。"
+      }
+    ]
+  },
+  "②-3思考": {
+    "category": "business",
+    "title": "ビジネス文書の基礎：フェーズ3",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "思考",
+        "title": "目的と結論の明確化",
+        "imageUrl": "img/business_3.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "思考",
+        "title": "目的と結論の明確化",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "ビジネスでは(1)を最初に述べる(2)形式が好まれる。読み手の(3)を奪わない配慮が必要だ。",
+        "correctAnswers": [
+          "結論",
+          "アンサーファースト",
+          "時間",
+          "構成",
+          "意図",
+          "理解"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "思考",
+        "title": "目的と結論の明確化",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "ビジネス文書における「目的と結論の明確化」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズでは目的と結論の明確化の基本を学びました。適切な結論を意識し、論理的な構成を保つことが、質の高いビジネス文書作成の第一歩となります。"
+      }
+    ]
+  },
+  "②-4表現": {
+    "category": "business",
+    "title": "ビジネス文書の基礎：フェーズ4",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "表現",
+        "title": "敬語と接遇表現",
+        "imageUrl": "img/business_4.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "表現",
+        "title": "敬語と接遇表現",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "相手を敬う(1)語、自分を低める(2)語、丁寧な言葉遣いの(3)語を使い分ける。",
+        "correctAnswers": [
+          "尊敬",
+          "謙譲",
+          "丁寧",
+          "丁重",
+          "謙遜",
+          "敬意"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "表現",
+        "title": "敬語と接遇表現",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "ビジネス文書における「敬語と接遇表現」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズでは敬語と接遇表現の基本を学びました。適切な尊敬を意識し、論理的な構成を保つことが、質の高いビジネス文書作成の第一歩となります。"
+      }
+    ]
+  },
+  "②-5実践": {
+    "category": "business",
+    "title": "ビジネス文書の基礎：フェーズ5",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "実践",
+        "title": "謝罪と依頼の実践",
+        "imageUrl": "img/business_5.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "実践",
+        "title": "謝罪と依頼の実践",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "謝罪文では(1)を先に述べ、(2)を説明し、今後の(3)を示すことが重要である。",
+        "correctAnswers": [
+          "お詫び",
+          "経緯",
+          "再発防止策",
+          "誠意",
+          "解決",
+          "対応"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "実践",
+        "title": "謝罪と依頼の実践",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "ビジネス文書における「謝罪と依頼の実践」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズでは謝罪と依頼の実践の基本を学びました。適切なお詫びを意識し、論理的な構成を保つことが、質の高いビジネス文書作成の第一歩となります。"
+      }
+    ]
+  },
+  "③-1理解": {
+    "category": "report",
+    "title": "レポートの基礎：フェーズ1",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "理解",
+        "title": "レポートの定義と事実",
+        "imageUrl": "img/report_1.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "理解",
+        "title": "レポートの定義と事実",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "レポートは(1)に基づいて客観的に報告する文書である。(2)と(3)を明確に分ける。",
+        "correctAnswers": [
+          "事実",
+          "事実",
+          "意見",
+          "根拠",
+          "分析",
+          "証明"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "理解",
+        "title": "レポートの定義と事実",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "レポートにおける「レポートの定義と事実」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズではレポートの定義と事実の基本を学びました。適切な事実を意識し、論理的な構成を保つことが、質の高いレポート作成の第一歩となります。"
+      }
+    ]
+  },
+  "③-2構成": {
+    "category": "report",
+    "title": "レポートの基礎：フェーズ2",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "構成",
+        "title": "IMRADと構成",
+        "imageUrl": "img/report_2.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "構成",
+        "title": "IMRADと構成",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "学術的な基本構成は、(1)・(2)・(3)・(4)（IMRAD）と呼ばれる。",
+        "correctAnswers": [
+          "導入",
+          "方法",
+          "結果",
+          "考察",
+          "結論",
+          "展望"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "構成",
+        "title": "IMRADと構成",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "レポートにおける「IMRADと構成」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズではIMRADと構成の基本を学びました。適切な導入を意識し、論理的な構成を保つことが、質の高いレポート作成の第一歩となります。"
+      }
+    ]
+  },
+  "③-3思考": {
+    "category": "report",
+    "title": "レポートの基礎：フェーズ3",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "思考",
+        "title": "データの引用と根拠",
+        "imageUrl": "img/report_3.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "思考",
+        "title": "データの引用と根拠",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "他者の情報を利用する際は(1)を行い、(2)を明記しなければ(3)となる。",
+        "correctAnswers": [
+          "引用",
+          "出典",
+          "盗用",
+          "剽窃",
+          "著作権",
+          "規約"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "思考",
+        "title": "データの引用と根拠",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "レポートにおける「データの引用と根拠」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズではデータの引用と根拠の基本を学びました。適切な引用を意識し、論理的な構成を保つことが、質の高いレポート作成の第一歩となります。"
+      }
+    ]
+  },
+  "③-4表現": {
+    "category": "report",
+    "title": "レポートの基礎：フェーズ4",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "表現",
+        "title": "学術的表現と定義",
+        "imageUrl": "img/report_4.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "表現",
+        "title": "学術的表現と定義",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "曖昧な(1)を避け、用語を(2)してから論じる。定量的(3)を用いると説得力が増す。",
+        "correctAnswers": [
+          "形容詞",
+          "定義",
+          "データ",
+          "表現",
+          "語彙",
+          "説明"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "表現",
+        "title": "学術的表現と定義",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "レポートにおける「学術的表現と定義」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズでは学術的表現と定義の基本を学びました。適切な形容詞を意識し、論理的な構成を保つことが、質の高いレポート作成の第一歩となります。"
+      }
+    ]
+  },
+  "③-5実践": {
+    "category": "report",
+    "title": "レポートの基礎：フェーズ5",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "実践",
+        "title": "調査報告の完成",
+        "imageUrl": "img/report_5.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "実践",
+        "title": "調査報告の完成",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "レポートの最後には必ず(1)をリストアップする。形式は(2)などで統一する。",
+        "correctAnswers": [
+          "参考文献",
+          "著者名",
+          "発行年",
+          "整理",
+          "索引",
+          "ルール"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "実践",
+        "title": "調査報告の完成",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "レポートにおける「調査報告の完成」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズでは調査報告の完成の基本を学びました。適切な参考文献を意識し、論理的な構成を保つことが、質の高いレポート作成の第一歩となります。"
+      }
+    ]
+  },
+  "④-1理解": {
+    "category": "expression",
+    "title": "表現トレーニングの基礎：フェーズ1",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "理解",
+        "title": "語彙力の拡張",
+        "imageUrl": "img/expression_1.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "理解",
+        "title": "語彙力の拡張",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "適切な表現を選ぶには豊富な(1)が必要である。類義語の(2)を理解し使い分ける。",
+        "correctAnswers": [
+          "語彙",
+          "ニュアンス",
+          "文脈",
+          "感性",
+          "意味",
+          "響き"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "理解",
+        "title": "語彙力の拡張",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "表現トレーニングにおける「語彙力の拡張」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズでは語彙力の拡張の基本を学びました。適切な語彙を意識し、論理的な構成を保つことが、質の高い表現トレーニング作成の第一歩となります。"
+      }
+    ]
+  },
+  "④-2構成": {
+    "category": "expression",
+    "title": "表現トレーニングの基礎：フェーズ2",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "構成",
+        "title": "文の構造とねじれ",
+        "imageUrl": "img/expression_2.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "構成",
+        "title": "文の構造とねじれ",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "主語と(1)が対応していない状態を文の(2)と呼ぶ。一文を(3)にすると防げる。",
+        "correctAnswers": [
+          "述語",
+          "ねじれ",
+          "短く",
+          "簡潔",
+          "接続",
+          "構造"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "構成",
+        "title": "文の構造とねじれ",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "表現トレーニングにおける「文の構造とねじれ」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズでは文の構造とねじれの基本を学びました。適切な述語を意識し、論理的な構成を保つことが、質の高い表現トレーニング作成の第一歩となります。"
+      }
+    ]
+  },
+  "④-3思考": {
+    "category": "expression",
+    "title": "表現トレーニングの基礎：フェーズ3",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "思考",
+        "title": "比喩とレトリック",
+        "imageUrl": "img/expression_3.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "思考",
+        "title": "比喩とレトリック",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "(1)や(2)などの比喩表現を用いると、イメージが(3)に伝わるようになる。",
+        "correctAnswers": [
+          "直喩",
+          "隠喩",
+          "具体的",
+          "鮮明",
+          "印象",
+          "効果"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "思考",
+        "title": "比喩とレトリック",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "表現トレーニングにおける「比喩とレトリック」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズでは比喩とレトリックの基本を学びました。適切な直喩を意識し、論理的な構成を保つことが、質の高い表現トレーニング作成の第一歩となります。"
+      }
+    ]
+  },
+  "④-4表現": {
+    "category": "expression",
+    "title": "表現トレーニングの基礎：フェーズ4",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "表現",
+        "title": "具体と抽象の往復",
+        "imageUrl": "img/expression_4.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "表現",
+        "title": "具体と抽象の往復",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "分かりやすい文章は(1)的な概念と、(2)的な事例が(3)よく配置されている。",
+        "correctAnswers": [
+          "抽象",
+          "具体",
+          "バランス",
+          "論理",
+          "構成",
+          "リズム"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "表現",
+        "title": "具体と抽象の往復",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "表現トレーニングにおける「具体と抽象の往復」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズでは具体と抽象の往復の基本を学びました。適切な抽象を意識し、論理的な構成を保つことが、質の高い表現トレーニング作成の第一歩となります。"
+      }
+    ]
+  },
+  "④-5実践": {
+    "category": "expression",
+    "title": "表現トレーニングの基礎：フェーズ5",
+    "steps": [
+      {
+        "step_number": 1,
+        "type": "lecture",
+        "phase": "実践",
+        "title": "リライトと推敲",
+        "imageUrl": "img/expression_5.png"
+      },
+      {
+        "step_number": 2,
+        "type": "quiz_cloze",
+        "phase": "実践",
+        "title": "リライトと推敲",
+        "instruction": "次の（）に当てはまる文字を回答してください。",
+        "question": "文章を磨くには(1)を声に出して読み、(2)の良い言葉に(3)することが有効である。",
+        "correctAnswers": [
+          "文章",
+          "リズム",
+          "推敲",
+          "修正",
+          "調整",
+          "完成"
+        ]
+      },
+      {
+        "step_number": 3,
+        "type": "writing_practice",
+        "phase": "実践",
+        "title": "リライトと推敲",
+        "instruction": "次の問題に対する回答を記述してください。",
+        "question": "表現トレーニングにおける「リライトと推敲」に関連した自身の考えを記述してください。",
+        "exampleAnswer": "このフェーズではリライトと推敲の基本を学びました。適切な文章を意識し、論理的な構成を保つことが、質の高い表現トレーニング作成の第一歩となります。"
       }
     ]
   }

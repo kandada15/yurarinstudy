@@ -75,9 +75,9 @@
         <div class="table-section">
             <div class="tabs">
                 <button class="tab2 active" onclick="switchTab(event, 'essay')">小論文</button>
+                <button class="tab2" onclick="switchTab(event, 'business')">ビジネス文書</button>
                 <button class="tab2" onclick="switchTab(event, 'report')">レポート</button>
-                <button class="tab2" onclick="switchTab(event, 'business')">ビジネス文章</button>
-                <button class="tab2" onclick="switchTab(event, 'training')">表現トレーニング</button>
+                <button class="tab2" onclick="switchTab(event, 'expression')">表現トレーニング</button>
             </div>
 
             <div id="essay" class="tab-content active">
@@ -111,20 +111,101 @@
                 </table>
             </div>
 
-            <div id="report" class="tab-content">
-                <p style="padding: 20px; text-align: center;">レポートの課題データは準備中です。</p>
-            </div>
             <div id="business" class="tab-content">
-                <p style="padding: 20px; text-align: center;">ビジネス文章の課題データは準備中です。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ステージ</th>
+                            <th>フェーズ</th>
+                            <th>学習内容</th>
+                            <th>進捗</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, content in master_data.items() %}
+                            {% if content.category == 'business' %}
+                                <tr>
+                                    <td class="number"></td>
+                                    <td>{{ content.steps[0].phase }}</td>
+                                    <td>{{ content.steps[0].title }}</td>
+                                    <td>
+                                        {% if key in completed_keys %}
+                                            <span>完了</span>
+                                        {% else %}
+                                            <span>未学習</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            <div id="training" class="tab-content">
-                <p style="padding: 20px; text-align: center;">表現トレーニングの課題データは準備中です。</p>
+            <div id="report" class="tab-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ステージ</th>
+                            <th>フェーズ</th>
+                            <th>学習内容</th>
+                            <th>進捗</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, content in master_data.items() %}
+                            {% if content.category == 'report' %}
+                                <tr>
+                                    <td class="number"></td>
+                                    <td>{{ content.steps[0].phase }}</td>
+                                    <td>{{ content.steps[0].title }}</td>
+                                    <td>
+                                        {% if key in completed_keys %}
+                                            <span>完了</span>
+                                        {% else %}
+                                            <span>未学習</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div id="expression" class="tab-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ステージ</th>
+                            <th>フェーズ</th>
+                            <th>学習内容</th>
+                            <th>進捗</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, content in master_data.items() %}
+                            {% if content.category == 'expression' %}
+                                <tr>
+                                    <td class="number"></td>
+                                    <td>{{ content.steps[0].phase }}</td>
+                                    <td>{{ content.steps[0].title }}</td>
+                                    <td>
+                                        {% if key in completed_keys %}
+                                            <span>完了</span>
+                                        {% else %}
+                                            <span>未学習</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
 
-<script src="{{ url_for('dashboard.static', filename='js/l_pro.js') }}"></script> 
+<script src="{{ url_for('mypage.static', filename='js/l_pro.js') }}"></script> 
 <script src="{{ url_for('static', filename='js/header.js') }}"></script> 
 </body>
 </html>
