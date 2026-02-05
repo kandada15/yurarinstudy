@@ -39,7 +39,10 @@
       <div class="dashboard-grid">
         <div class="left-column">
           <div class="profile-box box">
-            <h2 class="box-title">プロフィール情報</h2>
+            <div class="group-header">
+              <h2 class="group-title">プロフィール情報</h2>
+              <button class="group-button"  onclick="location.href='{{ url_for('dashboard.repassword') }}'">パスワード再設定</button>
+            </div>
             <div class="profile-item">
               <span class="profile-label">管理者ID</span>
               <span class="profile-value">{{ admin.admin_id }}</span>
