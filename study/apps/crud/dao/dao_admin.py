@@ -172,39 +172,61 @@ class AdminDao:
             cursor.close()
             conn.close()
 
-    # admin ID検索
-    def find_by_id(self, admin_id: str) -> Optional[dict]:
-        """
-        admin_idで admin テーブルから1件取得。見つからなければNoneを返す。
-        戻り値: 辞書型 {"admin_id":..., "admin_name":...}
-        %s はプレースホルダー
-        """
-        sql = """
-            SELECT
-                admin_id,
-                admin_name,
-                password,
-                birthday,
-                entry_date
-            FROM admin
-            WHERE admin_id = %s
-            LIMIT 1
-        """
+    # ID検索
+    def find_by_id(self, u_id, user_type):
+        table_name, id_column, name_column = self._get_table_info(user_type)
+        
+        if user_type == "student":
+            sql = f"""
+                SELECT 
+                    s.{id_column} AS user_id, 
+                    s.{name_column} AS user_name, 
+                    s.birthday, 
+                    s.created_at,
+                    YEAR(s.created_at) AS entry_year,
+                    g.group_name
+                FROM {table_name} s
+                LEFT JOIN `group` g ON s.group_id = g.group_id
+                WHERE s.{id_column} = %s
+            """
+        else:
+            sql = f"""
+                SELECT 
+                    {id_column} AS user_id, 
+                    {name_column} AS user_name, 
+                    birthday, 
+                    created_at,
+                    YEAR(created_at) AS entry_year,
+                    '管理者' AS group_name
+                FROM {table_name} 
+                WHERE {id_column} = %s
+            """
 
-        # クラス内部の_get_connection()を使ってMySQL接続を取得
-        # 結果を辞書形式で取得
         conn = self._get_connection()
         try:
             cursor = conn.cursor(dictionary=True)
-            cursor.execute(sql, (admin_id,))
-            row = cursor.fetchone()
-            
-            return row
-        
+            cursor.execute(sql, (u_id,))
+            return cursor.fetchone()
         finally:
-            # 例外の有無に関わらず、最後に必ずクローズする
             cursor.close()
             conn.close()
+
+            conn = self._get_connection()
+            try:
+                # 結果を辞書形式で取得
+                cursor = conn.cursor(dictionary=True)
+                cursor.execute(sql, (u_id,))
+                row = cursor.fetchone()
+                
+                return row
+            
+            except Exception as e:
+                print(f"【DAO ERROR】検索失敗: {e}")
+                return None
+            
+            finally:
+                cursor.close()
+                conn.close()
 
     # admin新規登録
     def insert(self, admin_id: str, admin_name: str, password: str, birthday) -> str:
@@ -214,7 +236,7 @@ class AdminDao:
         """
         sql = """
             INSERT INTO admin
-                (admin_id, admin_name, password, birthday, entry_date)
+                (admin_id, admin_name, password, birthday, created_at)
             VALUES
                 (%s, %s, %s, %s, NOW())
         """
