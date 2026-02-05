@@ -303,25 +303,25 @@ def correction_return():
 
     # バリデーション(配信IDの有無)
     if not streamed_id:
-        return jsonify({
-            "status": "error",
-            "message": "streamed_id が取得できません"
-        }), 400
+        return jsonify(
+            success=False,
+            message="streamed_id が取得できません"
+        )
     
     update_flag = D_dao.exists_flag_check(streamed_id)
     if update_flag:
-        return jsonify({
-            "stasus": "error",
-            "message": "未提出または未添削の課題があります"
-        }), 400
+        return jsonify(
+            success=False,
+            message="未提出または未添削の課題があります"
+        )
     
     # 全員、「添削済み」のときのみ動かす
     D_dao.update_return_flag(streamed_id)
 
-    return jsonify({
-        "status": "success",
-        "message": "課題の返却が完了しました"
-    })
+    return jsonify(
+        success=True,
+        message="課題の返却が完了しました"
+    )
 
 
 """ 返却済み課題の表示 """
