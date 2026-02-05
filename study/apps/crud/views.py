@@ -49,7 +49,7 @@ def reset_password():
 
 @crud_bp.route("/user/delete", methods=['POST'])
 def delete_user():
-    data = request.get_json(silent="True")
+    data = request.get_json(force=True, silent=True)
     user_id = data.get('user_id')
 
     return jsonify({"status": "success", "message": f"User {user_id} deleted."})
@@ -196,15 +196,9 @@ def new_user_add():
 
 @crud_bp.route("/user_info/<user_type>/<user_id>")
 def user_info(user_type, user_id):
-    """
-    ユーザー詳細画面の表示
-    例: /crud/user_info/student/s0002
-    """
-    # DAOを使って1件取得
     user = admin_dao.find_by_id(user_id, user_type)
     
     if not user:
-        # 見つからない場合は一覧へ戻す（メッセージ付き）
-        return "指定されたユーザーが見つかりませんでした", 404
-
+        return "ユーザーが見つかりません", 404
+        
     return render_template("crud/user_info.html", user=user, user_type=user_type)

@@ -40,11 +40,11 @@
   </div>
 
   <!-- 右側のタブ -->
-  <div class="tabs-container">
-    <a href="learning_top.html" class="tab active" data-page="users" data-color="#e8dcc8">ライティング学習</a>
-    <a href="ass_list.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
-    <a href="mypage.html" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
-  </div>
+    <div class="tabs-container">
+        <a href="{{ url_for('writing.index') }}" class="tab" data-page="users" data-color="#e8dcc8">ライティング機能</a>
+        <a href="{{ url_for('task.student_task_list') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
+        <a href="{{ url_for('mypage.index') }}" class="tab active" data-page="dashboard" data-color="#d4c5b0">マイページ</a>
+    </div>
 <!--ここまで-->
 
 <div class="app-container">
