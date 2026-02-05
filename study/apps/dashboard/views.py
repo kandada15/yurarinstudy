@@ -342,3 +342,21 @@ def returned_student_list(group_id, streamed_id):
 # def returned_student_list(group_id):
 #     students = D_dao.find_returned_students_by_group(group_id)
 #     return render_template("dashboard/returned_task/list_past_ass_stu.html", students=students)
+
+@dashboard_bp.route("/repassword", methods=["GET", "POST"])
+def repassword():
+    admin_id = session.get("user_id")
+   
+    if request.method == "POST":
+        data = request.get_json()
+        new_password = data.get("password")
+ 
+        # 3. 準備したインスタンスを使って、パスワード再設定メソッドを呼ぶ
+        # メソッド名が update_password だと仮定しています
+        success = d_dao.update_password(admin_id, new_password)
+ 
+        if success:
+            return jsonify({"status": "success", "message": "パスワードを更新しました。"})
+        else:
+            return jsonify({"status": "error", "message": "更新に失敗しました。"}), 500
+    return render_template("dashboard/repassword.html")
