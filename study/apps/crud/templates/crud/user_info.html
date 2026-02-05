@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('crud.static', filename='css/user_info.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+  <title>ユーザー詳細 | 文脈工房</title>
+</head>
+<body class="fade-in">
+  <header class="top-header">
+    <div class="logo-section"><div class="logo-img">文</div><span class="app-name">文脈工房</span></div>
+    <div class="user-section">
+      <span class="user-badge">管理者</span>
+      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="holes-container">{% for i in range(8) %}<div class="hole"></div>{% endfor %}</div>
+
+  <div class="tabs-container">
+    <a href="{{ url_for('dashboard.index') }}" class="tab" data-page="dashboard">ダッシュボード</a>
+    <a href="{{ url_for('crud.user_list') }}" class="tab active" data-page="users">ユーザ管理</a>
+  </div>
+
+  <div class="app-container">
+    <div class="content-wrapper">
+      
+      {% if user_type == 'student' %}
+      <div class="detail-card active" id="student-card">
+        <button class="delete-btn" onclick="ShowUserdelete()">この受講者を削除</button>
+        
+        <div class="basic-info">
+          <h2 class="section-title">受講者情報</h2>
+          <div class="info-row">
+            <div class="info-item"><span class="info-label">ID：</span><span class="info-value">{{ user.user_id }}</span></div>
+            <div class="info-item"><span class="info-label">氏名：</span><span class="info-value">{{ user.user_name }}</span></div>
+          </div>
+          <div class="info-row">
+            <div class="info-item"><span class="info-label">区分：</span><span class="info-value">受講生</span></div>
+            <div class="info-item"><span class="info-label">生年月日：</span><span class="info-value">{{ user.birthday }}</span></div>
+          </div>
+          <div class="info-row">
+            <div class="info-item">
+              <span class="info-label">所属グループ：</span>
+              <div class="group-tags">
+                {% if user.group_name %}
+                  {% for gname in user.group_name.split(',') %}
+                    <span class="group-tag">{{ gname }}</span>
+                  {% endfor %}
+                {% else %}
+                  <span style="color: #999;">未所属</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="learning-summary">
+          <h2 class="section-title">学習サマリー</h2>
+          <div class="progress-row">
+            <span class="progress-label">学習進捗：</span>
+            <div class="progress-bar-container">
+              <div class="progress-bar" style="width: 0%;"> <span class="progress-text">準備中</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="button-container">
+          <button class="action-btn btn-primary">学習進捗ページを見る</button>
+          <button class="action-btn btn-reset" onclick="ShowPasswordreset()">パスワードリセット</button>
+        </div>
+      </div>
+
+      {% elif user_type == 'admin' %}
+      <div class="detail-card admin-card active" id="admin-card">
+        <button class="delete-btn" onclick="ShowUserdelete()">この管理者を削除</button>
+        <div class="basic-info">
+          <h2 class="section-title">管理者情報</h2>
+          <div class="info-row">
+            <div class="info-item"><span class="info-label">ID：</span><span class="info-value">{{ user.user_id }}</span></div>
+            <div class="info-item"><span class="info-label">氏名：</span><span class="info-value">{{ user.user_name }}</span></div>
+          </div>
+          <div class="info-row">
+            <div class="info-item"><span class="info-label">区分：</span><span class="info-value">管理者</span></div>
+            <div class="info-item"><span class="info-label">生年月日：</span><span class="info-value">{{ user.birthday }}</span></div>
+          </div>
+        </div>
+        <div class="button-container">
+          <button class="action-btn btn-reset" onclick="ShowPasswordreset()">パスワードリセット</button>
+        </div>
+      </div>
+      {% endif %}
+
+      <div id="password_reset_modal" class="modal">
+        <h2>パスワードリセット確認</h2>
+        <label><strong>{{ user.user_name }}</strong> さんのパスワードを初期化しますか？</label>
+        <label style="font-size: 12px; color: #666;">初期パスワードは生年月日8桁になります。</label>
+        <div class="button-group" style="display: flex; gap: 10px; margin-top: 20px;">
+          <button type="button" class="action-btn btn-primary" onclick="closeModal('password_reset_modal')">キャンセル</button>
+          <button type="button" class="action-btn btn-reset" onclick="executeReset()">リセットする</button>
+        </div>
+      </div>
+
+      <div id="user_delete_modal" class="modal">
+        <h2>削除処理確認</h2>
+        <label><strong>{{ user.user_name }}</strong> さんの情報を完全に削除しますか？</label>
+        <label style="color: red; font-size: 12px;">※この操作は取り消せません。</label>
+        <div class="button-group" style="display: flex; gap: 10px; margin-top: 20px;">
+          <button type="button" class="action-btn btn-primary" onclick="closeModal('user_delete_modal')">キャンセル</button>
+          <button type="button" class="action-btn btn-reset" style="background: #333;" onclick="executeDelete()">削除する</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay"></div>
+  <div id="user-config" data-id="{{ user.user_id }}" data-type="{{ user_type }}"></div>
+
+  <script src="{{ url_for('crud.static', filename='js/user_info.js') }}"></script>
+</body>
+</html>

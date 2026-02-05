@@ -309,36 +309,45 @@ class AdminDao:
             conn.close()
 
     def register_user(self, u_id, name, password, birthday, user_type):
-        """
-        新規ユーザー登録
-        IDカラム名を動的に切り替えて INSERT を実行
-        """
         table_name, id_column, name_column = self._get_table_info(user_type)
-        
-        # カラム名を動的に埋め込んだSQL
-        if user_type == "admin":
-            sql = f"""
-                INSERT INTO {table_name} ({id_column}, {name_column}, password, birthday, created_at) 
-                VALUES (%s, %s, %s, %s, NOW())
-            """
-            params = (u_id, name, password, birthday)
-        else:
-            sql = f"""
-                INSERT INTO {table_name} ({id_column}, {name_column}, password, birthday, alert, created_at) 
-                VALUES (%s, %s, %s, %s, %s, NOW())
-            """
-            params = (u_id, name, password, birthday, 0)
         
         conn = self._get_connection()
         try:
             cursor = conn.cursor()
-            cursor.execute(sql, params)
+            # 1. 基本情報の登録 (admin または student)
+            if user_type == "admin":
+                sql_main = f"INSERT INTO {table_name} ({id_column}, {name_column}, password, birthday, created_at) VALUES (%s, %s, %s, %s, NOW())"
+                params_main = (u_id, name, password, birthday)
+            else:
+                sql_main = f"INSERT INTO {table_name} ({id_column}, {name_column}, password, birthday, alert, created_at) VALUES (%s, %s, %s, %s, %s, NOW())"
+                params_main = (u_id, name, password, birthday, 0)
+            
+            cursor.execute(sql_main, params_main)
+
+            # 受講生の場合、progressテーブルに20行追加
+            if user_type == "student":
+                phases = ["①", "②", "③", "④"]
+                steps = ["1理解", "2構成", "3思考", "4表現", "5実践"]
+                
+                # 20個のフェーズ名を生成
+                phase_names = [f"{p}-{s}" for p in phases for s in steps]
+                
+                sql_progress = """
+                    INSERT INTO progress (phase_name, stage_flag, student_id) 
+                    VALUES (%s, 0, %s)
+                """
+                
+                # ループで20回実行
+                for p_name in phase_names:
+                    cursor.execute(sql_progress, (p_name, u_id))
+
             conn.commit()
-            return cursor.rowcount > 0
+            return True
+
         except Exception as e:
-            print(f"【DAO ERROR】: {e}")
-            conn.rollback()
+            print(f"【DAO ERROR】一括登録に失敗しました: {e}")
+            if conn: conn.rollback()
             return False
         finally:
-            cursor.close()
-            conn.close()
+            if 'cursor' in locals(): cursor.close()
+            if 'conn' in locals(): conn.close()
