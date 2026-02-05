@@ -139,31 +139,36 @@ def student_detail(student_id):
         }
     )
 
-# 
+# 所持グループ管理画面
 @dashboard_bp.route('/manage')
 def group_list():
     admin_id = session.get('user_id')
-    
     groups = d_dao.find_groups_for_progress(admin_id)
     
+    # グループ一覧画面表示
     return render_template('dashboard/group_list.html', groups=groups)
 
+# JSの検索機能（モーダル）で使うための全受講者データ
 @dashboard_bp.route('/api/students')
 def get_students_api():
-    """JSの検索機能（モーダル）で使うための全受講者データ"""
+
     d_dao = DashboardDao()
     students = d_dao.find_all_students()
+    
     # mysql-connectorの辞書形式をそのままJSONとして返す
     return jsonify(students)
 
+# 特定のグループに所属する受講生の一覧を返すAPI
 @dashboard_bp.route('/api/group/<group_id>/members')
 def get_group_members(group_id):
-    """特定のグループに所属する受講生の一覧を返すAPI"""
+
     d_dao = DashboardDao()
     # DAOの find_students_by_group を使用
     members = d_dao.find_students_by_group(group_id)
+    
     return jsonify(members)
 
+# POSTされたJSONを受け取る
 @dashboard_bp.route('/api/group/add-members', methods=['POST'])
 def add_group_members():
     data = request.json
@@ -171,7 +176,6 @@ def add_group_members():
     group_id = data.get('group_id')
     student_ids = data.get('student_ids')
     
-    # 400エラーを出している犯人はここ
     if not group_id or not student_ids:
         return jsonify({"success": False, "message": "データ不足"}), 400
     
@@ -215,62 +219,72 @@ def update_group():
     else:
         return jsonify({"success": False, "message": "データベースの更新に失敗しました"}), 500
 
+# group作成画面
 @dashboard_bp.route('/group/create', methods=['GET', 'POST'])
 def group_create():
-    d_dao = DashboardDao()
     if request.method == 'POST':
+        
+        # JSONを受け取ってgroup作成
         data = request.json
         group_name = data.get('group_name')
-        admin_id = session.get('user_id') 
-        # DAOに「グループ名」と「管理者のID」を渡す
+        admin_id = session.get('user_id')
+        
+        # DAOにgroup_name,admin_isを渡す
         success, message = d_dao.create_group(group_name, admin_id)
         return jsonify({"success": success, "message": message})
+    
+    # group作成画面表示
     return render_template('dashboard/group_create.html')
 
 """課題返却"""
-""" 配信済み課題一覧の表示 """
+# 配信済課題一覧画面
 @dashboard_bp.route("/streamed")
 def streamed_list():
     admin_id = session.get('user_id')
     all_tasks = s_dao.find_streamed_for_student(admin_id)
 
-    # ページネーションの設定
+    # ページ番号取得
     page = request.args.get('page', 1, type=int)
+    # ページネーションの設定
     per_page = 4 # 1ページあたりの表示件数
     offset = (page - 1) * per_page
 
-    # DAOにoffsetとlimitを渡して取得するように変更
-    # 簡易的なページネーション処理
+    # ページに表示できる分だけ取得
     tasks = all_tasks[offset : offset + per_page]
 
     # 次のページがあるかどうかの判定
     has_next = len(all_tasks) > offset + per_page
     has_prev = page > 1
 
+    # 配信済課題一覧画面表示
     return render_template("dashboard/deli_task_list.html", tasks=tasks, has_next=has_next, has_prev=has_prev)
 
-""" 課題を配信された学生の一覧表示 """
+# 課題を配信された受講者の一覧表示
 @dashboard_bp.route("/streamed/student/<int:streamed_id>")
 def streamed_student_list(streamed_id):
     admin_id = session.get('user_id')
+    # streamed_idからstreamed_nameを取得
     streamed = D_dao.find_streamed_name_by_id(streamed_id)
     keyword = request.args.get("keyword")
-    # 配信済みかつ提出/添削のフラグが関連しているdaoを作成
     streamed_student = D_dao.find_students_status_by_streamed_id(streamed_id, admin_id, keyword)
+    
+    # 受講者一覧画面表示
     return render_template("dashboard/task_stu_list.html", streamed_name=streamed["streamed_name"], streamed_student=streamed_student, streamed_id=streamed_id)
 
-""" 受講者(課題提出済み)の添削画面を表示 """
+# 課題添削画面
 @dashboard_bp.route("/streamed/student/<int:submission_id>/correction", methods=["GET"])
 def task_correction(submission_id):
     admin_id = session.get('user_id')
-    # 添削画面にて必要な成功をdaoにて取得する。
+    # submission_idから提出データを取得
     correction_student = D_dao.find_submission_by_streamed_id(submission_id, admin_id)
+    
+    # 添削画面表示
     return render_template("dashboard/correct_write.html", correction_student=correction_student, submission_id=submission_id, streamed_id=correction_student["streamed_id"])
 
-""" 添削完了後、確認画面→DB登録まで """
+# 添削確認画面→DB登録
 @dashboard_bp.route("/streamed/student/<int:submission_id>/correction", methods=["POST"])
 def submit_correction(submission_id):
-    # 添削した解答文を取得する
+    # 添削した答案文を取得する
     corrected_answer = request.form.get("answer_text")
     streamed_id = request.form.get("streamed_id")
 
