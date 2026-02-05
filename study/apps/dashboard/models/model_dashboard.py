@@ -27,12 +27,16 @@ class StreamedStudent:
     streamed_id: int
     submission_id: int
     status: str
-
 @dataclass
-class ReturnToStudent:
-    streamed_id: int
-    streamed_name: str
+class GroupInStreamed:
     group_id: int
     group_name: str
-    student_id: int
-    student_name: str
+    streamed_id: int
+    streamed_name: str 
+
+# @dataclass
+# class ReturnToStudent:
+#     streamed_id: int
+#     streamed_name: str
+#     group_id: int
+#     group_name: str

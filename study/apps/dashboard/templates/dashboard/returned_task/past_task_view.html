@@ -54,7 +54,10 @@
         
         <div class="groups-container">
           {% for group in groups %}
-          <div class="grou_content" onclick="showCorrectionStatus('{{ group.streamed_name}}')">
+          <div class="grou_content"
+               data-url="{{ url_for('dashboard.returned_student_list', group_id=group.group_id, streamed_id=group.streamed_id) }}" 
+               data-title="{{ group.streamed_name }}"
+               onclick="showCorrectionStatus(this)">
             <div class="group-icon">📁</div>
             <div class="group-info">
               <p class="group-title">{{ group.group_name }}</p>
@@ -123,10 +126,14 @@
   </div>
 
   <script>
-  function showCorrectionStatus(taskTitle) {
+  function showCorrectionStatus(element) {
+    const url = element.dataset.url;
+    const taskTitle = element.dataset.title;
+
     document.getElementById('task-list-view').style.display = 'none';
     document.getElementById('correction-status-view').style.display = 'block';
     document.getElementById('correction-title').textContent = `グループメンバー - ${taskTitle}`;
+    location.href = url; 
   }
 
 

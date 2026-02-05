@@ -178,15 +178,18 @@ class StreamedDao:
             s.streamed_limit,
             admin.admin_name,
             s.sent_at
-        FROM streamed AS s
-        LEFT JOIN submission sub
+        FROM student AS stu
+        INNER JOIN streamed AS s
+          ON s.group_id = stu.group_id
+        LEFT JOIN submission AS sub
           ON s.streamed_id = sub.streamed_id
-          AND sub.student_id = %s
+         AND sub.student_id = stu.student_id
         LEFT JOIN `group` AS g
           ON s.group_id = g.group_id
-        LEFT JOIN admin 
+        LEFT JOIN admin
           ON g.created_by_admin_id = admin.admin_id
-        WHERE sub.submission_id IS NULL
+        WHERE stu.student_id = %s
+          AND sub.submission_id IS NULL
         ORDER BY s.sent_at DESC
     """
 
