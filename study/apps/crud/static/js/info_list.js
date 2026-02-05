@@ -145,7 +145,7 @@ function ShowPasswordreset(userId, userName) {
     if (label) label.textContent = `${userName}さんのパスワードをリセットします。`;
     
     const confirmBtn = document.getElementById('confirmResetBtn');
-    if (confirmBtn) confirmBtn.onclick = () => risetForm(userId);
+    if (confirmBtn) confirmBtn.onclick = () => resetForm(userId);
 
     modal.classList.add('show');
     overlay.classList.add('show');
@@ -188,7 +188,7 @@ function closeModals() {
 }
 
 // パスワードリセット成功時に呼ぶ
-function risetForm(userId) {
+function resetForm(userId) {
   closeModals(); 
   showToast("パスワードをリセットしました。");
 }
@@ -262,7 +262,7 @@ async function deleteForm(userId) {
   }
 }
 
-async function risetForm(userId) {
+async function resetForm(userId) {
   // 1. 現在「受講生」か「管理者」かタブで判定
   const type = document.getElementById('showStudentBtn').classList.contains('active') ? 'student' : 'admin';
 

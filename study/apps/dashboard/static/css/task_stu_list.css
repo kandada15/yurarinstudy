@@ -620,3 +620,154 @@ h1 {
   }
 
 }
+
+/* =============================== */
+/* 返却確認モーダル（HTML準拠版） */
+/* =============================== */
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(90, 74, 58, 0.55);
+  backdrop-filter: blur(3px);
+  z-index: 2000;
+
+  /* ★ 中央寄せの核心 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* hidden 時は完全に消す */
+.modal.hidden {
+  display: none;
+}
+
+/* モーダル本体 */
+.modal-content {
+  background: #fffef9;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px);
+
+  width: 90%;
+  max-width: 420px;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 15px 45px rgba(139, 115, 85, 0.35);
+  text-align: center;
+
+  /* 出現アニメーション */
+  animation: modalPop 0.3s ease;
+}
+
+/* テキスト */
+.modal-content p {
+  font-size: 16px;
+  color: #5a4a3a;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+/* ボタン */
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.modal-actions button {
+  padding: 10px 22px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* 確定 */
+.modal-actions button:first-child {
+  background: #f74c5d;
+  color: #fff;
+}
+
+.modal-actions button:first-child:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+}
+
+/* キャンセル */
+.modal-actions button:last-child {
+  background: #e8dcc8;
+  color: #5a4a3a;
+}
+
+.modal-actions button:last-child:hover {
+  background: #d4c5b0;
+}
+
+/* アニメーション */
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===== モーダル共通 ===== */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+/* ===== 本体 ===== */
+.modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  min-width: 300px;
+  max-width: 420px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+
+
+/* モーダル内メッセージ */
+.modal-message {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* エラー */
+.modal-message.error {
+  color: #d93025;
+}
+
+/* 成功 */
+.modal-message.success {
+  color: #2e7d32;
+}
+
+.modal-message.hidden {
+  display: none;
+}

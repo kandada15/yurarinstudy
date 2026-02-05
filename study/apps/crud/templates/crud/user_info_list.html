@@ -77,7 +77,9 @@
               <td><i class="fas fa-user-circle"></i></td>
               <td>{{ s.student_id }}</td>
               <td class="user-name">
-                <a href="{{ url_for('crud.user_detail', id=s.student_id) }}">{{ s.student_name }}</a>
+                <a href="{{ url_for('crud.user_info', user_type='student', user_id=s.student_id) }}">
+                  {{ s.student_name }}
+                </a>
               </td>
               <td class="group-cell">
                 <div class="group-tags">
@@ -85,7 +87,7 @@
                 </div>
               </td>
               <td>
-                <button type="button" onclick="location.href='{{ url_for('crud.user_detail', id=s.student_id) }}'">詳細</button>
+                <button type="button" onclick="location.href='{{ url_for('crud.user_info', user_type='student', user_id=s.student_id) }}'">詳細</button>
                 <button type="button" class="btn-reset" onclick="ShowPasswordreset('{{ s.student_id }}', '{{ s.student_name }}')">パスワードリセット</button>
                 <button type="button" class="btn-reset" onclick="ShowUserdelete('{{ s.student_id }}', '{{ s.student_name }}')">削除</button>
               </td>
@@ -114,7 +116,9 @@
               <td><i class="fas fa-user-circle"></i></td>
               <td>{{ a.admin_id }}</td>
               <td class="user-name">
-                <a href="{{ url_for('crud.user_detail', id=a.admin_id) }}">{{ a.admin_name }}</a>
+                <a href="{{ url_for('crud.user_info', user_type='admin', user_id=a.admin_id) }}">
+                {{ a.admin_name }}
+                </a>
               </td>
               <td class="group-cell">
                 <div class="group-tags">
@@ -132,7 +136,7 @@
                 </div>
               </td>
               <td>
-                <button type="button" onclick="location.href='{{ url_for('crud.user_detail', id=a.admin_id) }}'">詳細</button>
+                <button type="button" onclick="location.href='{{ url_for('crud.user_info', user_type='admin', user_id=a.admin_id) }}'">詳細</button>
                 <button type="button" class="btn-reset" onclick="ShowPasswordreset('{{ a.admin_id }}', '{{ a.admin_name }}')">パスワードリセット</button>
                 <button type="button" class="btn-reset" onclick="ShowUserdelete('{{ a.admin_id }}', '{{ a.admin_name }}')">削除</button>
               </td>

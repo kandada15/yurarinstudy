@@ -25,8 +25,10 @@
   </div>
 
   <div class="tabs-container">
-    <a href="#" class="tab active" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
-    <a href="#" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    <a href="{{ url_for('crud.user_manage') }}" class="tab" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    
+    <a href="{{ url_for('task.task_create_form') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    
     <a href="{{ url_for('dashboard.index') }}" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
   </div>
 

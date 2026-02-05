@@ -99,19 +99,17 @@ class Dashboard_DAO:
               sub.submit_flag,
               sub.check_flag
             FROM streamed AS s
-            INNER JOIN `group` AS g
-            ON g.group_id = s.group_id
-            INNER JOIN student AS stu
-            ON stu.group_id = g.group_id
+            LEFT OUTER JOIN student AS stu
+            ON stu.group_id = s.group_id
             LEFT OUTER JOIN submission AS sub
-            ON sub.student_id = stu.student_id
-            AND sub.streamed_id = s.streamed_id
-            WHERE s.streamed_id = %s AND g.created_by_admin_id = %s 
-            AND(
-              %s IS NULL 
-              OR stu.student_name LIKE CONCAT('%', %s, '%')
-            )
-          ORDER BY stu.student_id ASC
+              ON sub.student_id = stu.student_id
+             AND sub.streamed_id = s.streamed_id
+            WHERE 
+               s.streamed_id = %s 
+               AND s.group_id
+                IN (SELECT group_id FROM `group` WHERE created_by_admin_id = %s)
+                AND (%s IS NULL OR stu.student_name LIKE CONCAT('%', %s, '%'))
+            ORDER BY stu.student_id ASC
         """
 
         conn = self._get_connection()
@@ -128,15 +126,16 @@ class Dashboard_DAO:
               status = "未添削"
             else:
               status = "添削済み"
-              result.append(
-                StreamedStudent(
-                    student_id=row["student_id"],
-                    student_name=row["student_name"],
-                    streamed_id=row["streamed_id"],
-                    submission_id=row["submission_id"],
-                    status=status
-                )
+            result.append(
+              StreamedStudent(
+                student_id=row["student_id"],
+                student_name=row["student_name"],
+                streamed_id=row["streamed_id"],
+                submission_id=row["submission_id"],
+                status=status
               )
+            )  
+
               
           return result
             
@@ -307,6 +306,7 @@ class Dashboard_DAO:
         AND submit_flag = 1
         AND check_flag = 1
       """
+      
       
       conn = self._get_connection()
       try:

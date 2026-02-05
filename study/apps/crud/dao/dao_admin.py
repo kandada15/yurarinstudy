@@ -172,39 +172,61 @@ class AdminDao:
             cursor.close()
             conn.close()
 
-    # admin ID検索
-    def find_by_id(self, admin_id: str) -> Optional[dict]:
-        """
-        admin_idで admin テーブルから1件取得。見つからなければNoneを返す。
-        戻り値: 辞書型 {"admin_id":..., "admin_name":...}
-        %s はプレースホルダー
-        """
-        sql = """
-            SELECT
-                admin_id,
-                admin_name,
-                password,
-                birthday,
-                entry_date
-            FROM admin
-            WHERE admin_id = %s
-            LIMIT 1
-        """
+    # ID検索
+    def find_by_id(self, u_id, user_type):
+        table_name, id_column, name_column = self._get_table_info(user_type)
+        
+        if user_type == "student":
+            sql = f"""
+                SELECT 
+                    s.{id_column} AS user_id, 
+                    s.{name_column} AS user_name, 
+                    s.birthday, 
+                    s.created_at,
+                    YEAR(s.created_at) AS entry_year,
+                    g.group_name
+                FROM {table_name} s
+                LEFT JOIN `group` g ON s.group_id = g.group_id
+                WHERE s.{id_column} = %s
+            """
+        else:
+            sql = f"""
+                SELECT 
+                    {id_column} AS user_id, 
+                    {name_column} AS user_name, 
+                    birthday, 
+                    created_at,
+                    YEAR(created_at) AS entry_year,
+                    '管理者' AS group_name
+                FROM {table_name} 
+                WHERE {id_column} = %s
+            """
 
-        # クラス内部の_get_connection()を使ってMySQL接続を取得
-        # 結果を辞書形式で取得
         conn = self._get_connection()
         try:
             cursor = conn.cursor(dictionary=True)
-            cursor.execute(sql, (admin_id,))
-            row = cursor.fetchone()
-            
-            return row
-        
+            cursor.execute(sql, (u_id,))
+            return cursor.fetchone()
         finally:
-            # 例外の有無に関わらず、最後に必ずクローズする
             cursor.close()
             conn.close()
+
+            conn = self._get_connection()
+            try:
+                # 結果を辞書形式で取得
+                cursor = conn.cursor(dictionary=True)
+                cursor.execute(sql, (u_id,))
+                row = cursor.fetchone()
+                
+                return row
+            
+            except Exception as e:
+                print(f"【DAO ERROR】検索失敗: {e}")
+                return None
+            
+            finally:
+                cursor.close()
+                conn.close()
 
     # admin新規登録
     def insert(self, admin_id: str, admin_name: str, password: str, birthday) -> str:
@@ -214,7 +236,7 @@ class AdminDao:
         """
         sql = """
             INSERT INTO admin
-                (admin_id, admin_name, password, birthday, entry_date)
+                (admin_id, admin_name, password, birthday, created_at)
             VALUES
                 (%s, %s, %s, %s, NOW())
         """
@@ -309,36 +331,45 @@ class AdminDao:
             conn.close()
 
     def register_user(self, u_id, name, password, birthday, user_type):
-        """
-        新規ユーザー登録
-        IDカラム名を動的に切り替えて INSERT を実行
-        """
         table_name, id_column, name_column = self._get_table_info(user_type)
-        
-        # カラム名を動的に埋め込んだSQL
-        if user_type == "admin":
-            sql = f"""
-                INSERT INTO {table_name} ({id_column}, {name_column}, password, birthday, created_at) 
-                VALUES (%s, %s, %s, %s, NOW())
-            """
-            params = (u_id, name, password, birthday)
-        else:
-            sql = f"""
-                INSERT INTO {table_name} ({id_column}, {name_column}, password, birthday, alert, created_at) 
-                VALUES (%s, %s, %s, %s, %s, NOW())
-            """
-            params = (u_id, name, password, birthday, 0)
         
         conn = self._get_connection()
         try:
             cursor = conn.cursor()
-            cursor.execute(sql, params)
+            # 1. 基本情報の登録 (admin または student)
+            if user_type == "admin":
+                sql_main = f"INSERT INTO {table_name} ({id_column}, {name_column}, password, birthday, created_at) VALUES (%s, %s, %s, %s, NOW())"
+                params_main = (u_id, name, password, birthday)
+            else:
+                sql_main = f"INSERT INTO {table_name} ({id_column}, {name_column}, password, birthday, alert, created_at) VALUES (%s, %s, %s, %s, %s, NOW())"
+                params_main = (u_id, name, password, birthday, 0)
+            
+            cursor.execute(sql_main, params_main)
+
+            # 受講生の場合、progressテーブルに20行追加
+            if user_type == "student":
+                phases = ["①", "②", "③", "④"]
+                steps = ["1理解", "2構成", "3思考", "4表現", "5実践"]
+                
+                # 20個のフェーズ名を生成
+                phase_names = [f"{p}-{s}" for p in phases for s in steps]
+                
+                sql_progress = """
+                    INSERT INTO progress (phase_name, stage_flag, student_id) 
+                    VALUES (%s, 0, %s)
+                """
+                
+                # ループで20回実行
+                for p_name in phase_names:
+                    cursor.execute(sql_progress, (p_name, u_id))
+
             conn.commit()
-            return cursor.rowcount > 0
+            return True
+
         except Exception as e:
-            print(f"【DAO ERROR】: {e}")
-            conn.rollback()
+            print(f"【DAO ERROR】一括登録に失敗しました: {e}")
+            if conn: conn.rollback()
             return False
         finally:
-            cursor.close()
-            conn.close()
+            if 'cursor' in locals(): cursor.close()
+            if 'conn' in locals(): conn.close()

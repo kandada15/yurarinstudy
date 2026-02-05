@@ -36,16 +36,6 @@ def user_manage():
         all_admins=all_admins
     )
 
-# ユーザ詳細画面
-@crud_bp.route("/detail")
-def user_detail():
-    user_data = {
-        "id": "S000123",
-        "name": "山田 太郎",
-        "role": "student"
-    }
-    return render_template("crud/user_info_inq.html", user_data=user_data)
-
 @crud_bp.route("/user_add")
 def user_add():
     return render_template("crud/new_user_add.html")
@@ -59,7 +49,7 @@ def reset_password():
 
 @crud_bp.route("/user/delete", methods=['POST'])
 def delete_user():
-    data = request.get_json(silent="True")
+    data = request.get_json(force=True, silent=True)
     user_id = data.get('user_id')
 
     return jsonify({"status": "success", "message": f"User {user_id} deleted."})
@@ -203,3 +193,12 @@ def new_user_add():
             return jsonify({"status": "error", "message": "登録に失敗しました。"}), 500
 
     return render_template("crud/new_user_add.html")
+
+@crud_bp.route("/user_info/<user_type>/<user_id>")
+def user_info(user_type, user_id):
+    user = admin_dao.find_by_id(user_id, user_type)
+    
+    if not user:
+        return "ユーザーが見つかりません", 404
+        
+    return render_template("crud/user_info.html", user=user, user_type=user_type)
