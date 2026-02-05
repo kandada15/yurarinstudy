@@ -28,9 +28,11 @@
             <div class="form-group">
                 <label for="username">ユーザ名</label>
                 <input type="text" id="username" name="username">
+                {% if error %}
                 <div class="error-message" id="usernameError">
-                    {% if error %}{{ error }}{% endif %}
+                    {{ error }}
                 </div>
+                {% endif %}
             </div>
 
             <div class="form-group">
