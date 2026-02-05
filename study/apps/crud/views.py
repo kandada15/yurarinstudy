@@ -177,3 +177,29 @@ def api_delete_user():
     except Exception as e:
         print(f"エラー発生: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+    
+@crud_bp.route("/new_user_add", methods=["GET", "POST"])
+def new_user_add():
+    if request.method == "POST":
+        data = request.get_json()
+        print(f"DEBUG: 受信データ = {data}")
+        
+        user_type = data.get("user_type")  # 'admin' or 'student'
+        u_id      = data.get("user_id")
+        name      = data.get("user_name")
+        password  = data.get("password")  # JS側で生成した8桁数値
+        birthday  = data.get("birthday")
+
+        # 1. 重複チェック
+        if admin_dao.check_id_exists(u_id, user_type):
+            return jsonify({"status": "error", "message": "このIDは既に登録されています。"}), 400
+
+        # 2. 登録処理
+        success = admin_dao.register_user(u_id, name, password, birthday, user_type)
+
+        if success:
+            return jsonify({"status": "success"})
+        else:
+            return jsonify({"status": "error", "message": "登録に失敗しました。"}), 500
+
+    return render_template("crud/new_user_add.html")
