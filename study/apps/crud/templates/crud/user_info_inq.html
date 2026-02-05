@@ -16,7 +16,7 @@
     <div class="user-section">
       <span class="user-badge">管理者</span>
       <!--ログアウト-->
-      <a href="{{ url_for( 'auth.logout' ) }}" class="logout-btn" >ログアウト</a>
+      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
     </div>
   </header>
 
