@@ -108,6 +108,8 @@
     <div class="modal-content">
       <p>添削済みの課題を返却しますか？</p>
 
+      <p id="returnMessage" class="modal-message hidden"></p>
+
       <form id="returnForm"
         data-back-url="{{ url_for('dashboard.streamed_list') }}"
         data-streamed-id="{{ streamed_id }}">
@@ -129,6 +131,24 @@
       window.location.href = "{{ url_for('dashboard.streamed_list') }}";
     }
 
+    function gologout(){
+      window.location.href = '/auth/logout';
+    }
+    
+    // success/errorメッセージの制御を行う
+    function showModalMessage(msg, type) {
+      const el = document.getElementById("returnMessage");
+      el.textContent = msg;
+      el.className = "modal-message " + type; // error / success
+    }
+
+    function clearModalMessage() {
+      const el = document.getElementById("returnMessage");
+      el.textContent = "";
+      el.classList.add("hidden");
+    }
+
+
     // 未添削チェック
     function openReturnToList() {
       const rows = document.querySelectorAll("tbody tr");
@@ -136,12 +156,13 @@
       row => row.dataset.status === "未添削"
     );
 
+    document.getElementById("returnModal").classList.remove("hidden");
+
     if (hasUnchecked) {
-      showToast("未添削の課題があります");
+      showToast("未添削の課題があります", "error");
       return;
     }
-
-    document.getElementById("returnModal").classList.remove("hidden");
+    clearModalMessage();
     }
 
     // モーダルを閉じる
@@ -155,6 +176,7 @@
 
       const formData = new FormData(form);
 
+      clearModalMessage();
       fetch("{{ url_for('dashboard.correction_return') }}", {
         method: "POST",
         body: formData
@@ -162,33 +184,22 @@
       .then(res => res.json())
       .then(data => {
         if (!data.success) {
-          showToast(data.message);
-          closeReturnModal();
+          showModalMessage(data.message, "error");
           return;
         }
+        showModalMessage("課題の返却が完了しました", "success");
 
-        showToast("課題の返却が完了しました");
         setTimeout(() => {
           window.location.href = form.dataset.backUrl;
         }, 2000);
       })
       .catch(() => {
-        showToast("返却処理に失敗しました");
+        showModalMessage("返却処理に失敗しました", "error");
       });
-    }
-
-    // 簡易トースト
-    function showToast(msg) {
-      alert(msg);
     }
   </script>
 
 <!-- 以下スクリプト -->
 <script src="{{ url_for('static', filename='js/header.js') }}"></script> 
-<script>
-  function gologout(){
-    window.location.href = '/auth/logout';
-  }
-</script>
 </body>
 </html>
