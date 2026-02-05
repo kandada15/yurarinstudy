@@ -13,8 +13,11 @@ class Streamed(db.Model):
     streamed_text = db.Column(db.String(255))
     # 課題提出期限
     streamed_limit = db.Column(db.DateTime)
+    # 配信日時
+    sent_at = db.Column(db.DateTime)
     # グループID（外部キー）
     group_id = db.Column(db.Integer, db.ForeignKey('group.group_id'))
+    
 @dataclass
 class StreamedForStudent:
     __tablename__ = "streamedforstudent"
@@ -31,5 +34,6 @@ class StreamedForStudentSubmit:
     streamed_id : int
     streamed_name: str
     streamed_text: str
-    streamed_limit: datetime  
+    streamed_limit: datetime
+    sent_at: datetime
     admin_name: str | None

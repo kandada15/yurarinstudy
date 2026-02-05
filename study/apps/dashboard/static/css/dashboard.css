@@ -400,3 +400,89 @@ body {
 .big-btn:active {
   transform: translateY(0);
 }
+
+@media screen and (max-height: 588px){
+  .app-container {
+    height: 500px;
+    margin-top: 50px; 
+  }
+
+  .content-wrapper {
+    height: 500px;
+  }
+
+  .page-title {
+    font-size: 24px;
+  }
+
+  h1 {
+    font-size: 24px !important;
+    margin-top: -5px;
+    margin-bottom: 15px !important;
+  }
+
+  .group-title {
+    font-size: 15px ; 
+  }
+
+  .group-button {
+    font-size: 12px;
+  }
+
+  .profile-label {
+    font-size: 13px;
+  }
+
+  .profile-item {
+    padding: 8px 0;
+  }
+
+  .group-header {
+    margin-bottom: 10px;
+  }
+
+  .box {
+    padding: 15px;
+  }
+
+  .group-list {
+    max-height: 100px;
+  }
+
+  .box-title {
+    font-size: 15px;
+  }
+
+  .task-label {
+    font-size: 14px;
+  }
+
+  .btn-detail {
+    font-size: 12px;
+  }
+
+  .submission-title {
+    font-size: 15px;
+  }
+
+  .submission-num {
+    font-size: 24px;
+  }
+
+  .submission-row {
+    padding: 12px;
+  }
+
+  .bottom-buttons {
+    margin-top: 10px;
+  }
+
+  .submission-section {
+    margin-top: 10px;
+  }
+
+  .big-btn {
+    font-size: 14px;
+    padding: 10px 25px;
+  }
+}

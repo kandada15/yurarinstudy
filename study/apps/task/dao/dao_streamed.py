@@ -30,6 +30,7 @@ class StreamedDao:
             s.streamed_name,
             s.streamed_text,
             s.streamed_limit,
+            s.sent_at,
             g.group_id
             
         FROM streamed AS s
@@ -55,6 +56,7 @@ class StreamedDao:
           streamed_name=row["streamed_name"],
           streamed_text=row["streamed_text"],
           streamed_limit=row["streamed_limit"],
+          sent_at=row["sent_at"],
           group_id=row["group_id"]
         )
         streamed.append(stream)
@@ -72,6 +74,7 @@ class StreamedDao:
     streamed_name: str,
     streamed_text: Text, 
     streamed_limit: datetime,
+    sent_at: datetime,
     group_id: int
   ):
     """ 
@@ -80,9 +83,9 @@ class StreamedDao:
     """
     sql = """
         INSERT INTO streamed 
-          (streamed_name, streamed_text, streamed_limit, group_id)
-        VALUES 
-          (%s, %s, %s, %s)
+          (streamed_name, streamed_text, streamed_limit, sent_at, group_id)
+        VALUES
+          (%s, %s, %s, %s, %s)
     """
 
     # クラス内部の_get_connection()を使ってMySQL接続を取得
@@ -95,6 +98,7 @@ class StreamedDao:
           streamed_name,
           streamed_text,
           streamed_limit,
+          sent_at,
           group_id
         )
       )
@@ -121,6 +125,7 @@ class StreamedDao:
             s.streamed_name,
             s.streamed_text,
             s.streamed_limit,
+            
             admin.admin_name,
             s.sent_at
         FROM streamed AS s
@@ -278,6 +283,7 @@ class StreamedDao:
         s.streamed_name,
         s.streamed_text,
         s.streamed_limit,
+        s.sent_at,
         admin.admin_name
       FROM streamed AS s
       LEFT OUTER JOIN `group` AS g
@@ -301,6 +307,7 @@ class StreamedDao:
           streamed_name=row["streamed_name"],
           streamed_text=row["streamed_text"],
           streamed_limit=row["streamed_limit"],
+          sent_at=row["sent_at"],
           admin_name=row["admin_name"]
         )
       

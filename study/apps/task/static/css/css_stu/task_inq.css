@@ -1,4 +1,3 @@
-
 * {
   margin: 0;
   padding: 0;
@@ -11,14 +10,6 @@ body {
   padding: 20px;
 }
 
-/* .container {
-  max-width: 600px;
-  margin: 0 auto;
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-} */
 
 /* 原稿用紙風の背景 */
 .app-container {
@@ -43,21 +34,6 @@ body {
   background: rgba(255, 254, 249, 0.95);
   padding: 30px;
   position: relative;
-  border: 1px solid #000;
-  /*わかりやすくボーダーをひく*/
-  overflow-y: scroll;
-  /*縦方向にスクロール*/
-  -ms-overflow-style: none;
-  /* Edge / IE */
-  scrollbar-width: none;
-  /* Firefox */
-  scrollbar-gutter: stable;
-  /* 揺れ防止！ */
-}
-
-/* Chrome / Safari */
-.content-wrapper::-webkit-scrollbar {
-  display: none;
 }
 
 /* アニメーション */
@@ -139,7 +115,7 @@ label span {
 /* テキストエリア */
 textarea {
   resize: vertical;
-  height: 270px;
+  height: 240px;
   font-family: inherit;
   line-height: 1.6;
   width: 100%;
@@ -149,6 +125,7 @@ textarea {
   font-size: 15px;
   background-color: #faf8f5;
   transition: all 0.2s ease;
+  resize: none;
 }
 
 textarea:focus {
@@ -162,38 +139,117 @@ textarea::placeholder {
   color: #999;
 }
 
+textarea::-webkit-scrollbar {
+  display: none;
+}
+
+/* スクロール可能エリア */
+.scrollable-content {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 10px;
+  margin-bottom: 20px;
+}
+
+/* スクロールバーを非表示 */
+.scrollable-content::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollable-content {
+  -ms-overflow-style: none;  
+  scrollbar-width: none; 
+}
+
+/* 問題文エリア */
+.modal-body {
+  margin-bottom: 20px;
+  display: flex;
+}
+
+.modal-body label {
+  color: #8b7355;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 0;  /* 追加：上のマージンを0に */
+  margin-bottom: 10px;  /* 追加：下に少し余白 */
+}
+
+.question-text {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #d4c5b0;
+  border-radius: 6px;
+  font-size: 15px;
+  background-color: #faf8f5;
+  color: #5a4a3a;
+  line-height: 1.6;
+  min-height: 100px;
+  margin-top: 25px;
+  margin-left: -40px;
+}
+
+
 /* ボタン */
 .button-group {
   display: flex;
   gap: 20px;
   justify-content: center;
+  margin-top: 10px;
+}
+
+button,
+input[type="submit"] {
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
 .btn-primary {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 32px;
-  font-size: 16px;
-  font-weight: bold;
+  background-color: #8b7355;
+  color: #ffffff;
   border: none;
-  border-radius: 6px;
+  border-radius: 25px;
+  padding: 14px 40px;
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s;
-  font-family: inherit;
-  background: #8b7355;
-  color: #fffef9;
-  box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+  transition: all 0.3s ease;
+  align-self: center;
+  width: 200px;
   height: 50px;
-  margin: 30px auto 0;
-  text-align: center;
-  align-self: flex-end;
 }
 
 .btn-primary:hover {
-  background-color: #6b5344;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(107, 83, 68, 0.3);
+  background-color: #6d5a43;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-back {
+  background-color: #e8dcc8;
+  color: #5d4e37;
+  border: 1px solid #d4c5b0;
+  border-radius: 25px;
+  padding: 14px 40px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 200px;
+  height: 50px;
+}
+
+.btn-back:hover {
+  background-color: #d4c5b0;
 }
 
 /* エラーメッセージ */
@@ -318,4 +374,19 @@ textarea::placeholder {
 
 .toast-icon {
   font-size: 20px;
+}
+
+@media screen and (max-height: 588px){
+  .app-container {
+    height: 495px;
+    margin-top: 50px; 
+  }
+
+  .content-wrapper {
+    height: 500px;
+  }
+
+  .scrollable-content {
+    max-height: 300px;
+  }
 }
