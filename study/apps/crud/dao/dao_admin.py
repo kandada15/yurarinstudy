@@ -283,3 +283,62 @@ class AdminDao:
         finally:
             cursor.close()
             conn.close()
+
+    def _get_table_info(self, user_type):
+        """
+        種別に応じて (テーブル名, IDカラム名) を返す
+        """
+        if user_type == "admin":
+            return "admin", "admin_id", "admin_name"
+        else:
+            return "student", "student_id", "student_name"
+
+    def check_id_exists(self, u_id, user_type):
+        """IDの重複チェック"""
+        table_name, id_column, _ = self._get_table_info(user_type)
+        sql = f"SELECT COUNT(*) FROM {table_name} WHERE {id_column} = %s"
+        
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql, (u_id,))
+            result = cursor.fetchone()
+            return result[0] > 0
+        finally:
+            cursor.close()
+            conn.close()
+
+    def register_user(self, u_id, name, password, birthday, user_type):
+        """
+        新規ユーザー登録
+        IDカラム名を動的に切り替えて INSERT を実行
+        """
+        table_name, id_column, name_column = self._get_table_info(user_type)
+        
+        # カラム名を動的に埋め込んだSQL
+        if user_type == "admin":
+            sql = f"""
+                INSERT INTO {table_name} ({id_column}, {name_column}, password, birthday, created_at) 
+                VALUES (%s, %s, %s, %s, NOW())
+            """
+            params = (u_id, name, password, birthday)
+        else:
+            sql = f"""
+                INSERT INTO {table_name} ({id_column}, {name_column}, password, birthday, alert, created_at) 
+                VALUES (%s, %s, %s, %s, %s, NOW())
+            """
+            params = (u_id, name, password, birthday, 0)
+        
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql, params)
+            conn.commit()
+            return cursor.rowcount > 0
+        except Exception as e:
+            print(f"【DAO ERROR】: {e}")
+            conn.rollback()
+            return False
+        finally:
+            cursor.close()
+            conn.close()
