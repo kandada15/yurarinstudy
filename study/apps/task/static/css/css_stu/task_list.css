@@ -47,7 +47,13 @@ h1 {
   gap: 40px;
   padding: 20px;
   padding-bottom: 20px;
+  height: 480px;
+  width: 950px;
+  column-gap: 100px;
+  margin: 0 auto;
+ 
 }
+
 
 /* 付箋風カードボタン */
 .task-card {
@@ -59,7 +65,7 @@ h1 {
   transition: all 0.3s ease;
   text-align: left;
   position: relative;
-  min-height: 200px;
+  max-height: 200px;
   font-family: inherit;
   width: auto;
 }
@@ -184,7 +190,7 @@ h1 {
 .modal {
   display: none;
   position: fixed;
-  top: 0;
+  top: px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -193,6 +199,7 @@ h1 {
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
   animation: fadeIn 0.3s ease;
+
 }
 
 .modal.active {
@@ -207,14 +214,18 @@ h1 {
   border-radius: 12px;
   max-width: 700px;
   width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
+  height: 80vh;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   position: relative;
   animation: popIn 0.3s ease;
   margin: auto; 
-  margin-top: 100px;
+  margin-top: 80px;
   margin-bottom: 100px;
+  
+}
+
+.modal-content::-webkit-scrollbar {
+  display: none;
 }
 
 @keyframes fadeIn {
@@ -263,6 +274,26 @@ h1 {
   margin-bottom: 25px;
 }
 
+.modal-meta {
+   border-bottom: 2px solid #d4c4b0;
+}
+
+.modal-scroll {
+  border-bottom: 2px solid #d4c4b0;
+  padding-bottom: 20px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  overflow-y: scroll;
+  /*縦方向にスクロール*/
+  -ms-overflow-style: none;
+  /* Edge / IE */
+  scrollbar-width: none;
+  /* Firefox */
+  scrollbar-gutter: stable;
+  /* 揺れ防止！ */
+  height: 350px;
+}
+
 .modal-title {
   font-size: 24px;
   font-weight: 700;
@@ -299,6 +330,7 @@ h1 {
   color: #4a3728;
   margin-bottom: 10px;
   display: block;
+  margin-top: 10px;
 }
 
 .modal-text {
@@ -345,7 +377,7 @@ h1 {
   color: #fffef9;
   box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
   height: 50px;
-  margin: 40px auto 0;
+  margin: 20px auto 0;
   text-align: center;
   align-self: flex-end;
 }
@@ -364,4 +396,49 @@ h1 {
 .btn-return:hover {
   background-color: #d4c4b0;
   transform: translateY(-2px);
+}
+
+@media screen and (max-height: 588px){
+  .app-container {
+    height: 500px;
+    margin-top: 50px; 
+  }
+
+  .content-wrapper {
+    height: 500px;
+  }
+
+  .task-grid {
+    height: 380px;
+    gap: 25px;
+    width: 950px;
+    margin: 0 auto;
+    column-gap: 100px;
+  }
+
+  h1 {
+    font-size: 25px;
+  }
+
+  .task-card {
+    max-height: 180px;
+  }
+
+  .task-card p:nth-of-type(1) {
+    margin: 5px 0;
+  }
+
+  .modal-content {
+    margin-top: 60px;
+  }
+
+  .modal-header{
+    padding-bottom: 0px;
+    margin-bottom: 10px;
+  }
+
+  .modal-scroll {
+    height: 290px;
+  }
+
 }

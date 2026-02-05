@@ -33,20 +33,13 @@ body {
   position: relative;
 }
 
+/* 文字に関するもの */
 h1 {
   color: #4a3728;
   font-size: 32px;
   margin-bottom: 5px;
   text-align: center;
   font-weight: 600;
-}
-
-.task-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 40px;
-  padding: 20px;
-  padding-bottom: 20px;
 }
 
 /* 付箋風カードボタン */
@@ -76,6 +69,42 @@ h1 {
   transform: rotate(-2deg);
 }
 
+.task-card label,
+.task-card p {
+  display: block;
+  color: #4a3728;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.task-card label {
+  font-weight: 600;
+  color: #8b7355;
+}
+
+.task-card p:nth-of-type(1) {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 15px 0;
+  color: #2d1f14;
+}
+
+/* レイアウト */
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  padding: 20px;
+  padding-bottom: 20px;
+  height: 480px;
+  width: 950px;
+  column-gap: 100px;
+  margin: 0 auto;
+ 
+}
+
+
+/* UI部品 */
 .task-card:nth-child(1) {
   background: #fff9e6;
   transform: rotate(-1deg);
@@ -101,25 +130,6 @@ h1 {
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.25);
 }
 
-.task-card label,
-.task-card p {
-  display: block;
-  color: #4a3728;
-  margin-bottom: 10px;
-  font-size: 14px;
-}
-
-.task-card label {
-  font-weight: 600;
-  color: #8b7355;
-}
-
-.task-card p:nth-of-type(1) {
-  font-size: 18px;
-  font-weight: 700;
-  margin: 15px 0;
-  color: #2d1f14;
-}
 
 /* ページネーション */
 .pagination {
@@ -178,4 +188,52 @@ h1 {
 .btn-back:active,
 .btn-next:active {
   transform: scale(0.95);
+}
+
+@media screen and (max-height: 588px){
+  .app-container {
+    height: 500px;
+    margin-top: 30px; 
+  }
+
+  .content-wrapper {
+    height: 500px;
+  }
+
+  .task-grid {
+    height: 380px;
+    gap: 25px;
+    width: 950px;
+    margin: 0 auto;
+    column-gap: 100px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  .task-card {
+    height: 180px;
+    padding: 25px;
+    padding-bottom: -10px;
+    min-height: 180px;
+  }
+
+  .task-card p:nth-of-type(1) {
+    margin: 5px 0;
+  }
+
+  .modal-content {
+    margin-top: 60px;
+  }
+
+  .modal-header{
+    padding-bottom: 0px;
+    margin-bottom: 10px;
+  }
+
+  .modal-scroll {
+    height: 290px;
+  }
+
 }
