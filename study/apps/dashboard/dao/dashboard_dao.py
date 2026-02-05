@@ -24,7 +24,7 @@ class DashboardDao:
                 g.group_name, 
                 COUNT(s.student_id) AS member_count
             FROM `group` g
-            LEFT JOIN student s ON g.group_id = s.group_id
+            LEFT OUTER JOIN student s ON g.group_id = s.group_id
             WHERE g.created_by_admin_id = %s
             GROUP BY g.group_id
         """
@@ -46,7 +46,7 @@ class DashboardDao:
             YEAR(created_at) as admission_year 
         FROM student 
         WHERE group_id = %s
-    """
+        """
         conn = self._get_connection()
         try:
             cursor = conn.cursor(dictionary=True)
@@ -55,6 +55,25 @@ class DashboardDao:
         finally:
             cursor.close()
             conn.close()
+    
+    # student_name表示用
+    def get_student_name(self, student_id: str) -> str:
+        """student_id から student_name を取得"""
+        sql = """
+            SELECT student_name
+            FROM student
+            WHERE student_id = %s
+        """
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute(sql, (student_id,))
+            row = cursor.fetchone()
+            return row['student_name'] if row else "不明な受講者"
+        finally:
+            cursor.close()
+            conn.close()
+
 
     def get_student_stats(self, student_id: str) -> dict:
         """一人の生徒の完了・未完了ステージ数を集計します"""
@@ -82,6 +101,7 @@ class DashboardDao:
             WHERE student_id = %s 
             ORDER BY progress_id ASC
         """
+
         conn = self._get_connection()
         try:
             cursor = conn.cursor(dictionary=True)
