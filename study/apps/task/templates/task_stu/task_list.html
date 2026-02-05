@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('task.static', filename='css/css_stu/task_list.css') }}">
-  <link rel="stylesheet" href="{{ url_for('task.static', filename='css/css_stu/header.css') }}">
+  <link rel="stylesheet" href="{{ url_for('task.static', filename='css/header.css') }}">
   <title>課題一覧</title>
 </head>
 <body>
@@ -17,7 +17,7 @@
       <span class="app-name">文脈工房</span>
     </div>
     <div class="user-section">
-      <span class="user-badge">受講者</span>
+      <span class="user-badge">管理者</span>
       <!--ログアウト-->
       <a href="{{ url_for( 'auth.logout' ) }}" class="logout-btn" >ログアウト</a>
     </div>

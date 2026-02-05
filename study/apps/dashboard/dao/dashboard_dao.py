@@ -1,14 +1,11 @@
-# dao_dashboard.py
-# Dashboard モデルを MySQL (dashboard テーブル) とやり取りする DAO クラス
-
 import mysql.connector
 from mysql.connector import MySQLConnection
 from apps.dashboard.models.model_dashboard import Dashboard
-from apps.config.db_config import DB_CONFIG  # ★ これを追加
+from apps.config.db_config import DB_CONFIG
 
 # MySQLに直接アクセスするDAOクラス※progressテーブル専用
 class DashboardDao:
-    
+
     # 初期化処理
     def __init__(self, config: dict | None = None) -> None:
         # DB接続情報を受け取る（指定がなければ DB_CONFIG を使う）
@@ -39,7 +36,7 @@ class DashboardDao:
         finally:
             cursor.close()
             conn.close()
-        
+
     def find_students_by_group(self, group_id: int) -> list[dict]:
         """特定のグループに所属する生徒のIDと名前、入学年度を取得します"""
         sql = """
@@ -58,7 +55,7 @@ class DashboardDao:
         finally:
             cursor.close()
             conn.close()
-    
+
     def get_student_stats(self, student_id: str) -> dict:
         """一人の生徒の完了・未完了ステージ数を集計します"""
         sql = """
@@ -95,7 +92,7 @@ class DashboardDao:
             conn.close()
 
     def find_by_admin_id(self, admin_id: str) -> list[dict]:
-        """ ログイン中の管理者が作成したグループのみを辞書形式で返す """
+        """ログイン中の管理者が作成したグループのみを辞書形式で返す"""
         sql = """
             SELECT
             FROM `group`
