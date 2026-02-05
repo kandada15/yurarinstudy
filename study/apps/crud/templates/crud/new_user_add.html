@@ -1,13 +1,11 @@
-<!--ユーザ新規登録-->
-<!--ID重複のエラーメッセージは未実装-->
-<!--登録画面の一覧に戻るボタンを追加-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="user_add.css">
-  <link rel="stylesheet" href="header.css">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <link rel="stylesheet" href="{{ url_for('crud.static', filename='css/user_add.css') }}">
+  <link rel="stylesheet" href="{{ url_for('crud.static', filename='css/header.css') }}">
   <title>ユーザ新規登録</title>
 </head>
 <body>
@@ -18,33 +16,24 @@
     </div>
     <div class="user-section">
       <span class="user-badge">管理者</span>
-      <!--ここリンクをｊｓ管理してるけどアクション名？にしてログアウトできるように-->
-      <button class="logout-btn" onclick="gologout()">ログアウト</button>
+      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
     </div>
   </header>
 
-  <!-- 左側の穴 -->
   <div class="holes-container">
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
+    <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+    <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
   </div>
 
-  <!-- 右側のタブ -->
   <div class="tabs-container">
-    <a href="user_info_list.html" class="tab active" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
-    <a href="task_create.html" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
-    <a href="dashboard.html" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
+    <a href="{{ url_for('crud.user_manage') }}" class="tab" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    
+    <a href="{{ url_for('task.task_create_form') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    
+    <a href="{{ url_for('dashboard.index') }}" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
   </div>
-
   <div class="app-container">
     <div class="content-wrapper">
-      <!-- 入力画面 -->
       <div id="inputScreen">
         <h2>新規ユーザ登録</h2>
 
@@ -56,96 +45,45 @@
             </div>
         </div>
 
-        <!-- 管理者登録入力フォーム -->
-        <div id="formAdmin" class="form hidden">
-          <h3 class="section-title admin">管理者登録</h3>
+        <form id="userForm" class="form">
+          <input type="hidden" name="csrf_token" id="csrf_token" value="{{ csrf_token() }}">
+          <h3 id="formTitle" class="section-title student">受講者登録</h3>
+          
           <div>
             <div>
-              <div>
-                <label for="admin_class">担当場所<span style="color: red;">*</span></label>
-                <input type="text" name="class" id="admin_class" placeholder="担当場所を入力...">
-                <div id="admin_class_error" class="error-message"></div>
+              <div class="input-wrap">
+                <label for="user_id">ID<span style="color: red;">*</span></label>
+                <input type="text" id="user_id" maxlength="10" placeholder="IDを入力...">
+                <div id="user_id_error" class="error-message"></div>
               </div>
-              <div>
-                <label for="admin_birthday">生年月日<span style="color: red;">*</span></label>
-                <input type="date" name="birthday" id="admin_birthday">
-                <div id="admin_birthday_error" class="error-message"></div>
+              <div class="input-wrap">
+                <label for="user_name">氏名<span style="color: red;">*</span></label>
+                <input type="text" id="user_name" maxlength="20" placeholder="氏名を入力...">
+                <div id="user_name_error" class="error-message"></div>
               </div>
             </div>
           </div>
-          <div>
-            <div>
-              <div>
-                <label for="admin_id">ID<span style="color: red;">*</span></label>
-                <input type="text" name="admin_id" id="admin_id" maxlength="10" placeholder="IDを入力...">
-                <div id="admin_id_error" class="error-message"></div>
-              </div>
-              <div>
-                <label for="admin_name">氏名<span style="color: red;">*</span></label>
-                <input type="text" name="admin_name" id="admin_name" maxlength="20" placeholder="氏名を入力...">
-                <div id="admin_name_error" class="error-message"></div>
-              </div>
-            </div>
-          </div>
-          <div class="left_po">
-            <label for="admin_password">パスワード <span style="color: red;">*</span></label>
-            <input type="password" name="password" id="admin_password" maxlength="10" placeholder="パスワードを入力（8～10文字）...">
-            <div id="admin_password_error" class="error-message"></div>
-          </div>
-          <div class="left_po">
-            <label for="admin_password_confirm">確認用パスワード <span style="color: red;">*</span></label>
-            <input type="password" name="password_confirm" id="admin_password_confirm" maxlength="10" placeholder="再度パスワードを入力...">
-            <div id="admin_password_confirm_error" class="error-message"></div>
-          </div>
-          <div class="button-group">
-            <button type="button" class="btn-primary" onclick="showConfirmScreen('admin')">確認画面へ</button>
-          </div>
-        </div>
 
-        <!-- 受講者登録フォーム -->
-        <div id="formStudent" class="form hidden">
-          <h3 class="section-title student">受講者登録</h3>
           <div>
             <div>
-              <div>
-                <label for="student_year">所属年度<span style="color: red;">*</span></label>
-                <input type="number" name="year" id="student_year" min="1900" max="2500" placeholder="所属年度を入力...">
+              <div class="input-wrap">
+                <label>区分</label>
+                <div id="user_type_label" class="classification">受講者</div>
               </div>
-              <div>
-                <label for="student_birthday">生年月日<span style="color: red;">*</span></label>
-                <input type="date" name="birthday" id="student_birthday">
+              <div class="input-wrap">
+                <label for="user_birthday">生年月日<span style="color: red;">*</span></label>
+                <input type="date" id="user_birthday">
+                <div id="user_birthday_error" class="error-message"></div>
               </div>
             </div>
           </div>
-          <div>
-            <div>
-              <div>
-                <label for="student_id">ID<span style="color: red;">*</span></label>
-                <input type="text" name="student_id" id="student_id" maxlength="10" placeholder="IDを入力...">
-              </div>
-              <div>
-                <label for="student_name">氏名<span style="color: red;">*</span></label>
-                <input type="text" name="student_name" id="student_name" maxlength="20" placeholder="氏名を入力...">
-              </div>
-            </div>
-          </div>
-          <div class="left_po">
-            <label for="student_password">パスワード <span style="color: red;">*</span></label>
-            <input type="password" name="password" id="student_password" maxlength="10" placeholder="パスワードを入力（8～10文字）...">
-            <div id="student_password_error" class="error-message"></div>
-          </div>
-          <div class="left_po">
-            <label for="student_password_confirm">確認用パスワード <span style="color: red;">*</span></label>
-            <input type="password" name="password_confirm" id="student_password_confirm" maxlength="10" placeholder="再度パスワードを入力...">
-            <div id="student_password_confirm_error" class="error-message"></div>
-          </div>
+
           <div class="button-group">
-            <button type="button" class="btn-primary" onclick="showConfirmScreen('student')">確認画面へ</button>
+            <button type="button" class="btn-primary" onclick="showConfirmScreen()">確認画面へ</button>
           </div>
-        </div>
+        </form>
       </div>
 
-      <!-- 確認画面 -->
       <div id="confirmScreen" class="hidden">
         <h2>登録内容の確認</h2>
         <div id="confirmContent"></div>
@@ -155,9 +93,10 @@
         </div>
       </div>
     </div>
-  </div>  
-<!--Javascriptの読み込み（必ずこの位置）-->
-<script src="add.js"></script> 
-<script src="header.js"></script> 
+  </div> 
+
+  <div id="config" data-url="{{ url_for('crud.new_user_add') }}" data-redirect="{{ url_for('dashboard.index') }}">></div>
+  <script src="{{ url_for('crud.static', filename='js/user_add.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/header.js') }}"></script> 
 </body>
 </html>
