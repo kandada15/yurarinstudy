@@ -105,6 +105,8 @@ def student_list(group_id):
 @dashboard_bp.route('/progress/student/<student_id>') 
 def student_detail(student_id):
 
+    # student_name表示用
+    student_name = d_dao.get_student_name(student_id)
     # JSONへのパス
     current_dir = os.path.dirname(os.path.abspath(__file__))
     json_path = os.path.abspath(os.path.join(
@@ -132,6 +134,7 @@ def student_detail(student_id):
         'dashboard/leaning_pro.html',
         student_id=student_id,
         student_name=student['student_name'],
+        student_name=student_name,
         master_data=master_data, 
         completed_keys=completed_keys, 
         percent=percent,

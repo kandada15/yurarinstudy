@@ -1,7 +1,3 @@
-<!--課題入力-->
-<!--登録画面の一覧に戻るボタンを追加-->
-<!--CSSは改良予定-->
-<!--表示する課題をデータベースより、未提出課題のみを表示するようにする-->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -9,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('task.static', filename='css/css_stu/task_inq.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
-  <title>解答入力</title>
+  <title>答案入力</title>
 </head>
 <body>
-<!-- 共通部分 -->
 <header class="top-header">
     <div class="logo-section">
       <div class="logo-img">文</div>
@@ -21,31 +16,22 @@
     <div class="user-section">
       <span class="user-badge">受講者</span>
       <!--ログアウト-->
-      <a href="{{ url_for( 'auth.logout' ) }}" class="logout-btn" >ログアウト</a>
+      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
     </div>
   </header>
 
-  <!-- 左側の穴 -->
+  {# 左側の穴 #}
   <div class="holes-container">
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-
-    
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
-    <div class="hole"></div>
+    <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+    <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
   </div>
 
-  <!-- 右側のタブ -->
+  {# 右側のタブ #}
     <div class="tabs-container">
-        <a href="{{ url_for('writing.index') }}" class="tab" data-page="users" data-color="#e8dcc8">ライティング機能</a>
+        <a href="{{ url_for('writing.index') }}" class="tab {% if request.endpoint == 'writing.index' %}active{% endif %}" data-page="users" data-color="#e8dcc8">ライティング学習</a>
         <a href="{{ url_for('task.student_task_list') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
-        <a href="{{ url_for('mypage.index') }}" class="tab active" data-page="dashboard" data-color="#d4c5b0">マイページ</a>
+        <a href="{{ url_for('mypage.index') }}" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
     </div>
-<!--ここまで-->
 
 <div class="app-container">
   <div class="content-wrapper">
@@ -102,7 +88,7 @@
         </div>
         <div class="button-group">
           <button type="button" class="btn-primary" onclick="backToInput()">戻る</button>
-          <button type="submit" class="btn-primary">提出</button>
+          <button type="submit" class="btn-primary" onclick="submitForm()">提出</button>
         </div>
       </div>
       </form>
