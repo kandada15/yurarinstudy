@@ -84,7 +84,11 @@
           </h1>
         </div>
         
-        <div class="search-box">
+        <form method="get" action="{{ url_for('dashboard.returned_student_list', group_id=group_id, streamed_id=streamed_id) }}"
+          class="search-box">
+          <input type="hidden" name="view" value="student">
+          <input type="hidden" name="title" value="{{ streamed_name }}">
+
           <div class="search-input-wrapper">
             <i class="fas fa-search"></i>
             <input
@@ -92,10 +96,12 @@
               name="keyword"
               class="search-input"
               placeholder="検索したいユーザーのIDまたは氏名を入力..."
+              value="{{ keyword | default('', true) }}"
             >
           </div>
-          <button class="search-btn">検索</button>
-        </div>
+          <button class="search-btn" onclick="filterStudents()">検索</button>
+        </form>
+          
         
         <div class="table-container">
           <table>
@@ -121,6 +127,13 @@
                   </button></td>
                 </tr>
               {% endfor %}
+              <tr>
+                {% if keyword and student_list|length == 0 %}
+                  <td colspan="4" class="no-result">
+                    該当する受講者またはIDが見つかりませんでした
+                  </td>
+                {% endif %}
+              </tr>
             </tbody>
           </table>
         </div>
@@ -194,17 +207,18 @@
   });
   </script>
 
-
-  
-
-<!--Javascriptの読み込み（必ずこの位置）-->
-<script src="{{ url_for('static', filename='js/header.js') }}"></script>
- <!-- ログアウト -->
+<!-- ログアウト -->
 <script>
   function gologout(){
     window.location.href = '/auth/logout';
   }
 </script>
+  
+
+<!--Javascriptの読み込み（必ずこの位置）-->
+<script src="{{ url_for('dashboard.static', filename='js/header.js') }}"></script>
+
+
 
 </body>
 </html>
