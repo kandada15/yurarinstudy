@@ -11,3 +11,22 @@ function switchTab(event, tabId) {
     document.getElementById(tabId).classList.add('active');
     event.currentTarget.classList.add('active');
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const circle = document.getElementById('targetCircle');
+    if (!circle) return;
+
+    // 1. パーセントを取得
+    const percent = parseInt(circle.getAttribute('data-percent'));
+    
+    // 2. 半径35の円周を計算
+    const circumference = 2 * Math.PI * 35; // 約219.9
+    
+    // 3. 隠す長さを計算
+    const offset = circumference - (percent / 100) * circumference;
+    
+    // 4. 反映（少し遅らせてアニメーション開始）
+    setTimeout(() => {
+        circle.style.strokeDashoffset = offset;
+    }, 300);
+});

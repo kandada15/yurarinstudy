@@ -90,6 +90,24 @@ class DashboardDao:
         finally:
             cursor.close()
             conn.close()
+    
+    def get_student_info(self, student_id: str) -> dict:
+        """指定したIDの受講生基本情報（氏名など）を取得します"""
+        sql = """
+            SELECT 
+                student_id, 
+                student_name 
+            FROM student 
+            WHERE student_id = %s
+        """
+        conn = self._get_connection()
+        try:
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute(sql, (student_id,))
+            return cursor.fetchone() # 1人分だけ取得
+        finally:
+            cursor.close()
+            conn.close()
 
     def find_by_admin_id(self, admin_id: str) -> list[dict]:
         """ログイン中の管理者が作成したグループのみを辞書形式で返す"""

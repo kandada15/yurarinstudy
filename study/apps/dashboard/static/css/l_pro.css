@@ -295,3 +295,29 @@ table td.number {
 table td.number::before {
   content: counter(step-counter);
 }
+
+.chart-wrapper svg {
+    width: 100px;
+    height: 100px;
+    transform: rotate(-90deg); /* 12時から開始 */
+}
+
+/* 背景の円 */
+circle.circle-bg {
+    fill: #f0ebe3; /* 薄いベージュ */
+    stroke: #c9b89a; /* 元の枠線色 */
+    stroke-width: 2;
+}
+
+/* 動くピンクの円（塗りつぶしアニメーション用） */
+circle.circle-progress {
+    fill: none;             /* 重要：中身は空にする */
+    stroke: #e8aeb7;        /* 元のピンク色 */
+    stroke-width: 70;       /* 半径35の2倍＝70にすることで、中まで塗りつぶされる */
+    
+    /* 円周の計算 (2 * π * 35) = 約220 */
+    stroke-dasharray: 220;
+    stroke-dashoffset: 220; /* 最初は隠す */
+    
+    transition: stroke-dashoffset 1.5s ease-out; /* 1.5秒かけて動く */
+}

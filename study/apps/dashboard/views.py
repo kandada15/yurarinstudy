@@ -119,6 +119,7 @@ def student_detail(student_id):
         return f"JSONファイルが見つかりません: {json_path}", 404
 
     # progressテーブルから受講者の進捗状況を取得
+    student = d_dao.get_student_info(student_id)
     progress_details = d_dao.get_student_detail_list(student_id)
     completed_keys = {d['phase_name'] for d in progress_details if d['stage_flag'] == 1}
     # 進捗率を計算
@@ -130,6 +131,7 @@ def student_detail(student_id):
     return render_template(
         'dashboard/leaning_pro.html',
         student_id=student_id,
+        student_name=student['student_name'],
         master_data=master_data, 
         completed_keys=completed_keys, 
         percent=percent,
