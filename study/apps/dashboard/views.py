@@ -355,12 +355,16 @@ def returned_group_list():
 @dashboard_bp.route("/returned/groups/<int:group_id>/streamed/<int:streamed_id>")
 def returned_student_list(group_id, streamed_id):
     admin_id = session.get('user_id')
-    students = D_dao.find_returned_students_by_group(group_id, streamed_id)
-    groups = D_dao.find_returned_groups(admin_id)
-    # streamed_name = D_dao.find_streamed_name_by_id(streamed_id)
+
+    keyword = request.args.get("keyword" or "")
     view = request.args.get("view", "group")
     title = request.args.get("title")
-    return render_template("dashboard/returned_task/past_task_view.html", student_list=students, streamed_id=streamed_id, view=view, streamed_name=title, groups=groups, group_id=group_id)
+
+    students = D_dao.find_returned_students_by_group(group_id, streamed_id)
+    groups = D_dao.find_returned_groups(admin_id)
+    student_search = D_dao.search_by_id_name(group_id, streamed_id, keyword)
+
+    return render_template("dashboard/returned_task/past_task_view.html", student_list=students, streamed_id=streamed_id, view=view, streamed_name=title, keyword=keyword, student_search=student_search, groups=groups, group_id=group_id)
 
 # 過去課題一覧
 @dashboard_bp.route("/returned/students/<student_id>/tasks")
