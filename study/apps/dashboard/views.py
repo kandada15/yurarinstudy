@@ -133,10 +133,9 @@ def student_detail(student_id):
     return render_template(
         'dashboard/leaning_pro.html',
         student_id=student_id,
-        student_name=student['student_name'],
         student_name=student_name,
-        master_data=master_data, 
-        completed_keys=completed_keys, 
+        master_data=master_data,
+        completed_keys=completed_keys,
         percent=percent,
         stats={
             'total_count': total_stages, 
