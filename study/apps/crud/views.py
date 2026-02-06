@@ -44,20 +44,6 @@ def user_manage():
 def user_add():
     return render_template("crud/new_user_add.html")
 
-@crud_bp.route("/user/reset_password", methods=['POST'])
-def reset_password():
-    data = request.get_json(silent=True)
-    user_id = data.get('user_id')
-
-    return jsonify({"status": "success", "message": f"User {user_id} password reset."})
-
-@crud_bp.route("/user/delete", methods=['POST'])
-def delete_user():
-    data = request.get_json(force=True, silent=True)
-    user_id = data.get('user_id')
-
-    return jsonify({"status": "success", "message": f"User {user_id} deleted."})
-
 @crud_bp.route("/api/user/search", methods=['GET'])
 def search_users():
     try:
@@ -121,7 +107,7 @@ def api_reset_password():
         return jsonify({"status": "error", "message": "データが空です"}), 400
 
     user_id = data.get("user_id")
-    user_type = data.get("type")
+    user_type = data.get("user_type")
 
     success = False
     try:

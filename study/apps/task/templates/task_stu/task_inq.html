@@ -37,68 +37,57 @@
   <div class="content-wrapper">
     <div class="container">
 
-      <!-- 入力画面 -->
-      <form id="taskForm" method="post" action="{{ url_for('task.task_submit_post', streamed_id=task.streamed_id) }}">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <div id="inputScreen">
-        <!--課題タイトル-->
-        <!--データベースから持ってくる-->
-        <h2>{{ task.streamed_name }}</h2>
-        <!-- 課題入力フォーム -->
-        <div id="formtask" class="form hidden">
-          <!--問題文-->
-          <div class="modal-body">
-            <label>問題</label>
-            <div class="question-text">
-              <!--データベースから持ってくる-->
-              {{ task.streamed_text }}
+      <form id="taskForm" method="post" action="{{ url_for('task.task_submit_post', streamed_id=task.streamed_id) }}" data-redirect="{{ url_for('task.student_task_list') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div id="inputScreen">
+          <h2>{{ task.streamed_name }}</h2>
+          
+          <div id="formtask" class="form">
+            <div class="modal-body">
+              <label>問題</label>
+              <div class="question-text">
+                {{ task.streamed_text }}
+              </div>
+            </div>
+
+            <label for="answer_text">答案<span style="color: red;">*</span></label>
+            <textarea id="answer_text" name="answer_text" rows="15" cols="50" placeholder="解答を入力..."></textarea>
+            <div id="answer_text_error" class="error-message"></div>
+
+            <div class="button-group">
+              <button type="button" class="btn-primary" onclick="showConfirmScreen()">確認画面へ</button>
             </div>
           </div>
-          <!-- preタグで改行を保持 -->
-          <!--<pre id="question"></pre>-->
-          <!--解答-->
-          <label for="answer_text">答案<span style="color: red;">*</span></label>
-          <textarea id="answer_text" name="answer_text" rows="15" cols="50" placeholder="解答を入力..."></textarea>
-          <div id="answer_text_error" class="error-message"></div>
-          <!--確認画面へ飛ぶ-->
-          <div class="button-group">
-            <button type="button" class="btn-primary" onclick="showConfirmScreen()">確認画面へ</button>
-          </div>
         </div>
-      </div>
             
-      <!-- 確認画面 -->
-      <!--ここで提出ボタン押したらデータベースに登録するっていう処理-->
-      <div id="confirmScreen" class="hidden">
-        <h2>提出内容の確認</h2>
-        <div id="confirmContent">
-          <div class="confirm-section">
-            <h3>入力内容</h3>
-
+        <div id="confirmScreen" class="hidden">
+          <h2>提出内容の確認</h2>
+          <div id="confirmContent">
+            <div class="confirm-section">
+              <h3>入力内容</h3>
               <div class="confirm-row">
                 <div class="confirm-label">問題文</div>
                 <div class="confirm-value">{{ task.streamed_text }}</div>
               </div>
-
               <div class="confirm-row">
                 <div class="confirm-label">答案</div>
                 <div id="confirm-answer" class="confirm-value" style="white-space: pre-wrap;"></div>
               </div>
+            </div>
+          </div>
+          <div class="button-group">
+            <button type="button" class="btn-primary" onclick="backToInput()">戻る</button>
+            <button type="button" class="btn-primary" onclick="submitForm()">提出</button>
           </div>
         </div>
-        <div class="button-group">
-          <button type="button" class="btn-primary" onclick="backToInput()">戻る</button>
-          <button type="submit" class="btn-primary" onclick="submitForm()">提出</button>
-        </div>
-      </div>
+
       </form>
     </div>
   </div>
 </div>
-    
-<!--Javascriptの読み込み（必ずこの位置）-->
+
 <script src="{{ url_for('task.static', filename='js/js_stu/task_inq.js') }}"></script> 
-<!--Javascriptの読み込み（必ずこの位置）-->
-<script src="{{ url_for('task.static', filename='js/header.js') }}"></script> 
+<script src="{{ url_for('static', filename='js/header.js') }}"></script>
 </body>
 </html>
