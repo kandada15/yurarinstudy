@@ -50,11 +50,14 @@
             <div class="stats-section-wrapper">
                 <div class="stats-section">
                     <div class="chart-container">
-                        <div class="chart-wrapper">
-                            <svg viewBox="0 0 150 150">
-                                <circle cx="75" cy="75" r="70"></circle>
-                            </svg>
-                        </div>
+                    <div class="chart-wrapper">
+                        <svg viewBox="0 0 150 150">
+                            <circle class="circle-bg" cx="75" cy="75" r="70"></circle>
+                            <circle class="circle-progress" id="targetCircle" 
+                                    cx="75" cy="75" r="35" 
+                                    data-percent="{{ percent }}"></circle>
+                        </svg>
+                    </div>
                         <div class="percentage-info">
                             <div class="percentage">{{ percent }}%</div>
                             <div class="percentage-label">完了率</div>

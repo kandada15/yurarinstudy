@@ -91,7 +91,7 @@ function updateTable(users, type) {
     const tr = document.createElement('tr');
     
     // 詳細（照会）ページへのURL
-    const detailUrl = `/crud/detail?id=${user.id}`;
+    const detailUrl = `/crud/user_info/${type}/${user.id}`;
 
     // 所属グループの「その他N」表示ロジック
     const groups = user.group_name ? user.group_name.split(',') : [];
@@ -185,18 +185,6 @@ function closeModals() {
 
   // 背景のスクロールを元に戻す
   document.body.style.overflow = 'auto';
-}
-
-// パスワードリセット成功時に呼ぶ
-function resetForm(userId) {
-  closeModals(); 
-  showToast("パスワードをリセットしました。");
-}
-
-// 削除成功時に呼ぶ
-function deleteForm(userId) {
-  closeModals(); 
-  showToast("ユーザを削除しました。");
 }
 
 // 共通：トースト表示

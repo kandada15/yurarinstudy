@@ -1,6 +1,9 @@
 from flask import Blueprint, render_template, redirect, url_for, current_app,  jsonify, request,  session
 from apps.crud.dao.dao_student import StudentDao
 from apps.crud.dao.dao_admin import AdminDao
+from apps.dashboard.dao.dashboard_dao import DashboardDao
+import os
+import json
 
 # Blueprintの作成
 crud_bp = Blueprint(
@@ -15,6 +18,7 @@ crud_bp = Blueprint(
 # DAO作成
 student_dao = StudentDao()
 admin_dao = AdminDao()
+d_dao = DashboardDao()
 
 # ルーティングの定義
 # ユーザ一覧画面
@@ -200,5 +204,40 @@ def user_info(user_type, user_id):
     
     if not user:
         return "ユーザーが見つかりません", 404
+    # 初期値
+    percent = 0
+    m_data = {}
+
+    # 受講者の場合のみ進捗を計算する
+    if user_type == 'student':
+        # 1. JSON（マスタデータ）を読み込む
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        json_path = os.path.abspath(os.path.join(
+            current_dir, '..', 'writing', 'static', 'json', 'steps_data.json'
+        ))
         
-    return render_template("crud/user_info.html", user=user, user_type=user_type)
+        try:
+            with open(json_path, 'r', encoding='utf-8') as f:
+                m_data = json.load(f)
+        except FileNotFoundError:
+            m_data = {}
+
+        # 2. 進捗データをDBから取得して計算
+        progress_details = d_dao.get_student_detail_list(user_id)
+        # stage_flag が 1 のフェーズ名だけを抜き出す
+        completed_keys = {d['phase_name'] for d in progress_details if d['stage_flag'] == 1}
+        
+        total_stages = len(m_data)
+        completed_stages = len(completed_keys)
+        
+        # 3. ％を計算
+        if total_stages > 0:
+            percent = int((completed_stages / total_stages) * 100)
+    
+    return render_template(
+        "crud/user_info.html", 
+        user=user, 
+        user_type=user_type, 
+        percent=percent, 
+        master_data=m_data
+    )

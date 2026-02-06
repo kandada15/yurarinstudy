@@ -65,21 +65,20 @@
           <div class="progress-row">
             <span class="progress-label">学習進捗：</span>
             <div class="progress-bar-container">
-              <div class="progress-bar" style="width: 0%;"> <span class="progress-text">準備中</span>
+              <div class="progress-bar" style="width: {{ percent }}%;">
+                <span class="progress-text">{{ percent }}%</span>
               </div>
             </div>
           </div>
         </div>
 
         <div class="button-container">
-          <a href="{{ url_for('dashboard.student_detail', student_id=user.user_id) }}" 
-          class="action-btn btn-primary" 
-          style="text-decoration: none; text-align: center; display: block; line-height: 2.5;">
-          学習進捗ページを見る
-          </a>
+          <a href="{{ url_for('dashboard.student_detail', student_id=user.user_id) }}" class="action-btn btn-primary" >学習進捗ページを見る</a>
+          
+          <a href="#" class="action-btn btn-primary" >課題一覧を見る</a>
+          
           <button class="action-btn btn-reset" onclick="ShowPasswordreset()">パスワードリセット</button>
         </div>
-      </div>
 
       {% elif user_type == 'admin' %}
       <div class="detail-card admin-card active" id="admin-card">
