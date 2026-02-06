@@ -40,25 +40,66 @@ function backToInput() {
 
 // 提出処理（POST）
 function submitForm() {
-  document.getElementById("taskForm").submit();
-  // showToast("課題を提出しました");
+  const form = document.getElementById("taskForm");
 
-  // setTimeout(() => {
-  //   document.getElementById("taskForm").submit(); // ← ここが核
-  // }, 2000);
+
+  const answerText = document.getElementById("answer_text").value.trim();
+
+  if (!answerText) {
+    alert("答案を入力してください");
+    return;
+  }
+
+  console.log("送信データ:", {
+    answer: answerText
+  });
+
+  // 付箋風トースト通知
+  showToast("課題を提出しました。");
+  setTimeout(() => { window.location.href = config.dataset.redirect; }, 2000);
+
+  // FlaskにPOST（通常のform送信）
+  setTimeout(() => {
+    form.submit();
+  }, 3500);
 }
 
 // トースト通知
 function showToast(message) {
-  const toast = document.createElement("div");
+  let toast = document.createElement("div");
   toast.className = "toast";
   toast.textContent = message;
 
   document.body.appendChild(toast);
 
-  setTimeout(() => toast.classList.add("show"), 50);
+  // アニメーションで表示
+  setTimeout(() => {
+    toast.classList.add("show");
+  }, 50);
+
+
+  requestAnimationFrame(() => {
+    toast.classList.add("show");
+  });
+
+  // 3秒後に削除
   setTimeout(() => {
     toast.classList.remove("show");
-    setTimeout(() => toast.remove(), 300);
+    setTimeout(() => toast.remove(), 400);
   }, 3000);
 }
+
+// トースト通知
+// function showToast(message) {
+//   const toast = document.createElement("div");
+//   toast.className = "toast";
+//   toast.textContent = message;
+
+//   document.body.appendChild(toast);
+
+//   setTimeout(() => toast.classList.add("show"), 50);
+//   setTimeout(() => {
+//     toast.classList.remove("show");
+//     setTimeout(() => toast.remove(), 300);
+//   }, 1500);
+// }

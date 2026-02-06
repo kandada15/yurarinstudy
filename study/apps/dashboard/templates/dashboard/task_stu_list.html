@@ -19,7 +19,7 @@
     <div class="user-section">
       <span class="user-badge">管理者</span>
       <!-- ログアウト -->
-      <button class="logout-btn" onclick="gologout()">ログアウト</button>
+      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
     </div>
   </header>
 
