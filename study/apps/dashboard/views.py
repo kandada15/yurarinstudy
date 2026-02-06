@@ -350,8 +350,41 @@ def returned_group_list():
    
 @dashboard_bp.route("/returned/groups/<int:group_id>/streamed/<int:streamed_id>")
 def returned_student_list(group_id, streamed_id):
+    admin_id = session.get('user_id')
     students = D_dao.find_returned_students_by_group(group_id, streamed_id)
-    return render_template("dashboard/returned_task/past_task_view.html", student_list=students, streamed_id=streamed_id)
+    groups = D_dao.find_returned_groups(admin_id)
+    # streamed_name = D_dao.find_streamed_name_by_id(streamed_id)
+    view = request.args.get("view", "group")
+    title = request.args.get("title")
+    return render_template("dashboard/returned_task/past_task_view.html", student_list=students, streamed_id=streamed_id, view=view, streamed_name=title, groups=groups, group_id=group_id)
+
+# 過去課題一覧
+@dashboard_bp.route("/returned/students/<student_id>/tasks")
+def returned_task_list(student_id):
+    # 戻り用情報
+    group_id = request.args.get("group_id")
+    streamed_id = request.args.get("streamed_id")
+    streamed_name = request.args.get("title")
+
+    tasks = D_dao.find_returned_tasks_by_student(student_id)
+    return render_template(
+        "dashboard/returned_task/list_past_ass_stu.html",
+        tasks=tasks,
+        student_id=student_id,
+        group_id=group_id,
+        streamed_id=streamed_id,
+        streamed_name=streamed_name
+    )
+
+# 回答内容
+@dashboard_bp.route("/returned/tasks/<int:task_id>/answer")
+def returned_task_answer(task_id):
+    task = D_dao.find_task_with_answers(task_id)
+    return render_template(
+        "dashboard/returned_task/task_answer.html",
+        task=task
+    )
+
 # @dashboard_bp.route("/returned/groups/<int:group_id>")
 # def returned_student_list(group_id):
 #     students = D_dao.find_returned_students_by_group(group_id)

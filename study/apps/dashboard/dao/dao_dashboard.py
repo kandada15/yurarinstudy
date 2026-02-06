@@ -419,6 +419,28 @@ class Dashboard_DAO:
        finally:
         cursor.close()
         conn.close()
+
+    def  find_returned_tasks_by_student(self, student_id: int):
+      sql = """
+          SELECT
+              submission_id,
+              answer_text,
+              streamed_id
+          FROM submission
+          WHERE
+             student_id = %s
+             AND check_flag = 1
+        ORDER BY
+            submitted_at DESC
+      """
+      conn = self._get_connection()
+      cursor = conn.cursor(dictionary=True)
+      cursor.execute(sql, (student_id,))
+      result = cursor.fetchall()
+      cursor.close()
+      conn.close()
+      return result
+      
     # def find_by_group_for_streamed(self) -> list[ReturnToStudent]:
     #    """
     #    返却済み課題一覧を得るために必要なカラム

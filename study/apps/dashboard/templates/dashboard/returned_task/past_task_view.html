@@ -113,7 +113,12 @@
                   <td><i class="fas fa-user-circle"></i></td>
                   <td>{{ student.student_id }}</td>
                   <td>{{ student.student_name }}</td>
-                  <td><button class="correct-btn" onclick="goview()">過去課題閲覧　<i class="fas fa-caret-right"></i></button></td>
+                  <td><button class="correct-btn" 
+                    data-group-id="{{ group_id }}"
+                    data-streamed-id="{{ streamed_id }}"
+                    data-streamed-name="{{ streamed_name }}"
+                    onclick="goview(this, '{{ student.student_id }}')">過去課題閲覧　<i class="fas fa-caret-right"></i>
+                  </button></td>
                 </tr>
               {% endfor %}
             </tbody>
@@ -133,20 +138,23 @@
     document.getElementById('task-list-view').style.display = 'none';
     document.getElementById('correction-status-view').style.display = 'block';
     document.getElementById('correction-title').textContent = `グループメンバー - ${taskTitle}`;
-    location.href = url; 
+    location.href = `${url}?view=student&title=${encodeURIComponent(taskTitle)}`;
   }
 
 
-  function goview() {
-    window.location.href = 'list_past_ass_stu.html';
+  function goview(btn, studentId) {
+    // window.location.href = `/dashboard/returned/students/${studentId}/tasks`;
+    const groupId  =btn.dataset.groupId;
+    const streamedId= btn.dataset.streamedId; 
+    const streamedName = btn.dataset.streamedName;
 
-    const groupName = document
-      .getElementById('correction-title')
-      .textContent
-      .replace('グループメンバー - ', '');
+    // const groupName = document
+    //   .getElementById('correction-title')
+    //   .textContent
+    //   .replace('グループメンバー - ', '');
 
     window.location.href =
-      `list_past_ass_stu.html?from=group&group=${encodeURIComponent(groupName)}`;
+      `/dashboard/returned/students/${studentId}/tasks` + `?group_id=${groupId}&streamed_id=${streamedId}&title=${encodeURIComponent(streamedName)}`;
   }
 
   function backToGroupList() {
@@ -155,19 +163,34 @@
   }
 
   window.addEventListener('DOMContentLoaded', () => {
-    const params = new URLSearchParams(window.location.search);
-    const from = params.get('from');
-    const group = params.get('group');
+    // const params = new URLSearchParams(window.location.search);
+    // const from = params.get('from');
+    // const group = params.get('group');
 
-    if (from === 'group' && group) {
-      // グループ一覧を隠す
-      document.getElementById('task-list-view').style.display = 'none';
-      // メンバー一覧を表示
-      document.getElementById('correction-status-view').style.display = 'block';
-      // タイトル反映
+    // if (from === 'group' && group) {
+    //   // グループ一覧を隠す
+    //   document.getElementById('task-list-view').style.display = 'none';
+    //   // メンバー一覧を表示
+    //   document.getElementById('correction-status-view').style.display = 'block';
+    //   // タイトル反映
+    //   document.getElementById('correction-title').textContent =
+    //     `グループメンバー - ${group}`;
+    // }
+    const view = "{{ view|default('group') }}";
+  const title = "{{ streamed_name|default('') }}";
+
+  if (view === "student") {
+    document.getElementById('task-list-view').style.display = 'none';
+    document.getElementById('correction-status-view').style.display = 'block';
+
+    if (title) {
       document.getElementById('correction-title').textContent =
-        `グループメンバー - ${group}`;
+        `グループメンバー - ${title}`;
     }
+  } else {
+    document.getElementById('task-list-view').style.display = 'block';
+    document.getElementById('correction-status-view').style.display = 'none';
+  }
   });
   </script>
 
