@@ -287,6 +287,8 @@ class AdminDao:
                 format_strings = ','.join(['%s'] * len(group_ids))
                 sql_delete_mypage = f"DELETE FROM mypage WHERE group_id IN ({format_strings})"
                 cursor.execute(sql_delete_mypage, tuple(group_ids))
+                sql_delete_streamed = f"DELETE FROM streamed WHERE group_id IN ({format_strings})"
+                cursor.execute(sql_delete_streamed, tuple(group_ids))
             
             
             sql_group = "DELETE FROM `group` WHERE created_by_admin_id = %s"

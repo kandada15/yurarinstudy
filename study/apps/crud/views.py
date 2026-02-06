@@ -140,7 +140,7 @@ def api_delete_user():
         return jsonify({"status": "error", "message": "データが空です"}), 400
 
     user_id = data.get("user_id")
-    user_type = data.get("type")
+    user_type = data.get("user_type")
 
     success = False
     try:

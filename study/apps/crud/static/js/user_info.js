@@ -84,7 +84,7 @@ async function deleteForm() {
             showToast(result.message);
             // 1.5秒後に一覧へ戻る
             setTimeout(() => {
-                window.location.href = "/crud/user_manage";
+                window.location.href = "/crud/manage";
             }, 1500);
         } else {
             showToast("失敗: " + result.message);
