@@ -72,7 +72,7 @@
               </div>
               <div class="input-wrap">
                 <label for="user_birthday">生年月日<span style="color: red;">*</span></label>
-                <input type="date" id="user_birthday">
+                <input type="date" id="user_birthday"　min="1900-01-01" max="2026-12-31">
                 <div id="user_birthday_error" class="error-message"></div>
               </div>
             </div>
@@ -95,7 +95,7 @@
     </div>
   </div> 
 
-  <div id="config" data-url="{{ url_for('crud.new_user_add') }}" data-redirect="{{ url_for('dashboard.index') }}">></div>
+  <div id="config" data-url="{{ url_for('crud.new_user_add') }}" data-redirect="{{ url_for('dashboard.index') }}"></div>
   <script src="{{ url_for('crud.static', filename='js/user_add.js') }}"></script>
   <script src="{{ url_for('static', filename='js/header.js') }}"></script> 
 </body>
