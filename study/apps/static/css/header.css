@@ -143,6 +143,7 @@ body {
   letter-spacing: 1.5px;
   border: 1px solid rgba(168, 145, 119, 0.3);
   border-left: none;
+  text-decoration: none;
 }
 
 .tab:hover {

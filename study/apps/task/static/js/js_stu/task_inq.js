@@ -56,6 +56,7 @@ function submitForm() {
 
   // 付箋風トースト通知
   showToast("課題を提出しました。");
+  setTimeout(() => { window.location.href = config.dataset.redirect; }, 2000);
 
   // FlaskにPOST（通常のform送信）
   setTimeout(() => {
@@ -63,19 +64,42 @@ function submitForm() {
   }, 3500);
 }
 
-
-
 // トースト通知
 function showToast(message) {
-  const toast = document.createElement("div");
+  let toast = document.createElement("div");
   toast.className = "toast";
   toast.textContent = message;
 
   document.body.appendChild(toast);
 
-  setTimeout(() => toast.classList.add("show"), 50);
+  // アニメーションで表示
+  setTimeout(() => {
+    toast.classList.add("show");
+  }, 50);
+
+
+  requestAnimationFrame(() => {
+    toast.classList.add("show");
+  });
+
+  // 3秒後に削除
   setTimeout(() => {
     toast.classList.remove("show");
-    setTimeout(() => toast.remove(), 300);
-  }, 1500);
+    setTimeout(() => toast.remove(), 400);
+  }, 3000);
 }
+
+// トースト通知
+// function showToast(message) {
+//   const toast = document.createElement("div");
+//   toast.className = "toast";
+//   toast.textContent = message;
+
+//   document.body.appendChild(toast);
+
+//   setTimeout(() => toast.classList.add("show"), 50);
+//   setTimeout(() => {
+//     toast.classList.remove("show");
+//     setTimeout(() => toast.remove(), 300);
+//   }, 1500);
+// }
