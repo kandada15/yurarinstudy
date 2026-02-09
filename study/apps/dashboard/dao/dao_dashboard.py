@@ -484,30 +484,30 @@ class Dashboard_DAO:
         """
         sql = """
           SELECT
-              s.streamed_id,
-              s.streamed_name,
-              s.sent_at,
-              g.group_name,
-              s.streamed_limit,
-              admin.admin_name,
-              stu.student_name,
-              sub.submission_id
+            s.streamed_id,
+            s.streamed_name,
+            s.sent_at,
+            g.group_name,
+            s.streamed_limit,
+            admin.admin_name,
+            stu.student_name,
+            sub.submission_id
           FROM streamed AS s
           INNER JOIN `group` AS g
-             ON s.group_id = g.group_id
+            ON s.group_id = g.group_id
           INNER JOIN admin
-             ON g.created_by_admin_id = admin.admin_id 
+            ON g.created_by_admin_id = admin.admin_id 
           INNER JOIN student AS stu
-             ON stu.student_id = %s
+            ON stu.student_id = %s
           LEFT JOIN submission AS sub
-             ON s.streamed_id = sub.streamed_id
-             AND sub.student_id = %s
+            ON s.streamed_id = sub.streamed_id
+            AND sub.student_id = %s
           WHERE sub.student_id = %s
-                AND sub.check_flag = 1
-                AND sub.return_flag = 1
-        ORDER BY
+            AND sub.check_flag = 1
+            AND sub.return_flag = 1
+          ORDER BY
             s.sent_at DESC
-      """
+            
         conn = self._get_connection()
         try:
           cursor = conn.cursor(dictionary=True)
@@ -527,6 +527,23 @@ class Dashboard_DAO:
 
     def find_returned_task_by_student(self, submission_id):
         sql = """
+          SELECT
+            sub.submission_id,
+            sub.answer_text,
+            ret.check_text,
+            stu.student_name,
+            s.streamed_name,
+            .streamed_text
+          FROM submission AS sub
+          INNER JOIN student AS stu
+            ON sub.student_id = stu.student_id
+          INNER JOIN streamed AS s
+            ON sub.streamed_id = s.streamed_id
+          LEFT JOIN `returned` AS ret
+            ON sub.submission_id = ret.submission_id
+          WHERE sub.submission_id = %s
+          AND sub.return_flag = 1
+          
             SELECT
               sub.submission_id,
               sub.answer_text,
@@ -543,12 +560,23 @@ class Dashboard_DAO:
               ON sub.submission_id = ret.submission_id
             WHERE sub.submission_id = %s
             AND sub.return_flag = 1
+
         """
         conn = self._get_connection()
         try:
           cursor = conn.cursor(dictionary=True)
           cursor.execute(sql, (submission_id,))
           result = cursor.fetchone()
+          
+          if result:
+            result["answer_text"] = self.strip_tags(result.get("answer_text"))
+            result["check_text"] = self.strip_tags(result.get("check_text"))
+            
+          return result
+        
+        finally:
+          cursor.close()
+          conn.close()
 
           if result:
             result["answer_text"] = self.strip_tags(result.get("answer_text"))
@@ -557,7 +585,6 @@ class Dashboard_DAO:
         finally:
           cursor.close()
           conn.close()
-        
     
   
 
