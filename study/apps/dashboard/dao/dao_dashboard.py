@@ -2,7 +2,7 @@ import mysql.connector
 from mysql.connector import MySQLConnection
 from apps.dashboard.models.model_dashboard import Dashboard, StreamedStudent, GroupInStreamed
 from apps.config.db_config import DB_CONFIG
-
+import re
 # MySQLに直接アクセスするDAOクラス※progressテーブル専用
 class Dashboard_DAO:
 
