@@ -340,21 +340,21 @@ class Dashboard_DAO:
 
     def find_returned_groups(self, admin_id: int):
         sql = """
-           SELECT DISTINCT
-               g.group_id,
-               g.group_name,
-               s.streamed_id,
-               s.streamed_name
-           FROM submission AS sub
-           INNER JOIN streamed AS s
-              ON sub.streamed_id = s.streamed_id
-           INNER JOIN `group` AS g
-              ON s.group_id = g.group_id
-           WHERE sub.check_flag = 1
-             AND sub.return_flag = 1
-             AND g.created_by_admin_id = %s
-           ORDER BY s.streamed_id DESC
-       """
+            SELECT DISTINCT
+                g.group_id,
+                g.group_name,
+                s.streamed_id,
+                s.streamed_name
+            FROM submission AS sub
+            INNER JOIN streamed AS s
+                ON sub.streamed_id = s.streamed_id
+            INNER JOIN `group` AS g
+                ON s.group_id = g.group_id
+            WHERE sub.check_flag = 1
+              AND sub.return_flag = 1
+              AND g.created_by_admin_id = %s
+            ORDER BY s.streamed_id DESC
+        """
 
         conn = self._get_connection()
         try:
@@ -371,20 +371,20 @@ class Dashboard_DAO:
         添削済み＆返却済みの課題を持つ学生のみ取得
         """
         sql = """
-           SELECT DISTINCT
-               stu.student_id,
-               stu.student_name
-           FROM submission AS sub
-           INNER JOIN student AS stu
-              ON sub.student_id = stu.student_id
-           INNER JOIN streamed AS s
-              ON sub.streamed_id = s.streamed_id
-           WHERE s.group_id = %s
-             AND s.streamed_id = %s
-             AND sub.check_flag = 1
-             AND sub.return_flag = 1
-           ORDER BY stu.student_id ASC
-       """
+            SELECT DISTINCT
+                stu.student_id,
+                stu.student_name
+            FROM submission AS sub
+            INNER JOIN student AS stu
+                ON sub.student_id = stu.student_id
+            INNER JOIN streamed AS s
+                ON sub.streamed_id = s.streamed_id
+            WHERE s.group_id = %s
+              AND s.streamed_id = %s
+              AND sub.check_flag = 1
+              AND sub.return_flag = 1
+            ORDER BY stu.student_id ASC
+        """
         conn = self._get_connection()
         try:
             cursor = conn.cursor(dictionary=True)
@@ -442,20 +442,20 @@ class Dashboard_DAO:
         ・学生
         """
         sql = """
-           SELECT DISTINCT
-               s.streamed_id,
-               s.streamed_name,
-               g.group_id,
-               g.group_name
-           FROM submission AS sub
-           INNER JOIN streamed AS s
-              ON sub.streamed_id = s.streamed_id
-           INNER JOIN `group` AS g
-             ON s.group_id = g.group_id
-           WHERE sub.check_flag = 1
-             AND sub.return_flag = 1
-           ORDER BY g.group_id ASC
-       """
+            SELECT DISTINCT
+                s.streamed_id,
+                s.streamed_name,
+                g.group_id,
+                g.group_name
+            FROM submission AS sub
+            INNER JOIN streamed AS s
+                ON sub.streamed_id = s.streamed_id
+            INNER JOIN `group` AS g
+              ON s.group_id = g.group_id
+            WHERE sub.check_flag = 1
+              AND sub.return_flag = 1
+            ORDER BY g.group_id ASC
+        """
         conn = self._get_connection()
         try:
             cursor = conn.cursor(dictionary=True)
@@ -508,15 +508,15 @@ class Dashboard_DAO:
         ORDER BY
             s.sent_at DESC
       """
-      conn = self._get_connection()
-      try:
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute(sql, (student_id, student_id, student_id))
-        result = cursor.fetchall()
-        return result
-      finally:
-        cursor.close()
-        conn.close()
+        conn = self._get_connection()
+        try:
+          cursor = conn.cursor(dictionary=True)
+          cursor.execute(sql, (student_id, student_id, student_id))
+          result = cursor.fetchall()
+          return result
+        finally:
+          cursor.close()
+          conn.close()
       
     
 
@@ -527,37 +527,37 @@ class Dashboard_DAO:
 
     def find_returned_task_by_student(self, submission_id):
         sql = """
-           SELECT
-             sub.submission_id,
-             sub.answer_text,
-             ret.check_text,
-             stu.student_name,
-             s.streamed_name,
-             s.streamed_text
-           FROM submission AS sub
-           INNER JOIN student AS stu
-             ON sub.student_id = stu.student_id
-           INNER JOIN streamed AS s
-             ON sub.streamed_id = s.streamed_id
-           LEFT JOIN `returned` AS ret
-             ON sub.submission_id = ret.submission_id
-           WHERE sub.submission_id = %s
-           AND sub.return_flag = 1
-       """
-       conn = self._get_connection()
-       try:
-         cursor = conn.cursor(dictionary=True)
-         cursor.execute(sql, (submission_id,))
-         result = cursor.fetchone()
+            SELECT
+              sub.submission_id,
+              sub.answer_text,
+              ret.check_text,
+              stu.student_name,
+              s.streamed_name,
+              s.streamed_text
+            FROM submission AS sub
+            INNER JOIN student AS stu
+              ON sub.student_id = stu.student_id
+            INNER JOIN streamed AS s
+              ON sub.streamed_id = s.streamed_id
+            LEFT JOIN `returned` AS ret
+              ON sub.submission_id = ret.submission_id
+            WHERE sub.submission_id = %s
+            AND sub.return_flag = 1
+        """
+        conn = self._get_connection()
+        try:
+          cursor = conn.cursor(dictionary=True)
+          cursor.execute(sql, (submission_id,))
+          result = cursor.fetchone()
 
-         if result:
-           result["answer_text"] = self.strip_tags(result.get("answer_text"))
-           result["check_text"] = self.strip_tags(result.get("check_text"))
-         return result
-       finally:
-         cursor.close()
-         conn.close()
-       
+          if result:
+            result["answer_text"] = self.strip_tags(result.get("answer_text"))
+            result["check_text"] = self.strip_tags(result.get("check_text"))
+          return result
+        finally:
+          cursor.close()
+          conn.close()
+        
     
   
 
