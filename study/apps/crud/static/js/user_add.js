@@ -97,13 +97,14 @@ async function showConfirmScreen() {
         alert("通信エラーが発生しました。");
         return;
     }
-
+    const generatedPassword = birthday.replace(/-/g, '');
     // 送信用データオブジェクトを作成（ここで初めてformDataに値を入れる！）
     formData = {
         user_id: userId,
         user_name: userName,
         birthday: birthday,
-        user_type: currentUserType
+        user_type: currentUserType,
+        password: generatedPassword
     };
 
     // 確認画面のHTMLを構築
@@ -113,6 +114,7 @@ async function showConfirmScreen() {
         <div class="confirm-row"><label>氏名:</label><span>${userName}</span></div>
         <div class="confirm-row"><label>区分:</label><span>${userTypeName}</span></div>
         <div class="confirm-row"><label>生年月日:</label><span>${birthday}</span></div>
+        <div class="confirm-row"><label>初期パスワード:</label><span>${generatedPassword} (生年月日)</span></div>
     `;
 
     // 画面切り替え
