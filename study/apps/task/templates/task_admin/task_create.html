@@ -73,7 +73,10 @@
                 <div id="task_name_error" class="error-message">{{ errors.streamed_name if errors }}</div>
                 <!--課題提出期限-->
                 <label for="streamed_limit">課題提出期限<span style="color: red; ">*</span></label>
-                <input type="date" name="streamed_limit" id="streamed_limit" placeholder="課題提出期限を入力..." value="{{ stream_data.streamed_limit if stream_data | default('') }}">
+                <input type="date" name="streamed_limit" id="streamed_limit" 
+                  max="9999-12-31"
+                  placeholder="課題提出期限を入力..." 
+                  value="{{ stream_data.streamed_limit if stream_data | default('') }}">
                 <div id="streamed_limit_error" class="error-message">{{ errors.streamed_limit if errors }}</div>
                 <!--配信先グループ選択-->
                 <!--この部分を今管理者が持ってるグループからセレクトでしたいからそれをデータベースさんにお願いしたい。-->
