@@ -40,7 +40,7 @@
     <a href="{{ url_for('task.task_create_form') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
     <a href="{{ url_for('dashboard.index') }}" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
   </div>
-  <!--ここまで-->
+  <!-- ここまで -->
 
   <div class="app-container">
     <div class="content-wrapper">
@@ -54,7 +54,6 @@
             <label class="form-label">タイトル</label>
             <div class="form-display" id="title">{{ returned_task.streamed_name }}</div>
           </div>
-
           <div class="form-group">
             <label class="form-label">問題文</label>
             <div class="form-display-area" id="question">{{ returned_task.streamed_text }}</div>
@@ -63,19 +62,20 @@
 
         <div class="right-column">
           <div class="form-group">
-          <div class="side-answewr">
-              <label class="form-label">解答</label>
-              <button class="correction-toggle" onclick="toggleCorrection()" id="toggle-btn">添削を表示</button>
+            <div class="side-answewr">
+                <label class="form-label">解答</label>
+                <button class="correction-toggle" onclick="toggleCorrection()" id="toggle-btn">添削を表示</button>
+            </div>
+            <!-- 表示用エリア -->
+            <div class="form-display-area answer" id="answer"></div>
+            
+            <!-- 
+              データ保持用の隠し要素 
+              data属性ではなく要素の中身として保持することで、HTMLタグが混ざっていても安全に扱えます。
+            -->
+            <div id="data-original" style="display:none;">{{ returned_task.answer_text }}</div>
+            <div id="data-corrected" style="display:none;">{{ returned_task.check_text }}</div>
           </div>
-              <div class="form-display-area answer" id="answer"
-                                                    data-original="{{ returned_task.answer_text | e }}"
-                                                    data-corrected="{{ returned_task.check_text | safe }}"                                     
-              >{{ returned_task.answer_text }}</div>
-          </div>
-          
-          <!-- JS用に hidden で保持 -->
-          <input type="hidden" id="answer-original" value="{{ returned_task.answer_text }}">
-          <input type="hidden" id="answer-corrected" value="{{ returned_task.check_text }}">
         </div>
       </div>
 
@@ -84,58 +84,52 @@
       </div>
     </div>
   </div>
+
 <script>
-// const data = {
-//   respondent: "山田太郎",
-//   title: "環境問題についての小論文",
-//   question: "近年、地球温暖化や海洋汚染などの環境問題が深刻化しています。これらの問題に対して、私たち一人ひとりができることは何でしょうか。あなたの考えを、具体例を挙げながら800字程度で述べなさい。",
-//   answerWithoutCorrection: `環境問題は現代社会における最も重要な課題の一つである。私たちができることとして、日常生活における小さな行動の積み重ねが重要だと考える。
-
-// まず、エネルギー消費の削減が挙げられる。例えば、不要な照明を消す、エアコンの設定温度を適切にする、公共交通機関を利用するなどの行動が考えられる。
-
-// 次に、ごみの削減とリサイクルの徹底である。使い捨て製品の使用を控え、マイバッグやマイボトルを持参することで、プラスチックごみを減らすことができる。
-
-// 最後に、環境問題についての知識を深め、周囲の人々と共有することも重要である。一人ひとりの意識改革が、社会全体の変化につながると信じている。`,
-//   answerWithCorrection: `環境問題は現代社会における最も重要な課題の一つである。【添削：導入部は良いですが、もう少し具体的な問題提起があるとより良いでしょう】私たちができることとして、日常生活における小さな行動の積み重ねが重要だと考える。
-
-// まず、エネルギー消費の削減が挙げられる。例えば、不要な照明を消す、エアコンの設定温度を適切にする、公共交通機関を利用するなどの行動が考えられる。【添削：具体例が良いです。数値データを入れるとさらに説得力が増します】
-
-// 次に、ごみの削減とリサイクルの徹底である。【添削：「である」調で統一しましょう】使い捨て製品の使用を控え、マイバッグやマイボトルを持参することで、プラスチックごみを減らすことができる。
-
-// 最後に、環境問題についての知識を深め、周囲の人々と共有することも重要である。一人ひとりの意識改革が、社会全体の変化につながると信じている。【添削：結論部分はよく書けています。全体として論理的な構成です】`
-// };
-
 let showingCorrection = false;
+
+window.addEventListener("DOMContentLoaded", () => {
+  const answer = document.getElementById("answer");
+  const original = document.getElementById("data-original");
+  const toggleBtn = document.getElementById("toggle-btn");
+
+  // 初期表示は元の解答
+  answer.textContent = original.textContent;
+  toggleBtn.textContent = "添削を表示";
+});
 
 function toggleCorrection() {
   const answerField = document.getElementById('answer');
   const toggleBtn = document.getElementById('toggle-btn');
 
-  const original = answerField.dataset.original;
-  const corrected = answerField.dataset.corrected;
+  const originalText = document.getElementById("data-original").textContent;
+  const correctedText = document.getElementById("data-corrected").textContent;
 
-  if (!corrected || corrected === "None") {
+  // // ★ innerHTML を使う
+  // const originalHTML = originalDiv.innerHTML;
+  // const correctedHTML = correctedDiv.innerHTML;
+
+  if (!correctedText || correctedText.trim() === "" || correctedText === "None") {
     alert("添削内容はありません");
     return;
   }
 
-  showingCorrection = !showingCorrection;
-
-  if (showingCorrection) {
-    answerField.innerHTML = original;
-    toggleBtn.textContent = '添削を非表示';
+  if (!showingCorrection) {
+    answer.textContent = correctedText;
+    toggleBtn.textContent = "添削を非表示";
   } else {
-    answerField.innerHTML = corrected;
-    toggleBtn.textContent = '添削を表示';
+    answer.textContent = originalText;
+    toggleBtn.textContent = "添削を表示";
   }
+
+  showingCorrection = !showingCorrection;
 }
 
 function closeWindow() {
   window.history.back();
 }
+</script>
 
-    </script>
-    <!--Javascriptの読み込み（必ずこの位置）-->
-<script src="{{ url_for('static', filename='js/header.js') }}"></script>  
+<script src="{{ url_for('dashboard.static', filename='js/header.js') }}"></script>  
 </body>
 </html>
