@@ -151,6 +151,7 @@ h1 {
   flex-direction: column;
   gap: 4px;
   min-width: 0;
+  
 }
 
 .group-title {
@@ -479,4 +480,14 @@ tr:hover {
   content: '›';
 }
 
+@media screen and (max-height: 588px){
+  .app-container {
+    height: 500px;
+    margin-top: 50px; 
+  }
 
+  .content-wrapper {
+    height: 500px;
+  }
+
+}

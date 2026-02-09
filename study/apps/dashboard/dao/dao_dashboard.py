@@ -223,14 +223,13 @@ class Dashboard_DAO:
           cursor.close()
           conn.close()
 
-    def update_submission_correction(self, submission_id: str, corrected_answer: str):
+    def update_submission_correction(self, submission_id: int):
       """
       添削結果を保存し、check_flag を ON にする
       """
       sql = """
         UPDATE submission
         SET
-          answer_text = %s,
           check_flag = 1,
           submitted_at = NOW()
         WHERE submission_id = %s
@@ -239,7 +238,25 @@ class Dashboard_DAO:
       conn = self._get_connection()
       try:
         cursor = conn.cursor()
-        cursor.execute(sql, (corrected_answer, submission_id))
+        cursor.execute(sql, (submission_id,))
+        conn.commit()
+      finally:
+        cursor.close()
+        conn.close()
+
+    def insert_returned(self, submission_id: int, check_text: str):
+      sql = """
+          INSERT INTO returned(
+              submission_id,
+              check_text,
+              returned_at
+          )
+          VALUES (%s, %s, NOW())
+      """
+      conn = self._get_connection()
+      try:
+        cursor = conn.cursor()
+        cursor.execute(sql, (submission_id, check_text))
         conn.commit()
       finally:
         cursor.close()
@@ -258,7 +275,7 @@ class Dashboard_DAO:
       """
       conn = self._get_connection()
       try:
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True)
         cursor.execute(sql, (streamed_id,))
         row = cursor.fetchone()
         return row["cnt"] > 0
@@ -452,26 +469,77 @@ class Dashboard_DAO:
         conn.close()
 
     def  find_returned_tasks_by_student(self, student_id: int):
+      """
+        返却済み課題の一覧を取得
+        return_flag = 1
+      """
       sql = """
           SELECT
-              submission_id,
-              answer_text,
-              streamed_id
-          FROM submission
-          WHERE
-             student_id = %s
-             AND check_flag = 1
+              s.streamed_id,
+              s.streamed_name,
+              s.sent_at,
+              s.streamed_limit,
+              admin.admin_name,
+              stu.student_name,
+              sub.submission_id
+          FROM streamed AS s
+          INNER JOIN `group` AS g
+             ON s.group_id = g.group_id
+          INNER JOIN admin
+             ON g.created_by_admin_id = admin.admin_id 
+          INNER JOIN student AS stu
+             ON stu.student_id = %s
+          LEFT JOIN submission AS sub
+             ON s.streamed_id = sub.streamed_id
+             AND sub.student_id = %s
+          WHERE sub.student_id = %s
+                AND sub.check_flag = 1
+                AND sub.return_flag = 1
         ORDER BY
-            submitted_at DESC
+            s.sent_at DESC
       """
       conn = self._get_connection()
-      cursor = conn.cursor(dictionary=True)
-      cursor.execute(sql, (student_id,))
-      result = cursor.fetchall()
-      cursor.close()
-      conn.close()
-      return result
+      try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(sql, (student_id, student_id, student_id))
+        result = cursor.fetchall()
+        return result
+      finally:
+        cursor.close()
+        conn.close()
+      
     
+    def find_returned_task_by_student(self, submission_id):
+       sql = """
+           SELECT
+             sub.submission_id,
+             sub.answer_text,
+             ret.check_text,
+             stu.student_name,
+             s.streamed_name,
+             s.streamed_text
+           FROM submission AS sub
+           INNER JOIN student AS stu
+             ON sub.student_id = stu.student_id
+           INNER JOIN streamed AS s
+             ON sub.streamed_id = s.streamed_id
+           LEFT JOIN returned AS ret
+             ON sub.submission_id = ret.submission_id
+           WHERE sub.submission_id = %s
+           AND sub.return_flag = 1
+       """
+       conn = self._get_connection()
+       try:
+         cursor = conn.cursor(dictionary=True)
+         cursor.execute(sql, (submission_id,))
+         result = cursor.fetchone()
+         return result
+       finally:
+         cursor.close()
+         conn.close()
+       
+    
+  
 
       
     # def find_by_group_for_streamed(self) -> list[ReturnToStudent]:

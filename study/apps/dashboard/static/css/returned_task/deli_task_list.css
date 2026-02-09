@@ -65,9 +65,10 @@ h1 {
   transition: all 0.3s ease;
   text-align: left;
   position: relative;
-  min-height: 200px;
+  min-height: 100px;
   font-family: inherit;
-  width: auto;
+  width: 450px;
+  margin: 0 auto;
 }
 
 .task-card::before {
@@ -124,7 +125,7 @@ h1 {
   font-size: 18px;
   font-weight: 700;
   margin: 15px 0;
-  color: #2d1f14;
+  color: #5a4a3a;
 }
 
 .view-header {
@@ -217,4 +218,37 @@ h1 {
 .btn-back:active,
 .btn-next:active {
   transform: scale(0.95);
+}
+
+@media screen and (max-height: 588px){
+  .app-container {
+    height: 500px;
+    margin-top: 50px; 
+  }
+
+  .content-wrapper {
+    height: 500px;
+  }
+
+  .task-grid {
+    margin: 0 auto;
+  }
+
+  .task-card {
+    max-height: 150px;
+    width: 380px;
+  }
+
+  .task-card label,
+  .task-card p {
+    margin-bottom: 5px;
+    font-size: 12px;
+  }
+
+  .task-card p:nth-of-type(1) {
+    font-size: 16px;
+    margin: 10px 0;
+    color: #2d1f14;
+  }
+
 }

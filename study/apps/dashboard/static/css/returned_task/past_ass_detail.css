@@ -188,7 +188,7 @@ body {
 /* div表示用スタイル */
 .form-display {
   width: 100%;
-  padding: 16px 24px;
+  padding: 10px 18px;
   border: 2px solid #d4c5a8;
   border-radius: 8px;
   font-size: 16px;
@@ -203,12 +203,12 @@ body {
 
 .form-display-area {
   width: 100%;
-  padding: 20px 24px;
+  padding: 10px 14px;
   border: 2px solid #d4c5a8;
   border-radius: 8px;
   font-size: 15px;
   font-family: inherit;
-  height: 210px;
+  height: 220px;
   background: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   line-height: 1.9;
@@ -219,8 +219,12 @@ body {
   word-wrap: break-word;
 }
 
+.form-display-area::-webkit-scrollbar {
+  display: none; 
+}
+
 .form-display-area.answer {
-  height: 330px;
+  height: 335px;
   overflow: auto;
   scrollbar-width: none; 
   -ms-overflow-style: none; 
@@ -248,6 +252,7 @@ body {
   font-weight: 500;
   transition: all 0.3s ease;
   margin-bottom: 0;
+  resize: none;
 }
 
 .form-textarea:focus {
@@ -263,6 +268,7 @@ body {
   scrollbar-width: none; 
   -ms-overflow-style: none; 
   margin-bottom: 0;
+  resize: none;
 }
 
 .form-textarea.answer::-webkit-scrollbar {
@@ -315,4 +321,33 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+@media screen and (max-height: 588px){
+  .app-container {
+    height: 500px;
+    margin-top: 50px; 
+  }
+
+  .content-wrapper {
+    height: 500px;
+  }
+
+  .form-display-area {
+    height: 145px;
+  }
+
+  .form-display-area.answer {
+    height: 260px;
+  }
+
+  .title-heading {
+    font-size: 24px;
+  }
+
+  .header {
+    height: 50px;
+    margin-bottom: 20px;
+  }
+
 }

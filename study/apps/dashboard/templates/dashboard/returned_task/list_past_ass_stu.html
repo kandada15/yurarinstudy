@@ -48,8 +48,6 @@
     <div class="content-wrapper">
 
       <!-- 課題一覧画面 -->
-      <div id="task-list-view">
-        <!--ここの名前のとこデータベースでお願いしますすすす-->
         <!--課題表示の繰り返し処理も。。。-->
         <div class="name-button-contener">
           <button class="group-back-btn" 
@@ -59,39 +57,31 @@
                   onclick="backToMemberList(this)">
             <i class="fas fa-arrow-left"></i> 　受講者選択
           </button>
-
-          <h1>
-            〇〇さんの課題一覧
-          </h1>
+          {% for task in tasks %}
+            <h1>
+              {{ task.student_name }}さんの課題一覧
+            </h1>
+          {% endfor %}
         </div>
         
         <div class="task-grid">
-          <button class="task-card" onclick="location.href='past_ass_detail.html'">
-            <label>配信日11月30日</label>
-            <p class="task_title">小論文の順序立て構成練習</p>
+          {% for task in tasks %}
+            <button class="task-card" onclick="location.href='{{ 
+        url_for(
+          'dashboard.returned_task_detail',
+          submission_id=task.submission_id
+        )
+      }}'">
+            <label>配信日{{ task.sent_at.strftime('%y年%m月%d日') if task.sent_at else '―' }}</label>
+            <p class="task_title">{{ task.streamed_name }}</p>
             <div class="side">
-              <p class="pp">配信者:猪口慎一</p>
-              <p class="pp">提出期限:12月26日</p>
+              <p class="pp">配信者:{{ task.admin_name }}</p>
+              <p class="pp">提出期限:{{ task.streamed_limit.strftime('%y年%m月%d日') if task.streamed_limit else '―' }}</p>
             </div>
           </button>
-          
-          <button class="task-card" onclick="location.href='past_ass_detail.html'">
-            <label>配信日12月5日</label>
-            <p class="task_title">読解問題と要約練習</p>
-            <div class="side">
-              <p class="pp">配信者:田中太郎</p>
-              <p class="pp">提出期限:12月30日</p>
-            </div>
-          </button>
-          
-          <button class="task-card" onclick="location.href='past_ass_detail.html'">
-            <label>配信日12月10日</label>
-            <p class="task_title">文章構成と論理展開</p>
-            <div class="side">
-              <p class="pp">配信者:佐藤花子</p>
-              <p class="pp">提出期限:1月10日</p>
-            </div>
-          </button>
+          {% else %}
+           <p>返却済み課題はありません。</p>
+          {% endfor %}
         </div>
       </div>
     </div>
