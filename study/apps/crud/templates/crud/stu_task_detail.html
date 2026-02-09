@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('mypage.static', filename='css/past_sub_detail.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+  <title>過去課題一覧</title>
+</head>
+<body>
+  <header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">受講者</span>
+      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="holes-container">
+    <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+    <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+    <div class="hole"></div><div class="hole"></div>
+  </div>
+
+  <div class="tabs-container">
+    <a href="{{ url_for('crud.user_manage') }}" class="tab" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    
+    <a href="{{ url_for('task.task_create_form') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    
+    <a href="{{ url_for('dashboard.index') }}" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
+  </div>
+<div class="app-container">
+    <div class="content-wrapper">
+      <div class="header">
+        <h1 class="title-heading">課題詳細</h1>
+        <div class="respondent">添削者：<span id="respondent-name">{{ task.admin_name }}</span></div>
+      </div>
+
+      <div class="layout">
+        <div class="left-column">
+          <div class="form-group">
+            <label class="form-label">タイトル</label>
+            <input type="text" class="form-input" value="{{ task.streamed_name }}" readonly>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">問題文</label>
+            <textarea class="form-textarea" readonly>{{ task.streamed_text }}</textarea>
+          </div>
+        </div>
+
+        <div class="right-column">
+          <div class="form-group">
+            <div class="side-answewr">
+                <label class="form-label">解答</label>
+                <button class="correction-toggle" onclick="toggleCorrection()" id="toggle-btn">添削を表示</button>
+            </div>
+            <textarea class="form-textarea answer" id="answer" readonly>{{ task.answer_text }}</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <button class="close-button" onclick="location.href='{{ url_for('crud.stu_task_list', student_id=task.student_id) }}'">一覧に戻る</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+    const data = {
+        answerWithoutCorrection: {{ task.answer_text | tojson }},
+        answerWithCorrection: {{ task.check_text | tojson }}
+    };
+
+    let showingCorrection = false;
+
+    function toggleCorrection() {
+        const answerField = document.getElementById('answer');
+        const toggleBtn = document.getElementById('toggle-btn');
+        
+        showingCorrection = !showingCorrection;
+        
+        if (showingCorrection) {
+            answerField.value = data.answerWithCorrection;
+            toggleBtn.textContent = '添削を非表示';
+            answerField.style.backgroundColor = "#fffdf5";
+        } else {
+            answerField.value = data.answerWithoutCorrection;
+            toggleBtn.textContent = '添削を表示';
+            answerField.style.backgroundColor = "#fff";
+        }
+    }
+</script>
+<script src="{{ url_for('static', filename='js/header.js') }}"></script> 
+</body>
+</html>

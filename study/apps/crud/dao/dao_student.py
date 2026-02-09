@@ -3,6 +3,8 @@ from mysql.connector import MySQLConnection
 from typing import Optional
 from apps.crud.models.model_student import Student, StudentToGroupname
 from apps.config.db_config import DB_CONFIG
+from sqlalchemy import text
+from apps.extensions import db
 
 # MySQLに直接アクセスするDAOクラス※studentテーブル専用
 class StudentDao:
@@ -299,3 +301,62 @@ class StudentDao:
         finally:
             cursor.close()
             conn.close()
+
+    def get_student_returned_tasks(self, student_id):
+        """特定の受講生の返却済み課題一覧を取得"""
+        sql = text("""
+            SELECT 
+                s.submitted_at, 
+                st.streamed_name, 
+                a.admin_name, 
+                st.streamed_limit AS streamed_deadline,
+                s.streamed_id
+            FROM submission s
+            JOIN streamed st ON s.streamed_id = st.streamed_id
+            JOIN `group` g ON st.group_id = g.group_id
+            JOIN admin a ON g.created_by_admin_id = a.admin_id
+            WHERE s.student_id = :sid 
+                AND s.return_flag = 1
+            ORDER BY s.submitted_at DESC
+        """)
+        result = db.session.execute(sql, {"sid": student_id}).mappings().all()
+        return result
+    
+    def get_student_by_id(self, student_id):
+        """受講生IDから名前などの基本情報を取得"""
+        sql = text("""
+            SELECT student_id, student_name 
+            FROM student 
+            WHERE student_id = :sid
+        """)
+        # SQLAlchemyの結果を1件取得
+        result = db.session.execute(sql, {"sid": student_id}).mappings().first()
+        return result
+    
+    def get_student_task_detail(self, student_id, streamed_id):
+        """管理者が特定の受講生の返却済み課題詳細を取得"""
+        sql = text("""
+            SELECT 
+                st.streamed_name,
+                st.streamed_text,
+                s.answer_text,
+                r.check_text,
+                a.admin_name,
+                s.student_id
+            FROM submission s
+            JOIN streamed st ON s.streamed_id = st.streamed_id
+            JOIN returned r ON s.submission_id = r.submission_id
+            -- 前回のadmin_idエラー対策も含めた結合ルート
+            JOIN `group` g ON st.group_id = g.group_id
+            JOIN admin a ON g.created_by_admin_id = a.admin_id
+            WHERE s.student_id = :sid 
+                AND s.streamed_id = :str_id
+        """)
+        
+        # SQL内の :sid と辞書の "sid"、:str_id と "str_id" を一致させました
+        result = db.session.execute(sql, {
+            "sid": student_id, 
+            "str_id": streamed_id
+        }).mappings().first()
+        
+        return result
