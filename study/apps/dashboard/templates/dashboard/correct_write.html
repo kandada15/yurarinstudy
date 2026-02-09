@@ -55,7 +55,7 @@
         <div class="header-section">
           <div class="task-title" id="taskTitle">{{ correction_student.streamed_name }}</div>
           <div class="student-info">
-            回答者名: <span class="student-name" id="studentName">{{ correction_student.student_name }}</span>
+            受講者名: <span class="student-name" id="studentName">{{ correction_student.student_name }}</span>
           </div>
         </div><br>
 
@@ -100,11 +100,11 @@
         </div>
         <!-- 添削エリア -->
         <div class="answer-section">
-          <span class="answer-label">解答（添削欄）</span>
+          <span class="answer-label">答案（添削欄）</span>
           <div class="answer-content" contenteditable="true" id="answerContent">{{ correction_student.answer_text | safe }}</div>
 
           <div class="button-group">
-            <button class="btn-back" onclick="goback('{{ correction_student.streamed_id }}')">生徒一覧に戻る</button>
+            <button class="btn-back" onclick="goback('{{ correction_student.streamed_id }}')">受講者一覧に戻る</button>
             <button class="submit-btn" onclick="showConfirmation()">確認画面へ</button>
           </div>
         </div> 

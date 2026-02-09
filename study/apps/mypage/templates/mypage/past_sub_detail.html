@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('mypage.static', filename='css/past_sub_detail.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+  <title>過去課題詳細</title>
+</head>
+<body>
+  <header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">受講者</span>
+      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="holes-container">
+    {% for i in range(8) %}<div class="hole"></div>{% endfor %}
+  </div>
+
+  <div class="tabs-container">
+    <a href="{{ url_for('writing.index') }}" class="tab" data-page="users" data-color="#e8dcc8">ライティング学習</a>
+    <a href="{{ url_for('task.student_task_list') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
+    <a href="{{ url_for('mypage.index') }}" class="tab active" data-page="groups" data-color="#f5ead2">マイページ</a>
+  </div>
+
+  <div class="app-container">
+    <div class="content-wrapper">
+      <div class="header">
+        <h1 class="title-heading">課題詳細</h1>
+        <div class="respondent">添削者：<span id="respondent-name">{{ task.admin_name }}</span></div>
+      </div>
+
+      <div class="layout">
+        <div class="left-column">
+          <div class="form-group">
+            <label class="form-label">タイトル</label>
+            <input type="text" class="form-input" id="title" value="{{ task.streamed_name }}" readonly>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">問題文</label>
+            <textarea class="form-textarea" id="question" readonly>{{ task.streamed_text }}</textarea>
+          </div>
+        </div>
+
+        <div class="right-column">
+          <div class="form-group">
+            <div class="side-answewr">
+                <label class="form-label">解答</label>
+                <button class="correction-toggle" onclick="toggleCorrection()" id="toggle-btn">添削を表示</button>
+            </div>
+            <textarea class="form-textarea answer" id="answer" readonly>{{ task.answer_text }}</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <button class="close-button" onclick="closeWindow()">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+    // サーバーから渡されたデータを JS オブジェクトにセット
+    const data = {
+        respondent: "{{ task.admin_name }}",
+        title: "{{ task.streamed_name }}",
+        // 改行コードなどを安全に扱うため |tojson を使用
+        question: {{ task.streamed_text | tojson }},
+        answerWithoutCorrection: {{ task.answer_text | tojson }},
+        answerWithCorrection: {{ task.check_text | tojson }}
+    };
+
+    let showingCorrection = false;
+
+    // 初期表示（念のためJS側でもセット）
+    document.getElementById('answer').value = data.answerWithoutCorrection;
+
+    function toggleCorrection() {
+        const answerField = document.getElementById('answer');
+        const toggleBtn = document.getElementById('toggle-btn');
+        
+        showingCorrection = !showingCorrection;
+        
+        if (showingCorrection) {
+            answerField.value = data.answerWithCorrection;
+            toggleBtn.textContent = '添削を非表示';
+            answerField.style.backgroundColor = "#fffdf5"; // 添削中だとわかるように少し色を変える演出
+        } else {
+            answerField.value = data.answerWithoutCorrection;
+            toggleBtn.textContent = '添削を表示';
+            answerField.style.backgroundColor = "#fff";
+        }
+    }
+
+    function closeWindow() {
+        window.history.back();
+    }
+</script>
+<script src="{{ url_for('static', filename='js/header.js') }}"></script> 
+</body>
+</html>

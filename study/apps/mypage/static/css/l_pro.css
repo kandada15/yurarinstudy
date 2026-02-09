@@ -318,3 +318,21 @@ circle.circle-progress {
     
     transition: stroke-dashoffset 1.5s ease-out; /* 1.5秒かけて動く */
 }
+
+.name-button-contener {
+  display: flex;
+  border-bottom: 3px solid #c9b896;
+  margin-bottom: 30px;
+  text-align: center;
+  justify-content: center; 
+}
+
+.back-icon {
+  position: absolute;
+  top:40px;
+  left: 50px;
+  font-size: 30px;
+  color: #8c745a;
+  margin-right: 30px;
+  color: #5a4a3a;
+}
