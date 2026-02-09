@@ -98,3 +98,22 @@ def repassword():
         else:
             return jsonify({"status": "error", "message": "更新に失敗しました。"}), 500
     return render_template("mypage/repassword.html")
+
+@mypage_bp.route("/returned_tasks")
+def past_sub():
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect(url_for("auth.login"))
+
+    # DAOから返却済み課題リストを取得
+    returned_tasks = m_dao.get_returned_tasks(user_id)
+
+    return render_template("mypage/past_sub.html", tasks=returned_tasks)
+
+@mypage_bp.route("/returned_tasks/<streamed_id>")
+def past_sub_detail(streamed_id):
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect(url_for("auth.login"))
+    task_detail = m_dao.get_returned_task_detail(user_id, streamed_id)
+    return render_template("mypage/past_sub_detail.html", task=task_detail)
