@@ -55,7 +55,7 @@
                 <label class="form-label">解答</label>
                 <button class="correction-toggle" onclick="toggleCorrection()" id="toggle-btn">添削を表示</button>
             </div>
-            <textarea class="form-textarea answer" id="answer" readonly>{{ task.answer_text }}</textarea>
+            <div class="form-display-area answer" id="answer" style="white-space: pre-wrap;">{{ task.answer_text | safe }}</div>
           </div>
         </div>
       </div>
@@ -71,7 +71,6 @@
     const data = {
         respondent: "{{ task.admin_name }}",
         title: "{{ task.streamed_name }}",
-        // 改行コードなどを安全に扱うため |tojson を使用
         question: {{ task.streamed_text | tojson }},
         answerWithoutCorrection: {{ task.answer_text | tojson }},
         answerWithCorrection: {{ task.check_text | tojson }}
@@ -79,8 +78,6 @@
 
     let showingCorrection = false;
 
-    // 初期表示（念のためJS側でもセット）
-    document.getElementById('answer').value = data.answerWithoutCorrection;
 
     function toggleCorrection() {
         const answerField = document.getElementById('answer');
@@ -89,11 +86,13 @@
         showingCorrection = !showingCorrection;
         
         if (showingCorrection) {
-            answerField.value = data.answerWithCorrection;
+            // .innerHTML で HTMLタグを有効にする
+            answerField.innerHTML = data.answerWithCorrection;
             toggleBtn.textContent = '添削を非表示';
-            answerField.style.backgroundColor = "#fffdf5"; // 添削中だとわかるように少し色を変える演出
+            answerField.style.backgroundColor = "#fffdf5";
         } else {
-            answerField.value = data.answerWithoutCorrection;
+            // 非表示の時も .innerHTML で戻す
+            answerField.innerHTML = data.answerWithoutCorrection;
             toggleBtn.textContent = '添削を表示';
             answerField.style.backgroundColor = "#fff";
         }

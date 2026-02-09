@@ -58,7 +58,7 @@
                 <label class="form-label">解答</label>
                 <button class="correction-toggle" onclick="toggleCorrection()" id="toggle-btn">添削を表示</button>
             </div>
-            <textarea class="form-textarea answer" id="answer" readonly>{{ task.answer_text }}</textarea>
+            <div class="form-display-area answer" id="answer" style="white-space: pre-wrap;">{{ task.answer_text | safe }}</div>
           </div>
         </div>
       </div>
@@ -84,11 +84,12 @@
         showingCorrection = !showingCorrection;
         
         if (showingCorrection) {
-            answerField.value = data.answerWithCorrection;
+            // innerHTML を使うことで HTMLタグを反映させる
+            answerField.innerHTML = data.answerWithCorrection;
             toggleBtn.textContent = '添削を非表示';
             answerField.style.backgroundColor = "#fffdf5";
         } else {
-            answerField.value = data.answerWithoutCorrection;
+            answerField.innerHTML = data.answerWithoutCorrection;
             toggleBtn.textContent = '添削を表示';
             answerField.style.backgroundColor = "#fff";
         }
