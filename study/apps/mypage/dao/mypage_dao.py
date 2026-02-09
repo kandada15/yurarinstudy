@@ -32,11 +32,22 @@ class MypageDao:
         """課題の提出状況（未提出・提出済・返却済）を集計"""
         sql = text("""
             SELECT 
-                SUM(CASE WHEN submit_flag = 0 THEN 1 ELSE 0 END) as pending,
-                SUM(CASE WHEN submit_flag = 1 THEN 1 ELSE 0 END) as submitted,
-                SUM(CASE WHEN return_flag = 1 THEN 1 ELSE 0 END) as returned
-            FROM submission
-            WHERE student_id = :uid
+                -- 提出フラグが0、または提出データ自体がない（NULL）場合は「未完了」
+                SUM(CASE WHEN sub.submit_flag = 0 OR sub.submit_flag IS NULL THEN 1 ELSE 0 END) as pending,
+                
+                -- 提出フラグが1なら「提出済」
+                SUM(CASE WHEN sub.submit_flag = 1 THEN 1 ELSE 0 END) as submitted,
+                
+                -- 返却フラグが1なら「返却済(returned)」
+                SUM(CASE WHEN sub.return_flag = 1 THEN 1 ELSE 0 END) as returned
+                
+            FROM streamed st
+            -- 受講生が所属しているグループの課題を紐付け
+            JOIN student s ON st.group_id = s.group_id
+            -- 提出データを結合（まだない場合はNULL）
+            LEFT JOIN submission sub ON st.streamed_id = sub.streamed_id 
+                                    AND sub.student_id = s.student_id
+            WHERE s.student_id = :uid
         """)
         result = db.session.execute(sql, {"uid": user_id}).mappings().first()
         return {
@@ -123,3 +134,45 @@ class MypageDao:
         finally:
             cursor.close()
             conn.close()
+
+    def get_returned_tasks(self, user_id):
+        """返却済みの課題一覧を取得（配信日時の新しい順）"""
+        sql = text("""
+            SELECT 
+                s.submitted_at, 
+                st.streamed_name, 
+                a.admin_name, 
+                st.streamed_limit,
+                s.streamed_id
+            FROM submission s
+            JOIN streamed st ON s.streamed_id = st.streamed_id
+            JOIN `group` g ON st.group_id = g.group_id
+            JOIN admin a ON g.created_by_admin_id = a.admin_id
+            WHERE s.student_id = :uid 
+            AND s.return_flag = 1
+            ORDER BY s.submitted_at DESC
+        """)
+        
+        result = db.session.execute(sql, {"uid": user_id}).mappings().all()
+        return result
+    
+    def get_returned_task_detail(self, user_id, streamed_id):
+        """特定の返却済み課題の詳細を取得（添削文を含む）"""
+        sql = text("""
+            SELECT 
+                st.streamed_name,
+                st.streamed_text,     -- 問題文
+                s.answer_text,        -- 自分の解答
+                r.check_text,         -- 添削文（returnedテーブル）
+                a.admin_name
+            FROM submission s
+            JOIN streamed st ON s.streamed_id = st.streamed_id
+            JOIN returned r ON s.submission_id = r.submission_id
+            JOIN `group` g ON st.group_id = g.group_id
+            JOIN admin a ON g.created_by_admin_id = a.admin_id
+            WHERE s.student_id = :uid 
+                AND s.streamed_id = :sid
+        """)
+        
+        result = db.session.execute(sql, {"uid": user_id, "sid": streamed_id}).mappings().first()
+        return result

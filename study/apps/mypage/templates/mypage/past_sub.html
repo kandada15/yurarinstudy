@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('mypage.static', filename='css/past_sub.css') }}">
+  <link rel="stylesheet" href="{{ url_for('mypage.static', filename='css/past_sub2.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+  <title>過去課題一覧</title>
+</head>
+<body>
+  <header class="top-header">
+    <div class="logo-section">
+      <div class="logo-img">文</div>
+      <span class="app-name">文脈工房</span>
+    </div>
+    <div class="user-section">
+      <span class="user-badge">受講者</span>
+      <button class="logout-btn" onclick="location.href='{{ url_for('auth.logout') }}'">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="holes-container">
+    <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+    <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+    <div class="hole"></div><div class="hole"></div>
+  </div>
+
+  <div class="tabs-container">
+    <a href="{{ url_for('writing.index') }}" class="tab active" data-page="users" data-color="#e8dcc8">ライティング学習</a>
+    <a href="{{ url_for('task.student_task_list') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
+    <a href="{{ url_for('mypage.index') }}" class="tab" data-page="groups" data-color="#f5ead2">マイページ</a>
+  </div>
+
+  <div class="app-container">
+    <div class="content-wrapper">
+      <div id="task-list-view">
+        <div class="view-header">
+          <h1 id="correction-title">課題一覧</h1>
+        </div>
+        
+        <div class="task-grid">
+          {% for task in tasks %}
+          <button class="task-card" onclick="location.href='{{ url_for('mypage.past_sub_detail', streamed_id=task.streamed_id) }}'">
+            <label>配信日{{ task.submitted_at.strftime('%m月%d日') }}</label>
+            <p class="task_title">{{ task.streamed_name }}</p>
+            <div class="side">
+              <p class="pp">配信者:{{ task.admin_name }}</p>
+              <p class="pp">提出期限:{{ task.streamed_limit.strftime('%m月%d日') if task.streamed_limit else 'なし' }}</p>
+            </div>
+          </button>
+          {% else %}
+          <p style="text-align: center; grid-column: 1 / 3; margin-top: 50px; color: #8b7355;">返却済みの課題はまだありません。</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="{{ url_for('static', filename='js/header.js') }}"></script> 
+</body>
+</html>
