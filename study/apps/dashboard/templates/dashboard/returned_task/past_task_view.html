@@ -84,7 +84,11 @@
           </h1>
         </div>
         
-        <div class="search-box">
+        <form method="get" action="{{ url_for('dashboard.returned_student_list', group_id=group_id, streamed_id=streamed_id) }}"
+          class="search-box">
+          <input type="hidden" name="view" value="student">
+          <input type="hidden" name="title" value="{{ streamed_name }}">
+
           <div class="search-input-wrapper">
             <i class="fas fa-search"></i>
             <input
@@ -92,10 +96,12 @@
               name="keyword"
               class="search-input"
               placeholder="検索したいユーザーのIDまたは氏名を入力..."
+              value="{{ keyword | default('', true) }}"
             >
           </div>
-          <button class="search-btn">検索</button>
-        </div>
+          <button class="search-btn" onclick="filterStudents()">検索</button>
+        </form>
+          
         
         <div class="table-container">
           <table>
@@ -113,9 +119,21 @@
                   <td><i class="fas fa-user-circle"></i></td>
                   <td>{{ student.student_id }}</td>
                   <td>{{ student.student_name }}</td>
-                  <td><button class="correct-btn" onclick="goview()">過去課題閲覧　<i class="fas fa-caret-right"></i></button></td>
+                  <td><button class="correct-btn" 
+                    data-group-id="{{ group_id }}"
+                    data-streamed-id="{{ streamed_id }}"
+                    data-streamed-name="{{ streamed_name }}"
+                    onclick="goview(this, '{{ student.student_id }}')">過去課題閲覧　<i class="fas fa-caret-right"></i>
+                  </button></td>
                 </tr>
               {% endfor %}
+              <tr>
+                {% if keyword and student_list|length == 0 %}
+                  <td colspan="4" class="no-result">
+                    該当する受講者またはIDが見つかりませんでした
+                  </td>
+                {% endif %}
+              </tr>
             </tbody>
           </table>
         </div>
@@ -133,20 +151,23 @@
     document.getElementById('task-list-view').style.display = 'none';
     document.getElementById('correction-status-view').style.display = 'block';
     document.getElementById('correction-title').textContent = `グループメンバー - ${taskTitle}`;
-    location.href = url; 
+    location.href = `${url}?view=student&title=${encodeURIComponent(taskTitle)}`;
   }
 
 
-  function goview() {
-    window.location.href = 'list_past_ass_stu.html';
+  function goview(btn, studentId) {
+    // window.location.href = `/dashboard/returned/students/${studentId}/tasks`;
+    const groupId  =btn.dataset.groupId;
+    const streamedId= btn.dataset.streamedId; 
+    const streamedName = btn.dataset.streamedName;
 
-    const groupName = document
-      .getElementById('correction-title')
-      .textContent
-      .replace('グループメンバー - ', '');
+    // const groupName = document
+    //   .getElementById('correction-title')
+    //   .textContent
+    //   .replace('グループメンバー - ', '');
 
     window.location.href =
-      `list_past_ass_stu.html?from=group&group=${encodeURIComponent(groupName)}`;
+      `/dashboard/returned/students/${studentId}/tasks` + `?group_id=${groupId}&streamed_id=${streamedId}&title=${encodeURIComponent(streamedName)}`;
   }
 
   function backToGroupList() {
@@ -155,33 +176,49 @@
   }
 
   window.addEventListener('DOMContentLoaded', () => {
-    const params = new URLSearchParams(window.location.search);
-    const from = params.get('from');
-    const group = params.get('group');
+    // const params = new URLSearchParams(window.location.search);
+    // const from = params.get('from');
+    // const group = params.get('group');
 
-    if (from === 'group' && group) {
-      // グループ一覧を隠す
-      document.getElementById('task-list-view').style.display = 'none';
-      // メンバー一覧を表示
-      document.getElementById('correction-status-view').style.display = 'block';
-      // タイトル反映
+    // if (from === 'group' && group) {
+    //   // グループ一覧を隠す
+    //   document.getElementById('task-list-view').style.display = 'none';
+    //   // メンバー一覧を表示
+    //   document.getElementById('correction-status-view').style.display = 'block';
+    //   // タイトル反映
+    //   document.getElementById('correction-title').textContent =
+    //     `グループメンバー - ${group}`;
+    // }
+    const view = "{{ view|default('group') }}";
+  const title = "{{ streamed_name|default('') }}";
+
+  if (view === "student") {
+    document.getElementById('task-list-view').style.display = 'none';
+    document.getElementById('correction-status-view').style.display = 'block';
+
+    if (title) {
       document.getElementById('correction-title').textContent =
-        `グループメンバー - ${group}`;
+        `グループメンバー - ${title}`;
     }
+  } else {
+    document.getElementById('task-list-view').style.display = 'block';
+    document.getElementById('correction-status-view').style.display = 'none';
+  }
   });
   </script>
 
-
-  
-
-<!--Javascriptの読み込み（必ずこの位置）-->
-<script src="{{ url_for('static', filename='js/header.js') }}"></script>
- <!-- ログアウト -->
+<!-- ログアウト -->
 <script>
   function gologout(){
     window.location.href = '/auth/logout';
   }
 </script>
+  
+
+<!--Javascriptの読み込み（必ずこの位置）-->
+<script src="{{ url_for('dashboard.static', filename='js/header.js') }}"></script>
+
+
 
 </body>
 </html>

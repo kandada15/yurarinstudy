@@ -52,7 +52,11 @@
         <!--ここの名前のとこデータベースでお願いしますすすす-->
         <!--課題表示の繰り返し処理も。。。-->
         <div class="name-button-contener">
-          <button class="group-back-btn" onclick="backToMemberList()">
+          <button class="group-back-btn" 
+                  data-group-id = "{{ group_id }}"
+                  data-streamed-id = "{{ streamed_id }}"
+                  data-streamed-name="{{ streamed_name }}"
+                  onclick="backToMemberList(this)">
             <i class="fas fa-arrow-left"></i> 　受講者選択
           </button>
 
@@ -94,9 +98,18 @@
   </div>
   <script>
 
-  function backToMemberList() {
+  function backToMemberList(btn) {
+    const groupId = btn.dataset.groupId;
+    const streamedId = btn.dataset.streamedId;
+    const streamedName = btn.dataset.streamedName;
+
+    if (!groupId || !streamedId) {
+    alert("グループ情報が取得できませんでした");
+    return;
+  }
+
     window.location.href =
-      'past_task_view.html?from=group&group=プログラミング実装';
+      `/dashboard/returned/groups/${groupId}/streamed/${streamedId}` + `?view=student&title=${encodeURIComponent(streamedName)}`;
   }
   </script>
 

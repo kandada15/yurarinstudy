@@ -115,3 +115,16 @@ function showToast(message) {
     setTimeout(() => { toast.remove(); }, 3000);
 }
 
+document.getElementById('user_birthday').addEventListener('input', function(e) {
+    const val = e.target.value; // YYYY-MM-DD
+    if (val) {
+        const year = val.split('-')[0];
+        if (year.length > 4) {
+            // 4桁を超える年が入力されたら、最新の4桁に強制リセット
+            e.target.value = ''; 
+            document.getElementById('user_birthday_error').textContent = "年は4桁で入力してください";
+        } else {
+            document.getElementById('user_birthday_error').textContent = "";
+        }
+    }
+});

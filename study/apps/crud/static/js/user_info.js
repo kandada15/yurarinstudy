@@ -12,6 +12,7 @@ function closeModal(id) {
     document.getElementById('modalOverlay').classList.remove('show');
 }
 
+// パスワードリセット実行
 async function resetForm() {
     const config = document.getElementById('user-config');
     const u_id = config.getAttribute('data-id');
@@ -19,78 +20,94 @@ async function resetForm() {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
     try {
-        const response = await fetch("/crud/user/reset_password", {
+        const response = await fetch("/crud/api/user/reset_password", {
             method: "POST",
             headers: { 
-                // 1. Pythonの get_json が喜ぶように JSON 指定にする
                 "Content-Type": "application/json",
-                // 2. CSRFの合言葉も忘れずに乗せる
                 "X-CSRFToken": csrfToken 
             },
-            // 3. 中身を JSON 文字列にして送る
             body: JSON.stringify({ user_id: u_id, user_type: u_type })
         });
 
         if (!response.ok) {
-            const errorHtml = await response.text();
-            console.error("サーバーエラー詳細:", errorHtml);
-            throw new Error("サーバー側でエラーが発生しました");
+            showToast("エラー：サーバー側で問題が発生しました");
+            return;
         }
 
         const result = await response.json();
-        alert(result.message);
-        location.reload(); 
+        
+        // 1. モーダルをまず閉じる
+        closeModal('password_reset_modal');
+        
+        // 2. トーストを表示
+        showToast(result.message);
+
+        // 3. 1.5秒待ってからリロード（トーストを見せるため）
+        setTimeout(() => {
+            location.reload(); 
+        }, 1500);
 
     } catch (error) {
         console.error("Error:", error);
+        showToast("通信に失敗しました");
     }
 }
 
+// ユーザー削除実行
 async function deleteForm() {
     const config = document.getElementById('user-config');
     const u_id = config.getAttribute('data-id');
     const u_type = config.getAttribute('data-type');
-    
-    // HTMLのmetaタグから合言葉（トークン）を取得
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
     try {
-        const response = await fetch("/crud/user/delete", {
+        const response = await fetch("/crud/api/user/delete", {
             method: "POST",
             headers: { 
                 "Content-Type": "application/json",
-                "X-CSRFToken": csrfToken // 合言葉を乗せる
+                "X-CSRFToken": csrfToken 
             },
             body: JSON.stringify({ user_id: u_id, user_type: u_type })
         });
 
         if (!response.ok) {
-            const errorHtml = await response.text();
-            console.error("削除失敗:", errorHtml);
-            alert("削除処理でエラーが発生しました");
+            showToast("エラー：削除に失敗しました");
             return;
         }
 
         const result = await response.json();
         
         if (result.status === "success") {
-            alert(result.message);
-            // 削除されたら詳細画面にはいられないので、一覧画面へ戻る
-            window.location.href = "/crud/user_manage";
+            // モーダルを閉じる
+            closeModal('user_delete_modal');
+            // トースト表示
+            showToast(result.message);
+            // 1.5秒後に一覧へ戻る
+            setTimeout(() => {
+                window.location.href = "/crud/manage";
+            }, 1500);
         } else {
-            alert("失敗: " + result.message);
+            showToast("失敗: " + result.message);
         }
 
     } catch (error) {
         console.error("Error:", error);
-        alert("通信に失敗しました");
+        showToast("通信に失敗しました");
     }
 }
 
+// トースト通知本体
 function showToast(message) {
     let toast = document.createElement("div");
-    toast.className = "toast show toast-success";
+    // classListを使って整理
+    toast.className = "toast show";
     toast.textContent = message;
+    
     document.body.appendChild(toast);
-    setTimeout(() => { toast.remove(); }, 3000);
+
+    // 3秒後に消す
+    setTimeout(() => { 
+        toast.classList.remove("show");
+        setTimeout(() => { toast.remove(); }, 500); // フェードアウト用
+    }, 3000);
 }

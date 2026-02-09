@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
 from apps.task.dao.dao_streamed import StreamedDao
 from apps.task.dao.dao_submission import SubmissionDao
 from apps.crud.dao.dao_student import StudentDao
@@ -158,4 +158,4 @@ def task_submit_post(streamed_id):
     )
 
     # 課題一覧画面へリダイレクト
-    return redirect(url_for("task.student_task_list"))
+    return jsonify({"status": "success"})

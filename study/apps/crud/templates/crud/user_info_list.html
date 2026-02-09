@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <link rel="stylesheet" href="{{ url_for('crud.static', filename='css/info_list.css') }}">
-  <link rel="stylesheet" href="{{ url_for('crud.static', filename='css/header.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <title>ユーザ情報一覧</title>
 </head>
@@ -86,8 +86,8 @@
               </td>
               <td>
                 <button type="button" onclick="location.href='{{ url_for('crud.user_info', user_type='student', user_id=s.student_id) }}'">詳細</button>
-                <button type="button" class="btn-reset" onclick="ShowPasswordreset('{{ s.student_id }}', '{{ s.student_name }}')">パスワードリセット</button>
-                <button type="button" class="btn-reset" onclick="ShowUserdelete('{{ s.student_id }}', '{{ s.student_name }}')">削除</button>
+                <button type="button" class="btn-reset" onclick="ShowPasswordreset('{{ s.student_id }}', '{{ s.student_name }}', 'student')">パスワードリセット</button>
+                <button type="button" class="btn-reset" onclick="ShowUserdelete('{{ s.student_id }}', '{{ s.student_name }}', 'student')">削除</button>
               </td>
             </tr>
             {% endfor %}
@@ -135,8 +135,8 @@
               </td>
               <td>
                 <button type="button" onclick="location.href='{{ url_for('crud.user_info', user_type='admin', user_id=a.admin_id) }}'">詳細</button>
-                <button type="button" class="btn-reset" onclick="ShowPasswordreset('{{ a.admin_id }}', '{{ a.admin_name }}')">パスワードリセット</button>
-                <button type="button" class="btn-reset" onclick="ShowUserdelete('{{ a.admin_id }}', '{{ a.admin_name }}')">削除</button>
+                <button type="button" class="btn-reset" onclick="ShowPasswordreset('{{ a.admin_id }}', '{{ a.admin_name }}', 'admin')">パスワードリセット</button>
+                <button type="button" class="btn-reset" onclick="ShowUserdelete('{{ a.admin_id }}', '{{ a.admin_name }}', 'admin')">削除</button>
               </td>
             </tr>
             {% endfor %}
@@ -146,7 +146,7 @@
       </div>
 
       {# パスワードリセットモーダル #}
-      <div id="passeord_reset_modal" class="modal">
+      <div id="password_reset_modal" class="modal">
         <h2>パスワードリセット確認</h2>
         <label id="resetTargetLabel"></label>
         <label>※この操作は取り消せません。</label>

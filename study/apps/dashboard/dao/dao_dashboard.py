@@ -374,6 +374,37 @@ class Dashboard_DAO:
          cursor.close()
          conn.close()
 
+    def search_by_id_name(self, group_id: int, streamed_id: int, keyword):
+      sql = """
+          SELECT DISTINCT
+            s.student_id,
+            s.student_name
+        FROM student s
+        JOIN submission sub
+          ON sub.student_id = s.student_id
+        WHERE s.group_id = %s
+          AND sub.streamed_id = %s
+      """
+      params = [group_id, streamed_id]
+       # 検索キーワードがある場合のみ条件を追加
+      if keyword:
+        sql += """
+          AND (
+            s.student_id LIKE %s
+            OR s.student_name LIKE %s
+          )
+        """
+        like_keyword = f"%{keyword}%"
+        params.extend([like_keyword, like_keyword])
+
+      conn = self._get_connection()
+      try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(sql, params)
+        return cursor.fetchall()
+      finally:
+        cursor.close()
+        conn.close()
 
     def find_by_group_for_submission(self) -> list[GroupInStreamed]:
        """
@@ -419,6 +450,30 @@ class Dashboard_DAO:
        finally:
         cursor.close()
         conn.close()
+
+    def  find_returned_tasks_by_student(self, student_id: int):
+      sql = """
+          SELECT
+              submission_id,
+              answer_text,
+              streamed_id
+          FROM submission
+          WHERE
+             student_id = %s
+             AND check_flag = 1
+        ORDER BY
+            submitted_at DESC
+      """
+      conn = self._get_connection()
+      cursor = conn.cursor(dictionary=True)
+      cursor.execute(sql, (student_id,))
+      result = cursor.fetchall()
+      cursor.close()
+      conn.close()
+      return result
+    
+
+      
     # def find_by_group_for_streamed(self) -> list[ReturnToStudent]:
     #    """
     #    返却済み課題一覧を得るために必要なカラム
