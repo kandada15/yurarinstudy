@@ -2,6 +2,7 @@ import mysql.connector
 from mysql.connector import MySQLConnection
 from apps.dashboard.models.model_dashboard import Dashboard, StreamedStudent, GroupInStreamed
 from apps.config.db_config import DB_CONFIG  # ★ これを追加
+import re
 
 # MySQLに直接アクセスするDAOクラス※progressテーブル専用
 class Dashboard_DAO:
@@ -509,6 +510,12 @@ class Dashboard_DAO:
         conn.close()
       
     
+
+    def strip_tags(self, text: str | None) -> str:
+      if not text:
+        return ""
+      return re.sub(r"<[^>]*?>", "", text)
+
     def find_returned_task_by_student(self, submission_id):
        sql = """
            SELECT
@@ -523,7 +530,7 @@ class Dashboard_DAO:
              ON sub.student_id = stu.student_id
            INNER JOIN streamed AS s
              ON sub.streamed_id = s.streamed_id
-           LEFT JOIN returned AS ret
+           LEFT JOIN `returned` AS ret
              ON sub.submission_id = ret.submission_id
            WHERE sub.submission_id = %s
            AND sub.return_flag = 1
@@ -533,6 +540,10 @@ class Dashboard_DAO:
          cursor = conn.cursor(dictionary=True)
          cursor.execute(sql, (submission_id,))
          result = cursor.fetchone()
+
+         if result:
+           result["answer_text"] = self.strip_tags(result.get("answer_text"))
+           result["check_text"] = self.strip_tags(result.get("check_text"))
          return result
        finally:
          cursor.close()
