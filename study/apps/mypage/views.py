@@ -3,7 +3,15 @@ import os
 import json
 from apps.mypage.dao.mypage_dao import MypageDao
 
-mypage_bp = Blueprint('mypage', __name__, template_folder='templates', static_folder='static')
+# Blueprintの作成
+mypage_bp = Blueprint(
+    'mypage',
+    __name__,
+    # 使用するテンプレートフォルダ
+    template_folder='templates',
+    # 専用の静的ファイル(CSS,JS,画像など)を置くフォルダ
+    static_folder='static'
+)
 m_dao = MypageDao()
 
 # 管理者ID（a...）を弾く
