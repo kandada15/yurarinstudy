@@ -410,3 +410,23 @@ body {
   font-size: 20px;
 }
 
+h1 {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 600;
+  color: #5a4a3a;
+  margin-bottom: 40px;
+  padding-bottom: 15px;
+  border-bottom: 3px solid #b8a081;
+}
+
+.back-icon {
+  position: absolute;
+  top:40px;
+  left: 50px;
+  font-size: 30px;
+  color: #8c745a;
+  margin-right: 30px;
+  color: #5a4a3a;
+  text-decoration: none;
+}
