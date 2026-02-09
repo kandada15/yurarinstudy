@@ -191,3 +191,14 @@ p {
   font-size: 14px;
   color: #7a6a57;
 }
+
+.back-icon {
+  position: absolute;
+  top:40px;
+  left: 50px;
+  font-size: 30px;
+  color: #8c745a;
+  margin-right: 30px;
+  color: #5a4a3a;
+  text-decoration: none;
+}
