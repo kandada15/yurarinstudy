@@ -1150,3 +1150,14 @@ tbody tr:hover td {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
 }
+
+.back-icon {
+  position: absolute;
+  top:40px;
+  left: 50px;
+  font-size: 30px;
+  color: #8c745a;
+  margin-right: 30px;
+  color: #5a4a3a;
+  text-decoration: none;
+}
