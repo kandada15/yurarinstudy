@@ -289,10 +289,11 @@ def task_correction(submission_id):
 @dashboard_bp.route("/streamed/student/<int:submission_id>/correction", methods=["POST"])
 def submit_correction(submission_id):
     # 添削した答案文を取得する
-    corrected_answer = request.form.get("answer_text")
+    check_text = request.form.get("answer_text")
     streamed_id = request.form.get("streamed_id")
 
-    D_dao.update_submission_correction(submission_id, corrected_answer)
+    D_dao.update_submission_correction(submission_id)
+    D_dao.insert_returned(submission_id, check_text)
     return ("", 204)
 
 
@@ -350,21 +351,23 @@ def returned_group_list():
     members_cnt = d_dao.find_groups_for_progress(admin_id)
 
     # student_list = D_dao.find_by_group_for_submission()
-    return render_template("dashboard/returned_task/past_task_view.html", groups=groups, members_cnt=members_cnt)
+    return render_template("dashboard/returned_task/past_task_view.html", groups=groups, members_cnt=members_cnt, view="group", group_id=None, streamed_id=None)
    
 @dashboard_bp.route("/returned/groups/<int:group_id>/streamed/<int:streamed_id>")
 def returned_student_list(group_id, streamed_id):
     admin_id = session.get('user_id')
 
-    keyword = request.args.get("keyword" or "")
+    keyword = request.args.get("keyword", "")
     view = request.args.get("view", "group")
     title = request.args.get("title")
 
-    students = D_dao.find_returned_students_by_group(group_id, streamed_id)
     groups = D_dao.find_returned_groups(admin_id)
-    student_search = D_dao.search_by_id_name(group_id, streamed_id, keyword)
-
-    return render_template("dashboard/returned_task/past_task_view.html", student_list=students, streamed_id=streamed_id, view=view, streamed_name=title, keyword=keyword, student_search=student_search, groups=groups, group_id=group_id)
+    if keyword:
+        students = D_dao.search_by_id_name(group_id, streamed_id, keyword)
+    else:
+        students = D_dao.find_returned_students_by_group(group_id, streamed_id)
+    
+    return render_template("dashboard/returned_task/past_task_view.html", student_list=students, streamed_id=streamed_id, view=view, streamed_name=title, keyword=keyword, groups=groups, group_id=group_id)
 
 # 過去課題一覧
 @dashboard_bp.route("/returned/students/<student_id>/tasks")
@@ -374,10 +377,10 @@ def returned_task_list(student_id):
     streamed_id = request.args.get("streamed_id")
     streamed_name = request.args.get("title")
 
-    tasks = D_dao.find_returned_tasks_by_student(student_id)
+    returned_tasks = D_dao.find_returned_tasks_by_student(student_id)
     return render_template(
         "dashboard/returned_task/list_past_ass_stu.html",
-        tasks=tasks,
+        tasks=returned_tasks,
         student_id=student_id,
         group_id=group_id,
         streamed_id=streamed_id,
@@ -385,18 +388,14 @@ def returned_task_list(student_id):
     )
 
 # 回答内容
-@dashboard_bp.route("/returned/tasks/<int:task_id>/answer")
-def returned_task_answer(task_id):
-    task = D_dao.find_task_with_answers(task_id)
+@dashboard_bp.route("/returned/tasks/<int:submission_id>/detail")
+def returned_task_detail(submission_id):
+    returned_task = D_dao.find_returned_task_by_student(submission_id)
     return render_template(
-        "dashboard/returned_task/task_answer.html",
-        task=task
+        "dashboard/returned_task/past_ass_detail.html",
+        returned_task=returned_task
     )
 
-# @dashboard_bp.route("/returned/groups/<int:group_id>")
-# def returned_student_list(group_id):
-#     students = D_dao.find_returned_students_by_group(group_id)
-#     return render_template("dashboard/returned_task/list_past_ass_stu.html", students=students)
 
 @dashboard_bp.route("/repassword", methods=["GET", "POST"])
 def repassword():

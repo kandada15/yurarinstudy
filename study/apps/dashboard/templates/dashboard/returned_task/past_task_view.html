@@ -83,9 +83,10 @@
             グループメンバー・{{ streamed_name }}
           </h1>
         </div>
-        
-        <form method="get" action="{{ url_for('dashboard.returned_student_list', group_id=group_id, streamed_id=streamed_id) }}"
+        {% if group_id and streamed_id %}
+          <form method="get" action="{{ url_for('dashboard.returned_student_list', group_id=group_id, streamed_id=streamed_id) }}"
           class="search-box">
+        {% endif %}
           <input type="hidden" name="view" value="student">
           <input type="hidden" name="title" value="{{ streamed_name }}">
 
@@ -99,8 +100,9 @@
               value="{{ keyword | default('', true) }}"
             >
           </div>
-          <button class="search-btn" onclick="filterStudents()">検索</button>
+          <button class="search-btn" type="submit">検索</button>
         </form>
+        
           
         
         <div class="table-container">
