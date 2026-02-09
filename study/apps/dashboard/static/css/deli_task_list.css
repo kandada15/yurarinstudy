@@ -82,6 +82,11 @@ h1 {
   color: #8b7355;
 }
 
+.task-card .meta-line label {
+  display: inline-block;
+  margin-right: 12px;
+}
+
 .task-card p:nth-of-type(1) {
   font-size: 18px;
   font-weight: 700;

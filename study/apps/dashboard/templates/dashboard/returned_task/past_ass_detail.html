@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/returned_task/past_ass_detail.css') }}">
   <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/returned_task/header.css') }}">
-  <title></title>
+  <title>添削書き込み</title>
 </head>
 <body>
   <!-- 共通部分 -->
@@ -64,7 +64,7 @@
         <div class="right-column">
           <div class="form-group">
           <div class="side-answewr">
-              <label class="form-label">解答</label>
+              <label class="form-label">答案</label>
               <button class="correction-toggle" onclick="toggleCorrection()" id="toggle-btn">添削を表示</button>
           </div>
               <div class="form-display-area answer" id="answer"
@@ -85,25 +85,6 @@
     </div>
   </div>
 <script>
-// const data = {
-//   respondent: "山田太郎",
-//   title: "環境問題についての小論文",
-//   question: "近年、地球温暖化や海洋汚染などの環境問題が深刻化しています。これらの問題に対して、私たち一人ひとりができることは何でしょうか。あなたの考えを、具体例を挙げながら800字程度で述べなさい。",
-//   answerWithoutCorrection: `環境問題は現代社会における最も重要な課題の一つである。私たちができることとして、日常生活における小さな行動の積み重ねが重要だと考える。
-
-// まず、エネルギー消費の削減が挙げられる。例えば、不要な照明を消す、エアコンの設定温度を適切にする、公共交通機関を利用するなどの行動が考えられる。
-
-// 次に、ごみの削減とリサイクルの徹底である。使い捨て製品の使用を控え、マイバッグやマイボトルを持参することで、プラスチックごみを減らすことができる。
-
-// 最後に、環境問題についての知識を深め、周囲の人々と共有することも重要である。一人ひとりの意識改革が、社会全体の変化につながると信じている。`,
-//   answerWithCorrection: `環境問題は現代社会における最も重要な課題の一つである。【添削：導入部は良いですが、もう少し具体的な問題提起があるとより良いでしょう】私たちができることとして、日常生活における小さな行動の積み重ねが重要だと考える。
-
-// まず、エネルギー消費の削減が挙げられる。例えば、不要な照明を消す、エアコンの設定温度を適切にする、公共交通機関を利用するなどの行動が考えられる。【添削：具体例が良いです。数値データを入れるとさらに説得力が増します】
-
-// 次に、ごみの削減とリサイクルの徹底である。【添削：「である」調で統一しましょう】使い捨て製品の使用を控え、マイバッグやマイボトルを持参することで、プラスチックごみを減らすことができる。
-
-// 最後に、環境問題についての知識を深め、周囲の人々と共有することも重要である。一人ひとりの意識改革が、社会全体の変化につながると信じている。【添削：結論部分はよく書けています。全体として論理的な構成です】`
-// };
 
 let showingCorrection = false;
 
