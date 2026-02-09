@@ -25,6 +25,10 @@ def login():
         user_id = request.form.get('username')
         password = request.form.get('password')
         user_type = request.form.get('user_type')
+        
+        # 未入力の場合ここで終了
+        if not user_id or not password:
+            return render_template('login.html', error=None)
 
         # 管理者ならAdmin,学生ならStudentテーブルから該当ユーザを取得
         if user_type == 'admin':
@@ -50,7 +54,7 @@ def login():
                 # 受講者の場合はマイページ画面
                 return redirect(url_for('mypage.index'))
         else:
-            error = 'ユーザ名またはパスワードに誤りがあります'
+            error = 'ユーザIDまたはパスワードに誤りがあります'
     return render_template('login.html', error=error)
 
 # ログイン情報を削除しログイン画面へリダイレクト

@@ -30,7 +30,7 @@ function validateForm() {
     };
 
     if (!fields.id.value.trim()) { showError('user_id_error', 'IDは必須です'); isValid = false; }
-    if (!fields.name.value.trim()) { showError('user_name_error', '名前は必須です'); isValid = false; }
+    if (!fields.name.value.trim()) { showError('user_name_error', '氏名は必須です'); isValid = false; }
     if (!fields.birthday.value) { showError('user_birthday_error', '生年月日は必須です'); isValid = false; }
     
     return isValid;
@@ -98,12 +98,12 @@ async function submitForm() {
         const result = await response.json();
         if (response.ok) {
             showToast("ユーザを登録しました。");
-            setTimeout(() => { window.location.href = config.dataset.redirect; }, 2000);
+            setTimeout(() => { window.location.href = "/crud/manage"; }, 2000);
         } else {
-            alert(result.message || "エラーが発生しました");
+            showToast(result.message || "エラーが発生しました");
         }
     } catch (e) {
-        alert("通信に失敗しました。");
+        showToast("通信に失敗しました。");
     }
 }
 
