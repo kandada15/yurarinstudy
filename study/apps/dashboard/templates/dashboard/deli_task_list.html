@@ -39,8 +39,8 @@
       <div class="task-grid">
         {% for task in tasks %}
         <button class="task-card" onclick="goStuList('{{ task.streamed_id }}')">
-          <div class="grou_content">
-            <label>配信日：{{ task.sent_at.strftime('%m月%d日') if task.sent_at else '未設定' }}</label>
+          <div class="meta-line">
+            <label>配信日：{{ task.sent_at.strftime('%m月%d日') if task.sent_at else '未設定' }}</label><label>グループ：{{ task.group_name }}</label>
             <p>{{ task.streamed_name }}</p><br>
             <p>配信者：{{ task.admin_name }}</p>
             <p>提出期限：{{ task.due_date.strftime('%m月%d日') if task.due_date else 'なし' }}</p>

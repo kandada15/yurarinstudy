@@ -374,6 +374,7 @@ def returned_student_list(group_id, streamed_id):
 def returned_task_list(student_id):
     # 戻り用情報
     group_id = request.args.get("group_id")
+    group_name = request.args.get("group_name")
     streamed_id = request.args.get("streamed_id")
     streamed_name = request.args.get("title")
 
@@ -383,6 +384,7 @@ def returned_task_list(student_id):
         tasks=returned_tasks,
         student_id=student_id,
         group_id=group_id,
+        group_name=group_name,
         streamed_id=streamed_id,
         streamed_name=streamed_name
     )

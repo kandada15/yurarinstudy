@@ -4,11 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/returned_task/task_list.css') }}">
   <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/returned_task/deli_task_list.css') }}">
   <link rel="stylesheet" href="{{ url_for('dashboard.static', filename='css/returned_task/header.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <title>課題一覧</title>
+  <title>過去課題一覧</title>
 </head>
 <body>
   <!-- 共通部分 -->
@@ -57,30 +56,30 @@
                   onclick="backToMemberList(this)">
             <i class="fas fa-arrow-left"></i> 　受講者選択
           </button>
-          {% for task in tasks %}
-            <h1>
-              {{ task.student_name }}さんの課題一覧
-            </h1>
-          {% endfor %}
+          {% if tasks %}
+            <h1>{{ tasks[0].student_name }}さんの過去課題一覧</h1>
+          {% endif %}
         </div>
         
         <div class="task-grid">
           {% for task in tasks %}
             <button class="task-card" onclick="location.href='{{ 
-        url_for(
-          'dashboard.returned_task_detail',
-          submission_id=task.submission_id
-        )
-      }}'">
-            <label>配信日{{ task.sent_at.strftime('%y年%m月%d日') if task.sent_at else '―' }}</label>
+              url_for(
+                'dashboard.returned_task_detail',
+                submission_id=task.submission_id
+              )
+            }}'">
+            <div class="meta-line">
+              <label>配信日{{ task.sent_at.strftime('%y年%m月%d日') if task.sent_at else '―' }}</label><label>グループ：{{ task.group_name }}</label>
+            </div>
             <p class="task_title">{{ task.streamed_name }}</p>
             <div class="side">
               <p class="pp">配信者:{{ task.admin_name }}</p>
               <p class="pp">提出期限:{{ task.streamed_limit.strftime('%y年%m月%d日') if task.streamed_limit else '―' }}</p>
             </div>
-          </button>
+            </button>
           {% else %}
-           <p>返却済み課題はありません。</p>
+            <p>返却済み課題はありません。</p>
           {% endfor %}
         </div>
       </div>

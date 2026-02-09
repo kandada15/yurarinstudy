@@ -58,6 +58,7 @@ h1 {
 /* 付箋風カードボタン */
 .task-card {
   background: #fff9e6;
+  /* height: 220px; */
   border: none;
   padding: 25px;
   cursor: pointer;
@@ -81,6 +82,13 @@ h1 {
   background: rgba(139, 115, 85, 0.3);
   border-radius: 2px;
   transform: rotate(-2deg);
+}
+
+.task-card .meta-line label {
+  display: inline-block;
+  margin-right: 12px;
+  text-align: right;
+  padding: auto;
 }
 
 .task-card:nth-child(1) {
