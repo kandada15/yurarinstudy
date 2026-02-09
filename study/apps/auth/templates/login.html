@@ -26,15 +26,15 @@
             <input type="hidden" name="user_type" id="userTypeInput" value="student">
    
             <div class="form-group">
-                <label for="username">ユーザ名</label>
+                <label for="username">ユーザID</label>
                 <input type="text" id="username" name="username">
-                {% if error %}
-                <div class="error-message" id="usernameError">
-                    {{ error }}
+                <div class="error-message {% if error %}show{% endif %}" id="usernameError">
+                    {% if error %}
+                        {{ error }}
+                    {% endif %}
                 </div>
-                {% endif %}
             </div>
- 
+
             <div class="form-group">
                 <label for="password">パスワード</label>
                 <input type="password" id="password" name="password">
@@ -45,7 +45,7 @@
         </form>
     </div>
  
-    <script>
+    <script src="{{ url_for('auth.static', filename='js/login.js') }}" >
         const modeToggle = document.getElementById('modeToggle');
         const toggleSlider = modeToggle.querySelector('.toggle-slider');
         const userTypeInput = document.getElementById('userTypeInput'); // 追加
@@ -75,12 +75,12 @@
             usernameError.textContent = '';
             usernameError.classList.remove('show');
  
-            if (!username || !password) {
-                e.preventDefault(); // 送信を止める
-                usernameError.textContent = 'ユーザ名とパスワードを入力してください';
-                usernameError.classList.add('show');
-                hasError = true;
-            }
+            // if (!username || !password) {
+            //     e.preventDefault(); // 送信を止める
+            //     usernameError.textContent = 'ユーザIDとパスワードを入力してください';
+            //     usernameError.classList.add('show');
+            //     hasError = true;
+            // }
            
             // hasErrorがfalseならそのままaction先（Flask）へ送信されます
         });

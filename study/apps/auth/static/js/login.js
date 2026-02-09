@@ -50,7 +50,7 @@ loginForm.addEventListener('submit', (e) => {
     
     // ユーザ名のチェック
     if (!username) {
-        showErrorMessage(usernameInput, usernameError, 'ユーザ名は必須です');
+        showErrorMessage(usernameInput, usernameError, 'ユーザIDは必須です');
         hasError = true;
     }
 
