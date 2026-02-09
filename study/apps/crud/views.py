@@ -169,12 +169,7 @@ def new_user_add():
         name      = data.get("user_name")
         password  = data.get("password")  # JS側で生成した8桁数値
         birthday  = data.get("birthday")
-
-        # 1. 重複チェック
-        if admin_dao.check_id_exists(u_id, user_type):
-            return jsonify({"status": "error", "message": "このIDは既に登録されています。"}), 400
-
-        # 2. 登録処理
+        # 登録処理
         success = admin_dao.register_user(u_id, name, password, birthday, user_type)
 
         if success:
@@ -250,3 +245,14 @@ def stu_task_detail(student_id, streamed_id):
         return "データが見つかりません", 404
 
     return render_template("crud/stu_task_detail.html", task=task)
+
+@crud_bp.route("/check_id", methods=["POST"])
+def check_id():
+    data = request.get_json()
+    u_id = data.get("user_id")
+    user_type = data.get("user_type") 
+
+    # DAOを使って重複チェック
+    exists = admin_dao.check_id_exists(u_id, user_type)
+    
+    return jsonify({"exists": exists})

@@ -1,44 +1,55 @@
 /**
  * user_add.js
+ * ユーザー新規登録画面の制御スクリプト
  */
-let currentUserType = 'student';
-let formData = {};
+
+let currentUserType = 'student'; // 'student' または 'admin'
+let formData = {}; // 送信用のデータを保持するオブジェクト
 
 document.addEventListener('DOMContentLoaded', () => {
     const modeToggle = document.getElementById('modeToggle');
     const formTitle = document.getElementById('formTitle');
     const typeLabel = document.getElementById('user_type_label');
+    const userIdInput = document.getElementById('user_id');
 
+    // 1. 受講者/管理者の切り替えトグル
     modeToggle.addEventListener('click', () => {
         modeToggle.classList.toggle('admin');
         const isAdmin = modeToggle.classList.contains('admin');
+        
         currentUserType = isAdmin ? 'admin' : 'student';
         formTitle.textContent = isAdmin ? '管理者登録' : '受講者登録';
         formTitle.className = `section-title ${currentUserType}`;
         typeLabel.textContent = isAdmin ? '管理者' : '受講者';
+        
         clearErrors();
     });
 });
 
+/**
+ * 入力バリデーション
+ */
 function validateForm() {
     clearErrors();
     let isValid = true;
-    const fields = {
-        id: document.getElementById('user_id'),
-        name: document.getElementById('user_name'),
-        birthday: document.getElementById('user_birthday')
-    };
+    
+    const id = document.getElementById('user_id');
+    const name = document.getElementById('user_name');
+    const birthday = document.getElementById('user_birthday');
 
-    if (!fields.id.value.trim()) { showError('user_id_error', 'IDは必須です'); isValid = false; }
-    if (!fields.name.value.trim()) { showError('user_name_error', '氏名は必須です'); isValid = false; }
-    if (!fields.birthday.value) { showError('user_birthday_error', '生年月日は必須です'); isValid = false; }
+    if (!id.value.trim()) { showError('user_id_error', 'IDは必須です'); isValid = false; }
+    if (!name.value.trim()) { showError('user_name_error', '氏名は必須です'); isValid = false; }
+    if (!birthday.value) { showError('user_birthday_error', '生年月日は必須です'); isValid = false; }
     
     return isValid;
 }
 
 function showError(id, message) {
     const el = document.getElementById(id);
-    if (el) { el.textContent = message; el.classList.add('show'); }
+    if (el) { 
+        el.textContent = message; 
+        el.classList.add('show'); 
+    }
 }
 
 function clearErrors() {
@@ -46,44 +57,80 @@ function clearErrors() {
         el.textContent = '';
         el.classList.remove('show');
     });
+    document.querySelectorAll('input').forEach(input => {
+        input.classList.remove('input-error');
+    });
 }
 
-function showConfirmScreen() {
+/**
+ * 重複チェックを行い、確認画面へ進む
+ */
+async function showConfirmScreen() {
+    // 未入力チェック
     if (!validateForm()) return;
 
-    const birthdayVal = document.getElementById('user_birthday').value;
-    // 2024-02-05 -> 20240205 に変換
-    const initialPassword = birthdayVal.replace(/-/g, '');
+    const userId = document.getElementById('user_id').value.trim();
+    const userName = document.getElementById('user_name').value.trim();
+    const birthday = document.getElementById('user_birthday').value;
+    const userTypeName = currentUserType === 'student' ? '受講者' : '管理者';
 
+    // サーバーへID重複チェックを問い合わせ
+    try {
+        const response = await fetch('/crud/check_id', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.getElementById('csrf_token').value
+            },
+            body: JSON.stringify({ user_id: userId, user_type: currentUserType })
+        });
+        const result = await response.json();
+
+        if (result.exists) {
+            // 重複していた場合
+            showError('user_id_error', '既に存在するIDです。');
+            document.getElementById('user_id').classList.add('input-error');
+            return; 
+        }
+    } catch (e) {
+        console.error("重複チェックエラー:", e);
+        alert("通信エラーが発生しました。");
+        return;
+    }
+
+    // 送信用データオブジェクトを作成（ここで初めてformDataに値を入れる！）
     formData = {
-        user_type: currentUserType,
-        user_id: document.getElementById('user_id').value.trim(),
-        user_name: document.getElementById('user_name').value.trim(),
-        birthday: birthdayVal,
-        password: initialPassword
+        user_id: userId,
+        user_name: userName,
+        birthday: birthday,
+        user_type: currentUserType
     };
 
+    // 確認画面のHTMLを構築
     const confirmContent = document.getElementById('confirmContent');
-    const label = currentUserType === 'admin' ? '管理者' : '受講者';
-
     confirmContent.innerHTML = `
-        <div class="confirm-section">
-            <div class="confirm-row"><div class="confirm-label">種別</div><div class="confirm-value">${label}</div></div>
-            <div class="confirm-row"><div class="confirm-label">ID</div><div class="confirm-value">${formData.user_id}</div></div>
-            <div class="confirm-row"><div class="confirm-label">氏名</div><div class="confirm-value">${formData.user_name}</div></div>
-            <div class="confirm-row"><div class="confirm-label">生年月日</div><div class="confirm-value">${formData.birthday}</div></div>
-            <div class="confirm-row"><div class="confirm-label">初期パスワード</div><div class="confirm-value">${formData.password} (生年月日8桁)</div></div>
-        </div>`;
+        <div class="confirm-row"><label>ID:</label><span>${userId}</span></div>
+        <div class="confirm-row"><label>氏名:</label><span>${userName}</span></div>
+        <div class="confirm-row"><label>区分:</label><span>${userTypeName}</span></div>
+        <div class="confirm-row"><label>生年月日:</label><span>${birthday}</span></div>
+    `;
 
+    // 画面切り替え
     document.getElementById('inputScreen').classList.add('hidden');
     document.getElementById('confirmScreen').classList.remove('hidden');
 }
 
+/**
+ * 入力画面に戻る
+ */
 function backToInput() {
     document.getElementById('confirmScreen').classList.add('hidden');
     document.getElementById('inputScreen').classList.remove('hidden');
 }
 
+/**
+ * 最終登録実行
+ */
 async function submitForm() {
     const config = document.getElementById('config');
     const csrfToken = document.getElementById('csrf_token').value;
@@ -91,22 +138,29 @@ async function submitForm() {
     try {
         const response = await fetch(config.dataset.url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
-            body: JSON.stringify(formData)
+            headers: { 
+                'Content-Type': 'application/json', 
+                'X-CSRFToken': csrfToken 
+            },
+            body: JSON.stringify(formData) // showConfirmScreenで作ったデータ
         });
 
         const result = await response.json();
         if (response.ok) {
             showToast("ユーザを登録しました。");
-            setTimeout(() => { window.location.href = "/crud/manage"; }, 2000);
+            // 2秒後に管理トップへ
+            setTimeout(() => { window.location.href = config.dataset.redirect; }, 2000);
         } else {
-            showToast(result.message || "エラーが発生しました");
+            showToast(result.message || "登録に失敗しました");
         }
     } catch (e) {
         showToast("通信に失敗しました。");
     }
 }
 
+/**
+ * トースト通知の表示
+ */
 function showToast(message) {
     let toast = document.createElement("div");
     toast.className = "toast show toast-success";
@@ -115,14 +169,16 @@ function showToast(message) {
     setTimeout(() => { toast.remove(); }, 3000);
 }
 
+/**
+ * 生年月日の入力補助（4桁年制限）
+ */
 document.getElementById('user_birthday').addEventListener('input', function(e) {
-    const val = e.target.value; // YYYY-MM-DD
+    const val = e.target.value;
     if (val) {
         const year = val.split('-')[0];
         if (year.length > 4) {
-            // 4桁を超える年が入力されたら、最新の4桁に強制リセット
             e.target.value = ''; 
-            document.getElementById('user_birthday_error').textContent = "年は4桁で入力してください";
+            showError('user_birthday_error', '年は4桁で入力してください');
         } else {
             document.getElementById('user_birthday_error').textContent = "";
         }
