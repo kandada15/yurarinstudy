@@ -227,3 +227,26 @@ def user_info(user_type, user_id):
         percent=percent, 
         master_data=m_data
     )
+
+@crud_bp.route("/student_tasks/<student_id>")
+def stu_task_list(student_id):
+    # 受講生の氏名などを表示するためにプロフィールも取得
+    student_profile = student_dao.get_student_by_id(student_id) # 既存のメソッドを想定
+    # 返却済み課題リストを取得
+    tasks = student_dao.get_student_returned_tasks(student_id)
+
+    return render_template(
+        "crud/stu_task_list.html", 
+        student=student_profile, 
+        tasks=tasks
+    )
+
+@crud_bp.route("/student_tasks/<student_id>/detail/<streamed_id>")
+def stu_task_detail(student_id, streamed_id):
+    # 受講生の詳細データを取得
+    task = student_dao.get_student_task_detail(student_id, streamed_id)
+    
+    if not task:
+        return "データが見つかりません", 404
+
+    return render_template("crud/stu_task_detail.html", task=task)

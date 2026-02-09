@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('mypage.static', filename='css/past_sub_detail.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
-  <title>過去課題詳細</title>
+  <title>過去課題一覧</title>
 </head>
 <body>
   <header class="top-header">
@@ -20,16 +20,19 @@
   </header>
 
   <div class="holes-container">
-    {% for i in range(8) %}<div class="hole"></div>{% endfor %}
+    <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+    <div class="hole"></div><div class="hole"></div><div class="hole"></div>
+    <div class="hole"></div><div class="hole"></div>
   </div>
 
   <div class="tabs-container">
-    <a href="{{ url_for('writing.index') }}" class="tab" data-page="users" data-color="#e8dcc8">ライティング学習</a>
-    <a href="{{ url_for('task.student_task_list') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題</a>
-    <a href="{{ url_for('mypage.index') }}" class="tab active" data-page="groups" data-color="#f5ead2">マイページ</a>
+    <a href="{{ url_for('crud.user_manage') }}" class="tab" data-page="users" data-color="#e8dcc8">ユーザ管理</a>
+    
+    <a href="{{ url_for('task.task_create_form') }}" class="tab" data-page="tasks" data-color="#e6d5a8">課題配信</a>
+    
+    <a href="{{ url_for('dashboard.index') }}" class="tab" data-page="dashboard" data-color="#d4c5b0">ダッシュボード</a>
   </div>
-
-  <div class="app-container">
+<div class="app-container">
     <div class="content-wrapper">
       <div class="header">
         <h1 class="title-heading">課題詳細</h1>
@@ -40,12 +43,12 @@
         <div class="left-column">
           <div class="form-group">
             <label class="form-label">タイトル</label>
-            <input type="text" class="form-input" id="title" value="{{ task.streamed_name }}" readonly>
+            <input type="text" class="form-input" value="{{ task.streamed_name }}" readonly>
           </div>
 
           <div class="form-group">
             <label class="form-label">問題文</label>
-            <textarea class="form-textarea" id="question" readonly>{{ task.streamed_text }}</textarea>
+            <textarea class="form-textarea" readonly>{{ task.streamed_text }}</textarea>
           </div>
         </div>
 
@@ -61,23 +64,18 @@
       </div>
 
       <div class="button-container">
-        <button class="close-button" onclick="closeWindow()">閉じる</button>
+        <button class="close-button" onclick="location.href='{{ url_for('crud.stu_task_list', student_id=task.student_id) }}'">一覧に戻る</button>
       </div>
     </div>
   </div>
 
 <script>
-    // サーバーから渡されたデータを JS オブジェクトにセット
     const data = {
-        respondent: "{{ task.admin_name }}",
-        title: "{{ task.streamed_name }}",
-        question: {{ task.streamed_text | tojson }},
         answerWithoutCorrection: {{ task.answer_text | tojson }},
         answerWithCorrection: {{ task.check_text | tojson }}
     };
 
     let showingCorrection = false;
-
 
     function toggleCorrection() {
         const answerField = document.getElementById('answer');
@@ -86,20 +84,15 @@
         showingCorrection = !showingCorrection;
         
         if (showingCorrection) {
-            // .innerHTML で HTMLタグを有効にする
+            // innerHTML を使うことで HTMLタグを反映させる
             answerField.innerHTML = data.answerWithCorrection;
             toggleBtn.textContent = '添削を非表示';
             answerField.style.backgroundColor = "#fffdf5";
         } else {
-            // 非表示の時も .innerHTML で戻す
             answerField.innerHTML = data.answerWithoutCorrection;
             toggleBtn.textContent = '添削を表示';
             answerField.style.backgroundColor = "#fff";
         }
-    }
-
-    function closeWindow() {
-        window.history.back();
     }
 </script>
 <script src="{{ url_for('static', filename='js/header.js') }}"></script> 

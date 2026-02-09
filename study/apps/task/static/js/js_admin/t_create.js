@@ -146,3 +146,22 @@ function resetForm() {
   clearErrors();
   formData = {};
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const dateInput = document.getElementById("streamed_limit");
+
+  if (dateInput) {
+    dateInput.addEventListener("input", (e) => {
+      const val = e.target.value; // YYYY-MM-DD 形式
+      if (!val) return;
+
+      const year = val.split("-")[0];
+      // 年が4桁を超えていたら、強制的に最大値を9999年にするか、入力を制限する
+      if (year.length > 4) {
+        // 4桁に切り出し（例: 12345 -> 1234）
+        const monthDay = val.substring(year.length); // "-MM-DD" 部分
+        e.target.value = year.substring(0, 4) + monthDay;
+      }
+    });
+  }
+});
