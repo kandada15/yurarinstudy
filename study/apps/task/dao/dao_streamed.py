@@ -85,7 +85,7 @@ class StreamedDao:
         INSERT INTO streamed 
           (streamed_name, streamed_text, streamed_limit, sent_at, group_id)
         VALUES
-          (%s, %s, %s, %s, %s)
+          (%s, %s, %s, NOW(), %s)
     """
 
     # クラス内部の_get_connection()を使ってMySQL接続を取得
@@ -98,7 +98,6 @@ class StreamedDao:
           streamed_name,
           streamed_text,
           streamed_limit,
-          sent_at,
           group_id
         )
       )
