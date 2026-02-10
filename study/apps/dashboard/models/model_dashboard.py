@@ -27,6 +27,7 @@ class StreamedStudent:
     streamed_id: int
     submission_id: int
     status: str
+    group_name: str
 @dataclass
 class GroupInStreamed:
     group_id: int
