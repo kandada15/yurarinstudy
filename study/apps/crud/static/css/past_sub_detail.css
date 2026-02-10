@@ -1,0 +1,389 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Meiryo', sans-serif;
+  background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc8 100%);
+  max-height: 100vh;
+  padding: 20px;
+  overflow-y: hidden;
+}
+
+.app-container {
+  position: relative;
+  max-width: 1100px;
+  height: 600px;
+  margin: 0 auto;
+  margin-top: 60px;
+  background: #fffef9;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, #e8dcc8 39px, #e8dcc8 40px);
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(139, 115, 85, 0.2);
+  overflow: hidden;
+}
+
+.content-wrapper {
+  height: 600px;
+  max-width: 1100px;
+  background: rgba(255, 254, 249, 0.95);
+  padding: 30px;
+  position: relative;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 3px solid #a89775;
+}
+
+.side-answewr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 0;
+}
+
+.respondent {
+  font-size: 14px;
+  color: #fff;
+  background: linear-gradient(135deg, #a89775 0%, #9a8868 100%);
+  padding: 10px 26px;
+  border-radius: 50px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  box-shadow: 0 4px 12px rgba(155, 133, 112, 0.3);
+  position: relative;
+}
+
+.respondent::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50px;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent);
+  mask-composite: exclude;
+}
+
+.title-heading {
+  font-size: 26px;
+  font-weight: 700;
+  color: #5a4a38;
+  letter-spacing: 4px;
+  position: relative;
+  padding-left: 0;
+  text-transform: uppercase;
+  border-left: 5px solid #a89775;
+  padding-left: 15px;
+}
+
+.correction-toggle {
+  background: linear-gradient(135deg, #a89775 0%, #9a8868 100%);
+  color: #fff;
+  border: none;
+  padding: 11px 28px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(155, 133, 112, 0.3);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.correction-toggle:hover {
+  background: linear-gradient(135deg, #9a8868 0%, #8a785a 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(155, 133, 112, 0.4);
+}
+
+.correction-toggle:active {
+  transform: translateY(0);
+}
+
+.form-group {
+  position: relative;
+}
+
+.form-label {
+  display: inline-block;
+  font-size: 11px;
+  color: #fff;
+  background: linear-gradient(135deg, #a89775 0%, #9a8868 100%);
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  box-shadow: 0 3px 10px rgba(155, 133, 112, 0.3);
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+/* 旧inputスタイル（互換性のため残す） */
+.form-input {
+  width: 100%;
+  padding: 16px 24px;
+  border: 2px solid #d4c5a8;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  color: #4a3f32;
+  font-weight: 500;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #a89775;
+  box-shadow: 0 0 0 4px rgba(168, 151, 117, 0.1), 0 2px 8px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+/* div表示用スタイル */
+.form-display {
+  width: 100%;
+  padding: 10px 18px;
+  border: 2px solid #d4c5a8;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  color: #4a3f32;
+  font-weight: 500;
+  min-height: 56px;
+  line-height: 1.6;
+}
+
+.form-display-area {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #d4c5a8;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+  height: 220px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  line-height: 1.9;
+  color: #4a3f32;
+  font-weight: 500;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.form-display-area::-webkit-scrollbar {
+  display: none; 
+}
+
+.form-display-area.answer {
+  height: 335px;
+  overflow: auto;
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
+  margin-bottom: 0;
+}
+
+.form-display-area.answer::-webkit-scrollbar {
+  display: none; 
+}
+
+/* 旧textareaスタイル（互換性のため残す） */
+.form-textarea {
+  width: 100%;
+  padding: 20px 24px;
+  border: 2px solid #d4c5a8;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+  resize: vertical;
+  height: 210px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  line-height: 1.9;
+  color: #4a3f32;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin-bottom: 0;
+  resize: none;
+}
+
+.form-textarea::-webkit-scrollbar {
+  display: none; 
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: #a89775;
+  box-shadow: 0 0 0 4px rgba(168, 151, 117, 0.1), 0 2px 8px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.form-textarea.answer {
+  height: 330px;
+  overflow: auto;
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
+  margin-bottom: 0;
+  resize: none;
+}
+
+.form-textarea.answer::-webkit-scrollbar {
+  display: none; 
+}
+
+.button-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.close-button {
+  background: linear-gradient(135deg, #a89775 0%, #9a8868 100%);
+  color: #fff;
+  border: none;
+  padding: 16px 70px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(155, 133, 112, 0.3);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.close-button:hover {
+  background: linear-gradient(135deg, #9a8868 0%, #8a785a 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(155, 133, 112, 0.4);
+}
+
+.close-button:active {
+  transform: translateY(0);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media screen and (max-height: 588px){
+  .app-container {
+    height: 500px;
+    margin-top: 50px; 
+  }
+
+  .content-wrapper {
+    height: 500px;
+  }
+
+  .form-display-area {
+    height: 145px;
+  }
+
+  .form-display-area.answer {
+    height: 260px;
+  }
+
+  .title-heading {
+    font-size: 20px;
+  }
+
+  .header {
+    height: 50px;
+    margin-bottom: 20px;
+  }
+
+  .respondent {
+    font-size: 12px;
+    padding: 10px 26px;
+    border-radius: 50px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    box-shadow: 0 4px 12px rgba(155, 133, 112, 0.3);
+    position: relative;
+  }
+
+  .form-textarea {
+    height: 155px;
+  }
+
+  .form-textarea.answer {
+    height: 270px;
+  }
+
+  .close-button {
+    padding: 12px 70px;
+  }
+
+  .correction-toggle {
+    padding: 10px 28px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .form-label {
+    margin-bottom: 8px;
+  }
+}

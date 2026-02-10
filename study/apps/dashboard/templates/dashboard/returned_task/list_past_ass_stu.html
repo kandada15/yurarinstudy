@@ -74,7 +74,7 @@
               <p class="pp">配信者:{{ task.admin_name }}</p>
               <p class="pp">提出期限:{{ task.streamed_limit.strftime('%y年%m月%d日') if task.streamed_limit else '―' }}</p>
             </div>
-            </button>
+            </div>
           {% else %}
             <p>返却済み課題はありません。</p>
           {% endfor %}
