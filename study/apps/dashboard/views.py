@@ -350,7 +350,7 @@ def returned_group_list():
 
     # student_list = D_dao.find_by_group_for_submission()
     return render_template("dashboard/returned_task/past_task_view.html", groups=groups, members_cnt=members_cnt, view="group", group_id=None, streamed_id=None)
-   
+
 @dashboard_bp.route("/returned/groups/<int:group_id>/streamed/<int:streamed_id>")
 def returned_student_list(group_id, streamed_id):
     admin_id = session.get('user_id')
@@ -400,15 +400,15 @@ def returned_task_detail(submission_id):
 @dashboard_bp.route("/repassword", methods=["GET", "POST"])
 def repassword():
     admin_id = session.get("user_id")
-   
+
     if request.method == "POST":
         data = request.get_json()
         new_password = data.get("password")
- 
+
         # 3. 準備したインスタンスを使って、パスワード再設定メソッドを呼ぶ
         # メソッド名が update_password だと仮定しています
         success = d_dao.update_password(admin_id, new_password)
- 
+
         if success:
             return jsonify({"status": "success", "message": "パスワードを更新しました。"})
         else:
