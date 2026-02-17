@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, session, redirect, url_for, jsonify, request
 from apps.task.dao.dao_streamed import StreamedDao
 from apps.task.dao.dao_submission import SubmissionDao2
-from apps.crud.dao.dao_group import GroupDao
 from apps.dashboard.dao.dashboard_dao import DashboardDao
 from apps.dashboard.dao.dao_dashboard import Dashboard_DAO
 import json
@@ -21,7 +20,6 @@ dashboard_bp = Blueprint(
 # ルート外に置く
 s_dao = StreamedDao()
 sub_dao = SubmissionDao2()
-g_dao = GroupDao()
 d_dao = DashboardDao()
 D_dao = Dashboard_DAO()
 

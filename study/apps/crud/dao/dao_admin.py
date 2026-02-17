@@ -16,7 +16,7 @@ class AdminDao:
     def _get_connection(self) -> MySQLConnection:
         return mysql.connector.connect(**self.config)
 
-    # 全件取得
+    # 全管理者テーブルの全レコードをリスト形式で取得
     def find_all(self) -> list[Admin]:
         """
         adminテーブルの全レコードを取得
@@ -58,14 +58,13 @@ class AdminDao:
             cursor.close()
             conn.close()
 
-    # 全件取得
+    # 管理者情報と、その管理者が作成したグループ名を結合して全件取得
     def find_all_groupname(self) -> list[AdminToGroupname]:
         """
         adminテーブルの全レコードを取得
         Adminオブジェクトのリストとして返す。
         管理者情報をadmin_id順で取得
         """
-        # apps/crud/dao/admin_dao.py の SQL 部分
 
         sql = """
             SELECT
@@ -112,7 +111,7 @@ class AdminDao:
             cursor.close()
             conn.close()
 
-    #
+    # キーワードを受け取り、管理者ID・名前・グループ名のいずれかに部分一致するレコードを検索
     def search_admins(self, search_query: str) -> list[AdminToGroupname]:
         """
         admin_id, admin_name, group_name のいずれかに
@@ -172,7 +171,7 @@ class AdminDao:
             cursor.close()
             conn.close()
 
-    # ID検索
+    # 指定されたIDとユーザー種別に基づいて、詳細なプロフィール情報を1件取得
     def find_by_id(self, u_id, user_type):
         table_name, id_column, name_column = self._get_table_info(user_type)
         
@@ -228,7 +227,7 @@ class AdminDao:
                 cursor.close()
                 conn.close()
 
-    # admin新規登録
+    # 新しい管理者をデータベースに1件登録
     def insert(self, admin_id: str, admin_name: str, password: str, birthday) -> str:
         """
         insert文にて管理者を追加
@@ -254,7 +253,8 @@ class AdminDao:
             # 例外の有無に関わらず、最後に必ずクローズする
             cursor.close()
             conn.close()
-    
+
+    # 指定した管理者のパスワードを、その人の誕生日（YYYYMMDD形式）で上書き更新
     def reset_password(self, admin_id: str) -> bool:
         # DATE_FORMAT で誕生日を 'YYYYMMDD' 形式の文字列に変換してパスワードに設定
         sql = """
@@ -272,6 +272,7 @@ class AdminDao:
             cursor.close()
             conn.close()
     
+    # 管理者を削除する。その際、関連するグループやマイページ、配信情報もまとめて削除
     def delete_admin(self, admin_id: str) -> bool:
         conn = self._get_connection()
         try:
@@ -308,6 +309,7 @@ class AdminDao:
             cursor.close()
             conn.close()
 
+    # ユーザー種別に応じて、使用するテーブル名やカラム名を動的に切り替える
     def _get_table_info(self, user_type):
         """
         種別に応じて (テーブル名, IDカラム名) を返す
@@ -317,6 +319,7 @@ class AdminDao:
         else:
             return "student", "student_id", "student_name"
 
+    # 入力されたIDが既にデータベースに存在するかどうかを確認（重複チェック用）
     def check_id_exists(self, u_id, user_type):
         """IDの重複チェック"""
         table_name, id_column, _ = self._get_table_info(user_type)
@@ -332,6 +335,7 @@ class AdminDao:
             cursor.close()
             conn.close()
 
+    # ユーザー（管理者または受講生）の新規登録を行い、受講生の場合は20個の学習進捗データ(progress)を自動生成
     def register_user(self, u_id, name, password, birthday, user_type):
         table_name, id_column, name_column = self._get_table_info(user_type)
         

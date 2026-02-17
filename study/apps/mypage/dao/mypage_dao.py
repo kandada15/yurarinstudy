@@ -19,6 +19,7 @@ class MypageDao:
     # 受講生マイページトップ用 (SQLAlchemy使用)
     # ==========================================
 
+    # 受講生の基本プロフィール（ID、氏名、誕生日）を取得
     def get_user_profile(self, user_id):
         """受講生の基本プロフィールを取得"""
         sql = text("""
@@ -28,6 +29,7 @@ class MypageDao:
         """)
         return db.session.execute(sql, {"uid": user_id}).mappings().first()
 
+    # 課題の「未完了・提出済み・返却済み」の件数をそれぞれ集計
     def get_task_summary(self, user_id):
         """課題の提出状況（未提出・提出済・返却済）を集計"""
         sql = text("""
@@ -56,6 +58,7 @@ class MypageDao:
             'returned': result['returned'] or 0
         }
 
+    # ライティング学習の進捗状況を、完了数と総数で取得
     def get_writing_progress(self, user_id):
         """ライティング学習の全体進捗（円グラフ用）"""
         sql = text("""
@@ -66,7 +69,8 @@ class MypageDao:
             WHERE student_id = :uid
         """)
         return db.session.execute(sql, {"uid": user_id}).mappings().first()
-  
+
+    # 自分が所属しているグループの名前と、同じグループに何人のメンバーがいるかを取得
     def get_user_group(self, user_id):
         """所属グループの情報とメンバー数を取得"""
         sql = text("""
@@ -83,6 +87,7 @@ class MypageDao:
     # 管理者向け詳細画面用 (DashboardDaoと共通スタイル)
     # ==========================================
 
+    # 【管理者用】特定の生徒が全20ステージのうち何ステージ完了しているかを数値で集計
     def get_student_stats(self, student_id: str) -> dict:
         """一人の生徒の完了・未完了ステージ数を集計"""
         sql = """
@@ -106,6 +111,7 @@ class MypageDao:
             cursor.close()
             conn.close()
 
+    # 【管理者用】全フェーズのリストを取得し、どこが完了（1）でどこが未完了（0）かを一覧で取得
     def get_student_detail_list(self, student_id: str) -> list[dict]:
         """フェーズごとの進捗詳細を一覧取得"""
         sql = """
@@ -123,6 +129,7 @@ class MypageDao:
             cursor.close()
             conn.close()
 
+    # 受講生自身のパスワードを新しいものに更新
     def update_password(self, user_id, new_password):
         sql = "UPDATE student SET password = %s WHERE student_id = %s" 
         conn = self._get_connection()
@@ -135,6 +142,7 @@ class MypageDao:
             cursor.close()
             conn.close()
 
+    # 先生から「返却」された課題の一覧を、提出日時の新しい順に取得
     def get_returned_tasks(self, user_id):
         """返却済みの課題一覧を取得（配信日時の新しい順）"""
         sql = text("""
@@ -156,6 +164,7 @@ class MypageDao:
         result = db.session.execute(sql, {"uid": user_id}).mappings().all()
         return result
     
+    # 特定の返却済み課題について、問題文・自分の解答・先生の添削文をセットで取得
     def get_returned_task_detail(self, user_id, streamed_id):
         """特定の返却済み課題の詳細を取得（添削文を含む）"""
         sql = text("""
