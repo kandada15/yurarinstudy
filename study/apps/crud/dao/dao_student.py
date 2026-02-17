@@ -17,7 +17,7 @@ class StudentDao:
     def _get_connection(self) -> MySQLConnection:
         return mysql.connector.connect(**self.config)
 
-    # 全件取得
+    # 全受講生の基本情報を取得し、リストとして返す
     def find_all(self) -> list[Student]:
         """ 
         studentテーブルの全レコードを取得
@@ -60,7 +60,7 @@ class StudentDao:
             cursor.close()
             conn.close()
 
-    # 全件取得
+    # 全受講生の情報に「所属グループ名」を加えて取得
     def find_all_groupname(self) -> list[StudentToGroupname]:
         """ 
         studentテーブルの全レコードを取得
@@ -106,7 +106,7 @@ class StudentDao:
             cursor.close()
             conn.close()
 
-        # 検索用メソッド
+    # ID・名前・グループ名のいずれかに部分一致する受講生を検索
     def search_students(self, search_query: str) -> list[StudentToGroupname]:
         """ 
         student_id, student_name, group_name のいずれかに
@@ -124,7 +124,7 @@ class StudentDao:
                 g.group_name
             FROM student AS stu
             LEFT JOIN `group` AS g
-              ON stu.group_id = g.group_id
+                ON stu.group_id = g.group_id
             WHERE 
                 stu.student_id LIKE %s OR 
                 stu.student_name LIKE %s OR 
@@ -160,7 +160,7 @@ class StudentDao:
             cursor.close()
             conn.close()
 
-    # student ID検索
+    # 指定された受講生IDに基づいて、詳細な情報を1件取得
     def find_by_id(self, student_id: int) -> Optional[dict]:
         """ 
         student_idで student テーブルから1件取得。見つからなければNoneを返す。
@@ -193,7 +193,7 @@ class StudentDao:
             cursor.close()
             conn.close()
 
-    # 新規登録
+    # 新しい受講生をデータベースに登録
     def insert(self, student_id: int, student_name: str, password: str, entry_year, birthday, is_alert: bool, group_id: int) -> int:
         """
         insert文にて学生を追加
@@ -219,7 +219,7 @@ class StudentDao:
             cursor.close()
             conn.close()
 
-    # 指定されたgroup_idに属するstudentを取得し、Studentオブジェクトのリストとして返す
+    # 指定されたグループIDに所属している受講生の一覧を取得
     def find_by_group_id(self, group_id: int) -> list[Student]:
         """
         %s はプレースホルダー
@@ -266,6 +266,7 @@ class StudentDao:
             cursor.close()
             conn.close()
 
+    # 受講生のパスワードを、その人の誕生日（YYYYMMDD形式）でリセットする
     def reset_password(self, student_id: int) -> bool:
         sql = """
             UPDATE student 
@@ -282,6 +283,7 @@ class StudentDao:
             cursor.close()
             conn.close()
         
+    # 受講生を削除する。その際、関連する「進捗データ」や「マイページ」もまとめて削除する
     def delete_student(self, student_id: int) -> bool:
         conn = self._get_connection()
         try:
@@ -302,6 +304,7 @@ class StudentDao:
             cursor.close()
             conn.close()
 
+    # 特定の受講生に対して「返却（添削完了）済み」になっている課題の一覧を取得
     def get_student_returned_tasks(self, student_id):
         """特定の受講生の返却済み課題一覧を取得"""
         sql = text("""
@@ -322,6 +325,7 @@ class StudentDao:
         result = db.session.execute(sql, {"sid": student_id}).mappings().all()
         return result
     
+    # 受講生IDから、名前などの最低限の基本情報を取得
     def get_student_by_id(self, student_id):
         """受講生IDから名前などの基本情報を取得"""
         sql = text("""
@@ -333,6 +337,7 @@ class StudentDao:
         result = db.session.execute(sql, {"sid": student_id}).mappings().first()
         return result
     
+    # 管理者が、特定の受講生に返却した課題の「問題・解答・添削内容」の詳細情報を取得
     def get_student_task_detail(self, student_id, streamed_id):
         """管理者が特定の受講生の返却済み課題詳細を取得"""
         sql = text("""

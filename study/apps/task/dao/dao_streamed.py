@@ -17,7 +17,7 @@ class StreamedDao:
   def _get_connection(self) -> MySQLConnection:
     return mysql.connector.connect(**self.config)
   
-  # 全件取得
+  # 配信済みのすべての課題データを取得し、リストとして返す
   def find_all(self) -> list[Streamed]:
     """ 
     streamedテーブルの全レコードを取得
@@ -68,7 +68,7 @@ class StreamedDao:
       cursor.close()
       conn.close()
 
-  # streamed新規登録
+  # 新しい課題をグループに対して配信し、発行されたIDを返す
   def insert(
     self,
     streamed_name: str,
@@ -111,7 +111,7 @@ class StreamedDao:
       conn.close()
 
 
-  # 受講者『課題一覧画面』用の情報取得
+  # 受講生側の「課題一覧画面」に表示するために、課題内容と作成者名をセットで取得
   def find_all_for_student(self) -> list[StreamedForStudent]:
     """
     課題名/配信者/提出期限を表示する
@@ -162,7 +162,7 @@ class StreamedDao:
       cursor.close()
       conn.close()
 
-  # 特定の学生が未提出の課題のみ取得する
+  # 特定の受講生が、自分の所属グループに配信された課題の中で未提出のものだけを取得
   def find_unsubmitted_for_student(self, student_id: int) -> list[StreamedForStudent]:
     """
     streamed と submissionを結び付ける
@@ -182,7 +182,7 @@ class StreamedDao:
           ON s.group_id = stu.group_id
         LEFT JOIN submission AS sub
           ON s.streamed_id = sub.streamed_id
-         AND sub.student_id = stu.student_id
+          AND sub.student_id = stu.student_id
         LEFT JOIN `group` AS g
           ON s.group_id = g.group_id
         LEFT JOIN admin
@@ -218,7 +218,7 @@ class StreamedDao:
       cursor.close()
       conn.close()
 
-  # 配信済課題一覧画面
+  # 管理者が、自身が担当するグループに対して過去に配信した課題の一覧を取得
   def find_streamed_for_student(self, admin_id: int) -> list[StreamedForStudent]:
     """
     streamedテーブルからデータを取得
@@ -271,7 +271,7 @@ class StreamedDao:
       conn.close()
 
 
-  # streamed ID検索
+  # 課題IDを指定して、提出画面に必要な詳細情報を1件取得
   def find_by_id(self, streamed_id: int) -> StreamedForStudentSubmit | None:
     """
     streamedテーブルから1件取得
@@ -318,7 +318,7 @@ class StreamedDao:
       cursor.close()
       conn.close()
 
-  # 管理者が配信した課題数をカウントして表示
+  # 特定の管理者がこれまでに配信した課題の総数をカウント
   def get_streamed_count(self, admin_id: str) -> int:
     """
     streamed と goup を結び付ける
@@ -346,7 +346,7 @@ class StreamedDao:
       cursor.close()
       conn.close()
 
-  # 1週間以内に締切の課題数をカウント
+  # システム全体で、提出期限が「今日から1週間以内」に迫っている課題の件数を集計
   def get_weekly_deadline_count(self) -> int:
     """
     streamed_limit 提出期限が今日～7日後までに入っている課題を抽出

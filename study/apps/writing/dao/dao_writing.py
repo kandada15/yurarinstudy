@@ -13,7 +13,7 @@ class WritingDao:
         categories = {1: "小論文", 2: "ビジネス文書", 3: "レポート", 4: "表現トレーニング"}
         return categories.get(category_id, "ライティング学習")
 
-    # 進捗を取得
+    # 指定された受講生とカテゴリに基づき、進捗リストを取得
     def get_user_progress(self, student_id, category_id):
         # カテゴリIDに応じて①～④を取得
         symbol = self.symbol_map.get(category_id, '①')
@@ -33,7 +33,7 @@ class WritingDao:
             "prefix": f"{symbol}-%"
         }).mappings().all()
 
-    # 学習状況更新
+    # 特定の学習ステップを「完了」に更新する
     def update_stage_progress(self, student_id, phase_name):
         """指定されたステップのstage_flagを1(完了)に更新"""
         update_sql = text(

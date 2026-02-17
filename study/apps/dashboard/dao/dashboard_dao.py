@@ -16,6 +16,7 @@ class DashboardDao:
         """MySQL への接続を新しく1つ作って返す"""
         return mysql.connector.connect(**self.config)
 
+    # ログイン中の管理者が作成した「グループ名」と、その「所属人数」をまとめて取得する
     def find_groups_for_progress(self, admin_id: str) -> list[dict]:
         """管理者が作成したグループと、その所属人数を取得します"""
         sql = """
@@ -37,6 +38,7 @@ class DashboardDao:
             cursor.close()
             conn.close()
 
+    # 特定のグループIDを指定して、そこに所属する学生のリストを取得する
     def find_students_by_group(self, group_id: int) -> list[dict]:
         """特定のグループに所属する生徒のIDと名前、入学年度を取得します"""
         sql = """
@@ -56,7 +58,7 @@ class DashboardDao:
             cursor.close()
             conn.close()
     
-    # student_name表示用
+    # 受講者IDから、その学生の名前だけをピンポイントで取得する
     def get_student_name(self, student_id: str) -> str:
         """student_id から student_name を取得"""
         sql = """
@@ -74,7 +76,7 @@ class DashboardDao:
             cursor.close()
             conn.close()
 
-
+    # 1人の学生が全20ステージのうち、何個完了したかの統計データを取得する
     def get_student_stats(self, student_id: str) -> dict:
         """一人の生徒の完了・未完了ステージ数を集計します"""
         sql = """
@@ -93,6 +95,7 @@ class DashboardDao:
             cursor.close()
             conn.close()
 
+    # 1人の学生の全フェーズ（①-1〜④-5など）の進捗状況を、リスト形式で詳しく取得する
     def get_student_detail_list(self, student_id: str) -> list[dict]:
         """一人の生徒の全フェーズの進捗（0 or 1）を取得します"""
         sql = """
@@ -111,6 +114,7 @@ class DashboardDao:
             cursor.close()
             conn.close()
     
+    # 特定の学生の基本情報（IDと名前）のみを取得する
     def get_student_info(self, student_id: str) -> dict:
         """指定したIDの受講生基本情報（氏名など）を取得します"""
         sql = """
@@ -129,6 +133,7 @@ class DashboardDao:
             cursor.close()
             conn.close()
 
+    # 管理者が作成したグループの一覧を辞書形式で取得する
     def find_by_admin_id(self, admin_id: str) -> list[dict]:
         """ログイン中の管理者が作成したグループのみを辞書形式で返す"""
         sql = """
@@ -145,6 +150,7 @@ class DashboardDao:
             cursor.close()
             conn.close()
 
+    # グループIDからグループ名を取得する。見つからない場合は「不明なグループ」と返す
     def get_group_name(self, group_id: int) -> str:
         """IDからグループ名を取得"""
         sql = "SELECT group_name FROM `group` WHERE group_id = %s" 
@@ -158,6 +164,7 @@ class DashboardDao:
             cursor.close()
             conn.close()
 
+    # まだどのグループにも所属していない「未所属」の学生リストを取得する
     def find_all_students(self) -> list[dict]:
         """グループに所属していない受講者のIDと名前を取得"""
         sql = """
@@ -177,6 +184,7 @@ class DashboardDao:
             cursor.close()
             conn.close()
 
+    # 複数の学生をまとめて特定のグループに所属させる
     def update_students_group(self, group_id: str, student_ids: list[str]) -> bool:
         """選択された受講生たちの所属グループを更新します"""
         # studentテーブルのgroup_idを書き換えるSQL
@@ -198,6 +206,7 @@ class DashboardDao:
             cursor.close()
             conn.close()
     
+    # 指定した学生の所属グループを解除（group_idをNULLに）する
     def remove_student_from_group(self, student_id):
         """受講生の所属グループを解除（NULLに更新）します"""
         sql = "UPDATE student SET group_id = NULL WHERE student_id = %s"
@@ -216,6 +225,7 @@ class DashboardDao:
             cursor.close()
             conn.close()
 
+    # グループ名を新しい名前に書き換える
     def update_group_name(self, group_id, group_name):
         """特定のグループIDの名前を更新します"""
         sql = "UPDATE `group` SET group_name = %s WHERE group_id = %s"
@@ -234,6 +244,7 @@ class DashboardDao:
             cursor.close()
             conn.close()
 
+    # 新しいグループを作成する。IDは現在の最大値+1を自動で割り振る
     def create_group(self, group_name, admin_id):
         """新規グループを登録"""
         get_last_id_sql = "SELECT group_id FROM `group` ORDER BY group_id DESC LIMIT 1"
@@ -264,6 +275,7 @@ class DashboardDao:
             if conn:
                 conn.close()
     
+    # 管理者のパスワードを新しいものに更新する
     def update_password(self, user_id, new_password):
         sql = "UPDATE admin SET password = %s WHERE admin_id = %s" 
         conn = self._get_connection()

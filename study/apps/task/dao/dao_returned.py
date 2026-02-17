@@ -16,7 +16,7 @@ class ReturnedDao:
     """ MySQLとの接続を新しく作成し、返す。 """
     return mysql.connector.connect(**self.config)
   
-  # 全件取得
+  # 添削・返却済みの全データを取得し、Returnedオブジェクトのリストとして返す
   def find_all(self) -> list[Returned]:
     """ 
     returned テーブルの全レコードを取得

@@ -14,7 +14,7 @@ class SubmissionDao:
     def _get_connection(self) -> MySQLConnection:
         return mysql.connector.connect(**self.config)
 
-    # 全件取得
+    # 提出物テーブルの全レコードを取得し、リストとして返す
     def find_all(self) -> list[Submission]:
         """
         submissionテーブルの全レコードを取得
@@ -67,7 +67,7 @@ class SubmissionDao:
             cursor.close()
             conn.close()
 
-    # submission新規登録
+    # 新しい提出物を登録する。既に「提出済み」の場合はNoneを返し、二重提出を防止する
     def insert(self, streamed_id, student_id, answer_text):
         """
         insert文にて提出物を追加
@@ -123,6 +123,7 @@ class SubmissionDao2:
     def _get_connection(self):
         return mysql.connector.connect(**self.config)
 
+    # システム全体の「提出済み課題数」と、まだ添削されていない「未添削課題数」をカウントして取得
     def get_stats(self):
         """提出済課題数と未添削課題数を取得"""
         sql = """

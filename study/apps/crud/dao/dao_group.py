@@ -15,7 +15,7 @@ class GroupDao:
     def _get_connection(self) -> MySQLConnection:
         return mysql.connector.connect(**self.config)
 
-    # 全件取得
+    # 登録されているすべてのグループ情報を取得し、リスト形式で返す
     def find_all(self) -> list[Group]:
         """ 
         groupテーブルの全レコードを取得
@@ -53,7 +53,7 @@ class GroupDao:
             cursor.close()
             conn.close()
 
-    # group ID検索
+    # 指定されたグループIDを使って、特定のグループ1件のデータを取得する
     def find_by_id(self, group_id: int) -> Optional[dict]:
         """ 
         group_idで group テーブルから1件取得。見つからなければNoneを返す。
@@ -83,7 +83,7 @@ class GroupDao:
             cursor.close()
             conn.close()
 
-    # 新規登録
+    # 新しいグループを登録し、自動で割り振られたIDを返す
     def insert(self, group_name: str) -> int:
         """
         insert文にてグループを追加
